@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "dms-admin-client-side-solution",
+    "id": "f1c5454f-2a16-441e-8682-f805de61ae49",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.19.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "dms-admin description"
+      },
+      "longDescription": {
+        "default": "dms-admin description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "dms-admin Feature",
+        "description": "The feature that activates elements of the dms-admin solution.",
+        "id": "a914674e-c84a-4d78-b023-db36a2a89673",
+        "version": "1.0.0.0"
+      }
+      
+    ],
+    "webApiPermissionRequests": [
+        {
+          "resource": "Microsoft Graph",
+          "scope": "Group.Read.All"
+        },
+        {
+          "resource": "Microsoft Graph",
+          "scope": "User.Read.All"
+        }
+      ]
+  },
+  "paths": {
+    "zippedPackage": "solution/dms-admin.sppkg"
+  }
+
+}

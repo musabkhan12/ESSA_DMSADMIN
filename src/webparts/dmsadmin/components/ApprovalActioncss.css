@@ -1,0 +1,19 @@
+.card{
+    width: 100% !important;
+}
+.text-center{
+    display: flex !important;
+    justify-content: center !important;
+}
+.btn-success{
+    background-color: #008751 !important;
+}
+.btn-danger{
+    background-color: #ff555d !important;
+}
+.topcard{
+    height: 400px !important;
+}
+.cardbottom{
+    height: 200px !important;
+}

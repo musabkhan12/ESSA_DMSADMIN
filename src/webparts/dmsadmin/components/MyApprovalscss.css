@@ -1,0 +1,12 @@
+.Approval-table{
+    width: 100%;
+    padding: 30px;
+    margin-top: 17px;
+}
+.Approval-table-header{
+    background-color: #e3ede6;
+    padding: 21px;
+    color: #458556;
+    height: 36px;
+    border-radius: 13px;
+}

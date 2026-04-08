@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Power Apps UI Controls - Sypherix Format</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; background: #f9fafc; color: #222; }
+    h1, h2, h3 { color: #2c3e50; }
+    .control { background: #fff; padding: 20px; margin: 20px 0; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    code { background: #eef; padding: 2px 6px; border-radius: 4px; }
+    ul { margin: 0; padding-left: 20px; }
+    .example { background: #f4f6f8; padding: 10px; border-left: 4px solid #0078d4; margin: 10px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Sypherix Power Apps UI Control Reference</h1>
+  <p>This document explains all major <strong>Power Apps UI controls</strong>, their <strong>deep properties</strong>, when and why to use them, and how to bind them in <strong>Gallery, Forms, and App context</strong>.</p>
+
+  <!-- Label -->
+  <div class="control">
+    <h2>1. Label</h2>
+    <p>Used to <strong>display static or dynamic text</strong>.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Text</code>: What to display. Example: <code>ThisItem.Title</code></li>
+      <li><code>Color, Size, Visible, Fill</code>: Formatting and conditional styling</li>
+    </ul>
+    <div class="example">
+      <strong>Gallery binding:</strong><br>
+      <code>Text = ThisItem.Title</code><br>
+      <strong>Form binding:</strong><br>
+      <code>Default = ThisItem.Title</code>
+    </div>
+  </div>
+
+  <!-- Text Input -->
+  <div class="control">
+    <h2>2. Text Input</h2>
+    <p>Used to capture <strong>user text input</strong>.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Default</code>: Initial value (e.g., <code>ThisItem.Title</code>)</li>
+      <li><code>Text</code>: Current user-entered value</li>
+      <li><code>HintText</code>: Placeholder</li>
+      <li><code>Mode</code>: SingleLine, MultiLine, Password</li>
+    </ul>
+    <div class="example">
+      Save value:<br>
+      <code>Patch(MyList, ThisItem, { Title: TextInput1.Text })</code>
+    </div>
+  </div>
+
+  <!-- Checkbox -->
+  <div class="control">
+    <h2>3. Check Box</h2>
+    <p>Represents <strong>true/false</strong> values.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Default</code>: Initial checked state (<code>ThisItem.IsActive</code>)</li>
+      <li><code>Value</code>: True if checked, false if not</li>
+      <li><code>Text</code>: Label next to box</li>
+      <li><code>OnCheck / OnUncheck</code>: Actions on change</li>
+    </ul>
+    <div class="example">
+      Gallery binding:<br>
+      <code>Default = ThisItem.Completed</code><br>
+      Save:<br>
+      <code>Patch(MyList, ThisItem, { Completed: Checkbox1.Value })</code>
+    </div>
+  </div>
+
+  <!-- Toggle -->
+  <div class="control">
+    <h2>4. Toggle</h2>
+    <p>Alternative for <strong>Yes/No</strong> values with slider.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Default</code>: Initial state</li>
+      <li><code>Value</code>: Current state</li>
+    </ul>
+  </div>
+
+  <!-- Dropdown -->
+  <div class="control">
+    <h2>5. Dropdown</h2>
+    <p>Single-select dropdown.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Items</code>: Data source (e.g., <code>Choices(MyList.Status)</code>)</li>
+      <li><code>Default</code>: Initial option</li>
+      <li><code>Selected.Value</code>: Current selected option</li>
+    </ul>
+  </div>
+
+  <!-- ComboBox -->
+  <div class="control">
+    <h2>6. ComboBox</h2>
+    <p>Advanced dropdown for <strong>single or multiple selection</strong>.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Items</code>: Data source (Users, Choices, Collections)</li>
+      <li><code>DisplayFields</code>: Fields shown in UI (e.g., <code>["DisplayName","Mail"]</code>)</li>
+      <li><code>SearchFields</code>: Fields searched when typing</li>
+      <li><code>DefaultSelectedItems</code>: Preloaded values (table required)</li>
+      <li><code>Selected</code>: Single selected record</li>
+      <li><code>SelectedItems</code>: Table of records (multi select)</li>
+      <li><code>AllowMultipleSelection</code>: true/false</li>
+    </ul>
+    <div class="example">
+      People picker binding:<br>
+      <code>Items = Office365Users.SearchUser({SearchTerm: ComboBox1.SearchText})</code><br>
+      <code>DisplayFields = ["DisplayName","Mail"]</code><br>
+      <code>DefaultSelectedItems = ThisItem.AssignedTo</code>
+    </div>
+  </div>
+
+  <!-- Radio -->
+  <div class="control">
+    <h2>7. Radio Button</h2>
+    <p>Choose one option from multiple.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Items</code>: Options (<code>["High","Medium","Low"]</code>)</li>
+      <li><code>Default</code>: Initial selection</li>
+      <li><code>Selected.Value</code>: Current option</li>
+    </ul>
+  </div>
+
+  <!-- Slider -->
+  <div class="control">
+    <h2>8. Slider</h2>
+    <p>Pick numeric values.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Min, Max</code>: Range</li>
+      <li><code>Default</code>: Start value</li>
+      <li><code>Value</code>: Current value</li>
+    </ul>
+  </div>
+
+  <!-- Rating -->
+  <div class="control">
+    <h2>9. Rating</h2>
+    <p>Star-based rating input.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Default</code>: Initial rating (convert string to number)</li>
+      <li><code>Value</code>: Current stars selected</li>
+    </ul>
+    <div class="example">
+      Binding:<br>
+      <code>Default = Value(Substitute(ThisItem.'User ratings', ",", ""))</code>
+    </div>
+  </div>
+
+  <!-- Date Picker -->
+  <div class="control">
+    <h2>10. Date Picker</h2>
+    <p>Pick a date.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>DefaultDate</code>: Start date (<code>ThisItem.DueDate</code>)</li>
+      <li><code>SelectedDate</code>: Chosen date</li>
+    </ul>
+  </div>
+
+  <!-- Gallery -->
+  <div class="control">
+    <h2>11. Gallery</h2>
+    <p>Repeats controls for multiple records.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>Items</code>: Data source (<code>Filter(MyList, Status="Active")</code>)</li>
+      <li><code>ThisItem</code>: Current record</li>
+    </ul>
+    <div class="example">
+      <code>Label.Text = ThisItem.Title</code><br>
+      <code>Checkbox.Default = ThisItem.Completed</code>
+    </div>
+  </div>
+
+  <!-- Forms -->
+  <div class="control">
+    <h2>12. Forms (Edit/Display)</h2>
+    <p>Used for record create, edit, view.</p>
+    <h3>Key Properties</h3>
+    <ul>
+      <li><code>DataSource</code>: The list/table</li>
+      <li><code>Item</code>: Record to edit (<code>Gallery1.Selected</code>)</li>
+      <li><code>Default</code>: Field default (from <code>ThisItem</code>)</li>
+      <li><code>Update</code>: What value to save (e.g., <code>TextInput1.Text</code>)</li>
+    </ul>
+  </div>
+
+</body>
+</html>

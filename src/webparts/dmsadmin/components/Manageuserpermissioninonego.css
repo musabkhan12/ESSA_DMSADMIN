@@ -1,0 +1,514 @@
+/* ==================== CONTAINER & LAYOUT ==================== */
+.user-permission-container {
+    /* padding: 20px;
+    background: #f5f5f5;
+    min-height: 100vh; */
+}
+
+.page-header {
+        background: #fff;
+    border-radius: 11px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    margin-bottom: 20px;
+    border: 2px solid #7fc4de;
+    padding: 20px;
+}
+.cellTooltip-129{
+     inset: 0px !important;
+}
+.page-header h1 {
+    margin: 0 0 15px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #323130;
+}
+
+.search-container {
+    max-width: 600px; margin-bottom:15px;
+}
+
+.table-search-input {
+    width: 100%;
+    padding: 8px 12px !important;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+   
+}
+
+.table-search-input:focus {
+    outline: none;
+    border-color: #0078d4;
+}
+
+.table-search-input::placeholder {
+    color: #a19f9d;
+}
+
+/* ==================== LOADER ==================== */
+.loader-center {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 1000;
+    font-size: 16px;
+    color: #323130;
+}
+
+/* ==================== TABLE WRAPPER ==================== */
+/* .table-wrapper {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+} */
+ .btn.back-to-admin{
+  background-color: #5c636a !important;
+  top: 0px !important; color:#fff !important;
+ }
+  .btn.newbutton_align{
+        top: -70px !important;
+ }
+.table-wrapper {
+    background: #fff;
+    border: 1px solid #ccc !important;
+    border-radius: 8px;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, .1); */
+    overflow: auto; padding:15px;
+}
+/* ==================== TABLE STYLING ==================== */
+.ms-DetailsList {
+    font-family: "Segoe UI", "Segoe UI Web (West European)", sans-serif !important;
+}
+
+/* Hide checkbox column completely */
+.ms-DetailsRow-check,
+.ms-DetailsHeader-check {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+}
+
+/* Table Header */
+.ms-DetailsHeader {
+    background: #f3f7f9 !important;
+    border-bottom: 2px solid #f3f7f9 !important;
+    padding: 0 !important;
+}
+
+.ms-DetailsHeader-cell {
+    background: #f3f7f9 !important;
+    padding: 12px 16px !important;
+    height: auto !important;
+    line-height: normal !important; margin-top:10px; margin-left:10px;
+}
+
+.ms-DetailsHeader-cellTitle {
+    font-weight: 600 !important;
+    color: #323130 !important;
+    font-size: 14px !important;
+    padding: 0 !important;
+}
+
+.ms-DetailsHeader-cellName {
+    font-weight: 600 !important;
+    color: #323130 !important;
+    font-size: 14px !important;
+}
+
+/* Table Rows */
+.ms-DetailsRow {
+    border-bottom: 1px solid #edebe9 !important;
+    min-height: 42px !important;
+}
+
+.ms-DetailsRow:hover {
+    background: #f3f2f1 !important;
+}
+
+.ms-DetailsRow-fields {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ms-DetailsRow-cell {
+    font-size: 14px !important;
+    color: #323130 !important;
+    padding: 12px 16px !important;
+    min-height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+
+/* Ensure cells don't expand */
+.ms-DetailsRow-cell > div,
+.ms-DetailsRow-cell > span {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Multiline cells (for groups column) */
+.ms-DetailsRow-cell[data-automation-key="groups"] {
+    align-items: flex-start !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/* ==================== MANAGE BUTTON ==================== */
+.manage-button {
+   background: #fff !important;
+    border: 1px solid #7fc4de !important;
+    border-radius: 2px !important;
+    color: #7fc4de !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    height: 32px !important;
+    min-width: 80px !important;
+    padding: 6px 20px !important;
+}
+
+.manage-button:hover {
+    background: #7fc4de !important;
+    color: #fff !important;
+    /* border-color: #0b5a08 !important; */
+    /* color: #0b5a08 !important; */
+}
+
+.manage-button .ms-Button-label {
+    font-weight: 400 !important;
+    margin: 0 !important;
+}
+
+/* ==================== MODAL STYLING ==================== */
+.ms-Dialog-main {
+    max-width: 750px !important;
+    width: 750px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 23px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ms-Overlay {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #edebe9;
+    background: white;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #201f1e;
+}
+#s4-workspace{overflow-x:hidden;}
+.close-button {
+    background: white;
+    border: 2px solid #d13438;
+    cursor: pointer;
+    font-size: 18px;
+    color: #d13438;
+    padding: 0;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-weight: normal;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: #fef6f6;
+    border-color: #a4262c;
+    color: #a4262c;
+}
+
+/* Modal Content */
+.modal-content {
+    padding: 20px 24px 24px 24px;
+    max-height: 500px;
+    /* overflow-y: auto; */
+    background: white;
+}
+
+/* ==================== CURRENT GROUPS SECTION ==================== */
+.current-groups-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.current-groups-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #201f1e;
+}
+
+.remove-all-button {
+    background: white;
+    border: 1px solid #d13438;
+    color: #d13438;
+    padding: 5px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.remove-all-button:hover {
+    background: #fef6f6;
+    border-color: #a4262c;
+    color: #a4262c;
+}
+
+.remove-all-button span {
+    font-size: 14px;
+}
+
+/* ==================== GROUP PILLS ==================== */
+.groups-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.group-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #d2d0ce;
+    border-radius: 2px;
+    font-size: 13px;
+    color: #201f1e;
+    transition: all 0.2s ease;
+}
+
+.group-pill:hover {
+    border-color: #a19f9d;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.group-pill span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+.remove-group-button {
+    background: white;
+    border: 1px solid #d13438;
+    color: #d13438;
+    min-width: 70px;
+    height: 24px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 0 10px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.remove-group-button:hover {
+    background: #fef6f6;
+    border-color: #a4262c;
+    color: #a4262c;
+}
+
+.no-groups-message {
+    padding: 16px;
+    background: #f3f2f1;
+    border-radius: 2px;
+    color: #605e5c;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ==================== AVAILABLE GROUPS SECTION ==================== */
+.available-groups-section {
+    margin-top: 24px;
+}
+
+.available-groups-section h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #201f1e;
+}
+
+/* Search Box */
+.search-box {
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 7px 32px 7px 10px;
+    border: 1px solid #d2d0ce;
+    border-radius: 2px;
+    font-size: 13px;
+    background: white;
+    font-family: "Segoe UI", "Segoe UI Web (West European)", sans-serif;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #0078d4;
+}
+
+.search-box input::placeholder {
+    color: #a19f9d;
+}
+
+.search-box::after {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 13px;
+    opacity: 0.6;
+}
+
+/* ==================== AVAILABLE GROUPS LIST ==================== */
+.available-groups-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.available-group-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #d2d0ce;
+    border-radius: 2px;
+    font-size: 13px;
+    color: #201f1e;
+    transition: all 0.2s ease;
+}
+
+.available-group-pill:hover {
+    border-color: #a19f9d;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.available-group-pill span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+.add-group-button {
+    background: white;
+    border: 1px solid #107c10;
+    color: #107c10;
+    min-width: 60px;
+    height: 24px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 0 10px;
+    line-height: 1;
+    font-weight: 400;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.add-group-button:hover {
+    background: #f6ffed;
+    border-color: #0b5a08;
+    color: #0b5a08;
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+.available-groups-list::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.available-groups-list::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.available-groups-list::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+    background: #c8c6c4;
+    border-radius: 4px;
+}
+
+.available-groups-list::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #a19f9d;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .ms-Dialog-main {
+        max-width: 95% !important;
+        width: 95% !important;
+    }
+    
+    .groups-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .available-groups-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-permission-container {
+        padding: 10px;
+    }
+}
+.ms-Modal-scrollableContent.scrollableContent-99 {
+    /* overflow-y: hidden !important; */
+}

@@ -1,0 +1,118 @@
+
+
+.greater{
+    padding-right: 10px;
+}
+.Route{
+    display: inline-flex;
+    padding-left: 0px;
+}
+.Home{
+    color: black !important;
+    color: #000;
+    font-family: Figtree, sans-serif !important;
+    font-size: 16px;
+    padding-right: 10px;
+}
+.Setting{
+    color: black !important;
+    color: #000;
+    font-family: Figtree, sans-serif;
+    font-size: 16px;
+}
+.DMSMasterContainer{
+    
+    /* position: relative; */
+left: 2rem;
+top: 6rem;
+margin-top: 0px;
+}
+.page-title{
+    line-height: 1.6;
+    /* color: #767676; */
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    font-family: "Figtree", sans-serif !important;
+    padding-left: 0px;
+    color: black !important;
+}
+.CardGrid{
+display: flex;
+}
+.CardImage{
+    height: 59px;
+    width: 61px;
+}
+.manage-master .box1 {
+   cursor: pointer;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px 0px;
+  height: 160px;
+  border-radius: 8px;
+  width: 100%;
+  margin: 0px auto 0px auto;
+  border: 1px solid #ccc;
+}
+.manage-master .box1 {
+    background: #fff !important;
+}
+.manage-master .box1 .icon {
+    padding: 10px 0px 10px 0px;
+    margin-bottom: 7px;
+    height: 70px;
+    font-size: 20px;
+}
+.manage-master .box1 p {
+    display: block;
+    font-size: 1rem; font-weight:600;
+}
+.manage-master .col-sm-3{ width:20% !important;}
+a
+{
+    text-decoration: none;
+}
+a:hover
+{
+
+    text-decoration: none;
+}
+.manage-master .box1:hover {
+    border: 2px solid #2c9942;
+    background: #fff !important;
+}
+.content-page
+{
+  top: 0rem!important;
+}
+label{color: #3c3c3c !important;
+    font-size: .99rem !important;
+    font-weight: 500 !important;
+    margin-bottom: .5rem;
+  }
+  .newsta{
+    border-radius: 30px;
+    font-size: 14px;
+  }
+  .form-control, .form-select, textarea {
+    border: 1px solid #ccc !important;
+    color: #212529 !important;
+    font-size: 1rem;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    padding: 7px 10px;
+  }
+  input::placeholder, textarea::placeholder{
+    color: #212529 !important;  font-size: 1rem !important;
+    font-weight: 500 !important;
+  }
+
+.btn.back-to-admin{
+  background-color: #5c636a; color:#fff !important;
+}
+
+@media(max-width:640px){
+    .manage-master .col-sm-3{ width:100% !important;}
+    .addbuttonargform{font-size: 12px !important; padding: 8px 4px; line-height: 30px;}
+.Addtext{font-size: 12px !important;}
+}
