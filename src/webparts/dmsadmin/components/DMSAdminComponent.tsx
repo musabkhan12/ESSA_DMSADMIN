@@ -1729,7 +1729,7 @@ useEffect(() => {
                           <div className="icon">
                             <img className="" src={managesuperadmin} />
                           </div>
-                          <p className="text-dark">Manage Location Admin</p>
+                          <p className="text-dark">Manage Super Admin</p>
                         </div>
                       </a>
                     </div>

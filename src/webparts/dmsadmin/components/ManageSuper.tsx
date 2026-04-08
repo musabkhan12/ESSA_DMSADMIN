@@ -41,6 +41,8 @@ export const ManageSuper: React.FC<ManageSuperProps> = ({ sp, context }) => {
     const [activeComponent,setActiveComponent]=React.useState('');
     const [user,setUser]=React.useState<any[]>([]);
     const [essa,setEssa]=React.useState<any>(null);
+
+    const [validationError, setValidationError] = React.useState(false);
  
  
  
@@ -350,14 +352,17 @@ const handleAddUsers = async () => {
   console.log("Selected Users:", selectedUsersForPermission);
  
   if (!selectedSite) {
-    Swal.fire("Please select a site collection!");
+    Swal.fire("Please select a Location!");
+    setValidationError(true);   // Aman 8/04/26
     return;
   }
  
   if (!selectedUsersForPermission || selectedUsersForPermission.length === 0) {
+    setValidationError(true);   // Aman 8/04/26
     checkValidation();
     return;
   }
+  setValidationError(false);   // Aman 8/04/26 
  
   try {
     const spSite = spfi(selectedSite.value).using(SPFx(context));
@@ -652,7 +657,7 @@ const [filters, setFilters] = React.useState({
                         <div style={{padding:'15px', marginTop:'25px', marginBottom:'30px'}} className={styles.container}>
                              <div className="d-flex align-items-center justify-content-between"> 
                               
-                              <div style={{lineHeight:'1.3'}} className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Location Admin
+                              <div style={{lineHeight:'1.3'}} className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Super Admin
                                 <div className='mb-2 mt-0'>
                             <span className='text-muted font-14' style={{
                                 color:"Black", fontWeight:'500'
@@ -686,9 +691,10 @@ const [filters, setFilters] = React.useState({
                             <thead>
                             <tr>
                                 <th style={{minWidth:'20px',maxWidth:'20px'}}>S.No.</th>
+                                <th>Site Location</th>
                                 <th style={{minWidth:'80px',maxWidth:'80px'}}>User</th>
                                 <th>Email</th>
-                                <th>Site Collection</th>
+                                
                                 <th style={{minWidth:'40px',maxWidth:'40px'}}>Action</th>
                             </tr>
                             </thead>
@@ -705,6 +711,9 @@ const [filters, setFilters] = React.useState({
                                       {(currentPage - 1) * itemsPerPage + index + 1}
                                     </span>
                                   </td>
+                                  <td style={{minWidth:'40px',maxWidth:'40px'}}>
+                                    {item.siteName || 'N/A'}
+                                    </td>
                                      {/* <td style={{ minWidth: '55px', maxWidth: '55px' }}><span className="indexdesign">{index + 1}</span></td> */}
                                     <td style={{minWidth:'80px',maxWidth:'80px'}}>
                                     {item.Title || ''}
@@ -712,9 +721,7 @@ const [filters, setFilters] = React.useState({
                                     <td >
                                     {item.Email || ''}
                                     </td>
-                                    <td style={{minWidth:'40px',maxWidth:'40px'}}>
-                                    {item.siteName || 'N/A'}
-                                    </td>
+                                    
                                     <td style={{minWidth:'40px',maxWidth:'40px'}}>
                                     <img
                                         className={styles.deleteicon}
@@ -766,7 +773,7 @@ const [filters, setFilters] = React.useState({
                       background:"#fff",
  
                     }}>
-                      <div className="page-title fw-bold mb-2 font-20 mt-0">Admin Panel &gt; Manage Location Admin &gt; Add Location Admin</div>
+                      <div className="page-title fw-bold mb-2 font-20 mt-0">Admin Panel &gt; Manage Super Admin &gt; Add Super Admin</div>
                         <p style={{
                             color:"Black",
                            
@@ -776,17 +783,33 @@ const [filters, setFilters] = React.useState({
                             display:"flex"
                         }}>
                           <div style={{ width: "300px", marginBottom: "10px" }}>
-  <Select
+  {/* <Select
     options={sites}
     value={selectedSite}
     onChange={(site: any) => setSelectedSite(site)}
     placeholder="Select Location..."
+  /> */}
+  <Select
+    options={sites}
+    value={selectedSite}
+    onChange={(site: any) => {
+      setSelectedSite(site);
+      if(site) setValidationError(false);
+    }}
+    placeholder="Select Location..."
+    styles={{
+      control: (base) => ({
+        ...base,
+        borderColor: validationError && !selectedSite ? "red" : base.borderColor,
+        '&:hover': { borderColor: validationError && !selectedSite ? "red" : base.borderColor }
+      })
+    }}
   />
 </div>
                             <div  style={{
                                 width:"370px"
                             }}>
-                                <Select
+                                {/* <Select
                                     isMulti
                                     options={user}
                                     onChange={(selected: any) =>
@@ -794,7 +817,25 @@ const [filters, setFilters] = React.useState({
                                     }
                                     placeholder="Select User..."
                                     noOptionsMessage={() => "No User Found..."}
-                                />
+                                /> */}
+
+                                <Select
+    isMulti
+    options={user}
+    onChange={(selected: any) => {
+      handleUsersSelect(selected);
+      if(selected && selected.length > 0) setValidationError(false);
+    }}
+    placeholder="Select User..."
+    noOptionsMessage={() => "No User Found..."}
+    styles={{
+      control: (base) => ({
+        ...base,
+        borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor,
+        '&:hover': { borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor }
+      })
+    }}
+  />
                             </div>
  
                             <div>

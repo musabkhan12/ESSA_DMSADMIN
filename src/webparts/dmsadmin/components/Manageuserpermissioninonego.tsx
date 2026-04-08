@@ -998,7 +998,7 @@
 import * as React from "react";
 import { DefaultButton } from "@fluentui/react";
 import { Modal } from "@fluentui/react/lib/Modal";
-import { TextField, PrimaryButton, DetailsList, IColumn, IDetailsHeaderProps, SelectionMode, CheckboxVisibility } from "@fluentui/react";
+//import { TextField, PrimaryButton, DetailsList, IColumn, IDetailsHeaderProps, SelectionMode, CheckboxVisibility } from "@fluentui/react";  // Aman 8/04/2026
 import { SPFI } from "@pnp/sp";
 import { getSP } from "../loc/pnpjsConfig";
 import './Manageuserpermissioninonego.css'
@@ -1039,6 +1039,9 @@ export default function UserPermissionManager(props: IUserPermissionManagerProps
   const [loading, setLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [tableSearchText, setTableSearchText] = React.useState("");
+  // Aman 8/04/2026
+  const [currentPage, setCurrentPage] = React.useState(1);     
+  const itemsPerPage = 20;
   // Ritik 03/04/2026
   const [selectedSiteForUserPermission, setSelectedSiteForUserPermission] = React.useState<any>(null);
 const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
@@ -1145,34 +1148,56 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
  
       // Now 'group.Users' will not show a TypeScript error
 
+      // if (group.Users && Array.isArray(group.Users)) {
+
+      //   group.Users.forEach((u) => {
+
+      //     if (!userMap[u.LoginName]) {
+
+      //       userMap[u.LoginName] = { 
+
+      //         Title: u.Title, 
+
+      //         Email: u.Email, 
+
+      //         LoginName: u.LoginName, 
+
+      //         Groups: [] 
+
+      //       };
+
+      //     }
+
+      //     if (!userMap[u.LoginName].Groups.includes(group.Title)) {
+
+      //       userMap[u.LoginName].Groups.push(group.Title);
+
+      //     }
+
+      //   });
+
+      // }
+
       if (group.Users && Array.isArray(group.Users)) {
-
         group.Users.forEach((u) => {
+          const isSystemGroup = group.Title.includes("Limited Access System Group For List") || 
+                               group.Title.includes("Limited Access System Group For Web") || 
+                               group.Title.includes("SharingLinks");
 
-          if (!userMap[u.LoginName]) {
-
-            userMap[u.LoginName] = { 
-
-              Title: u.Title, 
-
-              Email: u.Email, 
-
-              LoginName: u.LoginName, 
-
-              Groups: [] 
-
-            };
-
+          if (!isSystemGroup) {
+            if (!userMap[u.LoginName]) {
+              userMap[u.LoginName] = { 
+                Title: u.Title, 
+                Email: u.Email, 
+                LoginName: u.LoginName, 
+                Groups: [] 
+              };
+            }
+            if (!userMap[u.LoginName].Groups.includes(group.Title)) {
+              userMap[u.LoginName].Groups.push(group.Title);
+            }
           }
-
-          if (!userMap[u.LoginName].Groups.includes(group.Title)) {
-
-            userMap[u.LoginName].Groups.push(group.Title);
-
-          }
-
         });
-
       }
  
       return {
@@ -1184,10 +1209,28 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
       };
 
     });
- 
-    setGroups(groupsWithPermissions as any);
+    
+     // --- Aman 8/04/26: Final Filter Logic (100% Safe) ---
+   const filteredGroupsList = groupsWithPermissions.filter(group => 
+      !group.Title.includes("Limited Access System Group For List") && 
+      !group.Title.includes("Limited Access System Group For Web") && 
+      !group.Title.includes("SharingLinks")
+    );
 
-    setUsers(Object.values(userMap) as any);
+    const filteredUsersList = Object.values(userMap).filter((user: any) => 
+      !user.Title.includes("SLinkClaim") && 
+      !user.Title.includes("Limited Access System Group For List") &&
+      !user.Title.includes("Limited Access System Group For Web") &&
+      !user.Title.includes("SharingLinks")
+    );
+
+    setGroups(filteredGroupsList as any);
+    setUsers(filteredUsersList as any);
+    // ----------------------------------------------------
+
+    // setGroups(groupsWithPermissions as any);
+
+    // setUsers(Object.values(userMap) as any);
  
   } catch (err) {
 
@@ -1204,6 +1247,7 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
  
   const handleSiteChange = async (selected: any) => {
     setSelectedSiteForUserPermission(selected);
+    setCurrentPage(1);                                 // Aman 8/04/2026
     if (selected && selected.siteUrl) {
       const { spfi, SPFx } = await import("@pnp/sp");
       const targetSp = spfi(selected.siteUrl).using(SPFx(context));
@@ -1278,55 +1322,101 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
              userGroups.includes(searchLower);
     });
   }, [users, tableSearchText]);
+// Aman 8/04/26 (commented the code here as we are using custom table instead of details list)
+  // const columns: IColumn[] = [
+  //   {
+  //     key: "user",
+  //     name: "User",
+  //     fieldName: "Title",
+  //     minWidth: 150,
+  //     maxWidth: 200,
+  //     isResizable: true,
+  //     isMultiline: false,
+  //   },
+  //   {
+  //     key: "email",
+  //     name: "Email",
+  //     fieldName: "Email",
+  //     minWidth: 200,
+  //     maxWidth: 300,
+  //     isResizable: true,
+  //     isMultiline: false,
+  //   },
+  //   {
+  //     key: "groups",
+  //     name: "Group",
+  //     fieldName: "Groups",
+  //     minWidth: 300,
+  //     isResizable: true,
+  //     isMultiline: true,
+  //     onRender: (item: any) => (
+  //       <div style={{ padding: '8px 0' }}>
+  //         {item.Groups.join(", ")}
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     key: "action",
+  //     name: "Action",
+  //     minWidth: 100,
+  //     maxWidth: 120,
+  //     isResizable: false,
+  //     onRender: (item: any) => (
+  //       <DefaultButton
+  //         className="manage-button"
+  //         text="Manage"
+  //         onClick={() => openManageModal(item)}
+  //       />
+  //     ),
+  //   },
+  // ];
 
-  const columns: IColumn[] = [
-    {
-      key: "user",
-      name: "User",
-      fieldName: "Title",
-      minWidth: 150,
-      maxWidth: 200,
-      isResizable: true,
-      isMultiline: false,
-    },
-    {
-      key: "email",
-      name: "Email",
-      fieldName: "Email",
-      minWidth: 200,
-      maxWidth: 300,
-      isResizable: true,
-      isMultiline: false,
-    },
-    {
-      key: "groups",
-      name: "Group",
-      fieldName: "Groups",
-      minWidth: 300,
-      isResizable: true,
-      isMultiline: true,
-      onRender: (item: any) => (
-        <div style={{ padding: '8px 0' }}>
-          {item.Groups.join(", ")}
-        </div>
-      ),
-    },
-    {
-      key: "action",
-      name: "Action",
-      minWidth: 100,
-      maxWidth: 120,
-      isResizable: false,
-      onRender: (item: any) => (
-        <DefaultButton
-          className="manage-button"
-          text="Manage"
-          onClick={() => openManageModal(item)}
-        />
-      ),
-    },
-  ];
+// Aman 8/04/26 start
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  
+  const handlePageChange = (pageNumber: any) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentData = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [tableSearchText]);
+
+  const Pagination = ({ currentPage, totalPages, handlePageChange }: any) => {
+    const pageLimit = 5; 
+    const startPage = Math.max(1, currentPage - Math.floor(pageLimit / 2));
+    const endPage = Math.min(totalPages, startPage + pageLimit - 1);
+    const adjustedStartPage = Math.max(1, Math.min(startPage, totalPages - pageLimit + 1));
+    const visiblePages = Array.from(
+      { length: Math.min(pageLimit, totalPages) },
+      (_, index) => adjustedStartPage + index
+    );
+
+    return (
+      <nav className="pagination-container mt-3">
+        <ul className="pagination justify-content-end">
+          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+            <a className="page-link" onClick={() => handlePageChange(currentPage - 1)} style={{cursor:'pointer'}}>«</a>
+          </li>
+          {visiblePages.map((pageNumber) => (
+            <li key={pageNumber} className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}>
+              <a className="page-link" onClick={() => handlePageChange(pageNumber)} style={{cursor:'pointer'}}>{pageNumber}</a>
+            </li>
+          ))}
+          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+            <a className="page-link" onClick={() => handlePageChange(currentPage + 1)} style={{cursor:'pointer'}}>»</a>
+          </li>
+        </ul>
+      </nav>
+    );
+  };
+
+  //Aman 8/04/26 end
   return (
     <div className="user-permission-container">
       <div className="page-header1">
@@ -1380,14 +1470,68 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
         </div>
 
             </div>
-          <DetailsList
-            items={filteredUsers}
-            columns={columns}
-            selectionMode={SelectionMode.none}
-            checkboxVisibility={CheckboxVisibility.hidden}
-            compact={false}
-            isHeaderVisible={true}
-          />
+          {/* --- Aman 8/04/26 --- */}
+<table className="mtbalenew">
+  <thead>
+    <tr>
+      <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
+      <th>User</th>
+      <th>Email</th>
+      <th>Group</th>
+      <th style={{ minWidth: '100px', maxWidth: '120px', textAlign: 'center' }}>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {currentData && currentData.map((item: any, index: number) => (
+      <tr key={index}>
+        <td style={{ minWidth: '55px', maxWidth: '55px' }}>
+          <span className="indexdesign">
+            {startIndex + index + 1}
+          </span>
+        </td>
+        <td>{item.Title || ''}</td>
+        <td>{item.Email || ''}</td>
+        <td 
+  style={{ padding: '8px 0', fontSize: '13px', cursor: 'help' }} 
+  title={item.Groups && item.Groups.join(", ")}
+>
+  {item.Groups && item.Groups.join(", ")}
+</td>
+        <td style={{ textAlign: 'center' }}>
+          {/* Action: Calls the same existing modal function */}
+          <button 
+            type="button" 
+            className="manage-button" 
+            onClick={() => openManageModal(item)}
+            style={{
+              cursor: 'pointer',
+              padding: '4px 12px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              backgroundColor: '#fff'
+            }}
+          >
+            Manage
+          </button>
+        </td>
+      </tr>
+    ))}
+    {/* No Data State */}
+    {(!filteredUsers || filteredUsers.length === 0) && (
+      <tr>
+        <td colSpan={5} style={{ textAlign: 'center', padding: '20px' }}>
+          No users found.
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
+
+<Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
         </div>
       )}
 
