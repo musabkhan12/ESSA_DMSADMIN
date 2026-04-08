@@ -328,97 +328,185 @@ allData.push(...mappedItems);
       );
     };
 
-    const handleDeleteEntity=async(item:any)=>{
-      console.log("Entity Item",item);
-      Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, Removed it!"
-          }).then(async(result) => {
-            if (result.isConfirmed) {
+    // const handleDeleteEntity=async(item:any)=>{
+    //   console.log("Entity Item",item);
+    //   Swal.fire({
+    //         title: "Are you sure?",
+    //         text: "You won't be able to revert this!",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#3085d6",
+    //         cancelButtonColor: "#d33",
+    //         confirmButtonText: "Yes, Removed it!"
+    //       }).then(async(result) => {
+    //         if (result.isConfirmed) {
              
-              try {
-                // Delete the subsite
-            const subsite=await sp.site.openWebById(item.SiteID);
-            const deletedItem=await subsite.web.delete()
-            console.log("deletedItem of subsite",deletedItem);
-            // Delete the list by its name
-             const itemDeletedList=await sp.web.lists.getByTitle(`DMS${item.Title}FileMaster`).delete();
-             console.log("itemDeletedList",itemDeletedList);
+    //           try {
+    //             // Delete the subsite
+    //         const subsite=await sp.site.openWebById(item.SiteID);
+    //         const deletedItem=await subsite.web.delete()
+    //         console.log("deletedItem of subsite",deletedItem);
+    //         // Delete the list by its name
+    //          const itemDeletedList=await sp.web.lists.getByTitle(`DMS${item.Title}FileMaster`).delete();
+    //          console.log("itemDeletedList",itemDeletedList);
 
-            const getItemFromEntityDivisionDepartmentMppingList=await sp.web.lists.getByTitle("EntityDivisionDepartmentMappingMasterList").items.select("*","Entitylookup/Title").filter(`Entitylookup/Title eq '${item.Title}'`).expand('Entitylookup')();
-            // const getItemFromEntityDivisionDepartmentMppingList = await sp.web.lists
-            // .getByTitle("EntityDivisionDepartmentMappingMasterList")
-            // .items.select(
-            //   "Entitylookup/Title",
-            //   "Entitylookup/Active",
-            //   "Devisionlookup/Title",
-            //   "Departmentlookup/Title",
-            //   "Devisionlookup/Active",
-            //   "Departmentlookup/Active",
-            //   "Id",
-            //   "UniqueId",
-            //   "Created",
-            //   "Author/Title"
-            // )
-            // .expand("Entitylookup", "Devisionlookup", "Departmentlookup","Author")();
-            console.log("getItemFromEntityDivisionDepartmentMppingList",getItemFromEntityDivisionDepartmentMppingList);
+    //         const getItemFromEntityDivisionDepartmentMppingList=await sp.web.lists.getByTitle("EntityDivisionDepartmentMappingMasterList").items.select("*","Entitylookup/Title").filter(`Entitylookup/Title eq '${item.Title}'`).expand('Entitylookup')();
+    //         // const getItemFromEntityDivisionDepartmentMppingList = await sp.web.lists
+    //         // .getByTitle("EntityDivisionDepartmentMappingMasterList")
+    //         // .items.select(
+    //         //   "Entitylookup/Title",
+    //         //   "Entitylookup/Active",
+    //         //   "Devisionlookup/Title",
+    //         //   "Departmentlookup/Title",
+    //         //   "Devisionlookup/Active",
+    //         //   "Departmentlookup/Active",
+    //         //   "Id",
+    //         //   "UniqueId",
+    //         //   "Created",
+    //         //   "Author/Title"
+    //         // )
+    //         // .expand("Entitylookup", "Devisionlookup", "Departmentlookup","Author")();
+    //         console.log("getItemFromEntityDivisionDepartmentMppingList",getItemFromEntityDivisionDepartmentMppingList);
 
-            const getItemsFromMasterSiteUrl=await sp.web.lists.getByTitle("MasterSiteURL").items.select("*").filter(`Title eq '${item.Title}'`)();
-            console.log("getItemsFromMasterSiteUrl",getItemsFromMasterSiteUrl);
+    //         const getItemsFromMasterSiteUrl=await sp.web.lists.getByTitle("MasterSiteURL").items.select("*").filter(`Title eq '${item.Title}'`)();
+    //         console.log("getItemsFromMasterSiteUrl",getItemsFromMasterSiteUrl);
 
-            if(getItemsFromMasterSiteUrl.length > 0){
-              for(const item of getItemsFromMasterSiteUrl){
-                try {
-                  const deletedData=await sp.web.lists.getByTitle("MasterSiteURL").items.getById(item.ID).delete()
-                  console.log("Item deleted from dmsfoldermaster list",deletedData);
-                } catch (error) {
-                  console.log("Error in deleting the item from dmsfoldermasterlist",error);
-                }
-              }
-            }
+    //         if(getItemsFromMasterSiteUrl.length > 0){
+    //           for(const item of getItemsFromMasterSiteUrl){
+    //             try {
+    //               const deletedData=await sp.web.lists.getByTitle("MasterSiteURL").items.getById(item.ID).delete()
+    //               console.log("Item deleted from dmsfoldermaster list",deletedData);
+    //             } catch (error) {
+    //               console.log("Error in deleting the item from dmsfoldermasterlist",error);
+    //             }
+    //           }
+    //         }
 
-            const getItemsFromDMSFolderMaster=await sp.web.lists.getByTitle("DMSFolderMaster").items.select("*").filter(`SiteTitle eq '${item.Title}'`)();
-            console.log("getItemsFromDMSFolderMaster",getItemsFromDMSFolderMaster);
+    //         const getItemsFromDMSFolderMaster=await sp.web.lists.getByTitle("DMSFolderMaster").items.select("*").filter(`SiteTitle eq '${item.Title}'`)();
+    //         console.log("getItemsFromDMSFolderMaster",getItemsFromDMSFolderMaster);
 
-            if(getItemsFromDMSFolderMaster.length > 0){
-              for(const item of getItemsFromDMSFolderMaster  ){
-                try {
-                  const deletedData=await sp.web.lists.getByTitle("DMSFolderMaster").items.getById(item.ID).delete()
-                  console.log("Item deleted from dmsfoldermaster list",deletedData);
-                } catch (error) {
-                  console.log("Error in deleting the item from dmsfoldermasterlist",error);
-                }
+    //         if(getItemsFromDMSFolderMaster.length > 0){
+    //           for(const item of getItemsFromDMSFolderMaster  ){
+    //             try {
+    //               const deletedData=await sp.web.lists.getByTitle("DMSFolderMaster").items.getById(item.ID).delete()
+    //               console.log("Item deleted from dmsfoldermaster list",deletedData);
+    //             } catch (error) {
+    //               console.log("Error in deleting the item from dmsfoldermasterlist",error);
+    //             }
                 
-              }
-            }
+    //           }
+    //         }
 
-            const getItemsFromDMSFolderPrivacy=await sp.web.lists.getByTitle("DMSFolderPrivacy").items.select("*").filter(`SiteName eq '${item.Title}'`)();
-            console.log("getItemsFromDMSFolderPrivacy",getItemsFromDMSFolderPrivacy);
+    //         const getItemsFromDMSFolderPrivacy=await sp.web.lists.getByTitle("DMSFolderPrivacy").items.select("*").filter(`SiteName eq '${item.Title}'`)();
+    //         console.log("getItemsFromDMSFolderPrivacy",getItemsFromDMSFolderPrivacy);
 
-            const getItemsFromDMSPreviewFormMaster=await sp.web.lists.getByTitle("DMSPreviewFormMaster").items.select("*").filter(`SiteName eq '${item.Title}'`)();
-            console.log("getItemsFromDMSPreviewFormMaster",getItemsFromDMSPreviewFormMaster);
+    //         const getItemsFromDMSPreviewFormMaster=await sp.web.lists.getByTitle("DMSPreviewFormMaster").items.select("*").filter(`SiteName eq '${item.Title}'`)();
+    //         console.log("getItemsFromDMSPreviewFormMaster",getItemsFromDMSPreviewFormMaster);
 
-            const getItemsFromDMSFolderPermissionMaster=await sp.web.lists.getByTitle("DMSFolderPermissionMaster").items.select("*").filter(`SiteName eq '${item.Title}'`)();
-            console.log("getItemsFromDMSFolderPermissionMaster",getItemsFromDMSFolderPermissionMaster);
+    //         const getItemsFromDMSFolderPermissionMaster=await sp.web.lists.getByTitle("DMSFolderPermissionMaster").items.select("*").filter(`SiteName eq '${item.Title}'`)();
+    //         console.log("getItemsFromDMSFolderPermissionMaster",getItemsFromDMSFolderPermissionMaster);
 
-            setRefresh(!refresh);
-              Swal.fire({
-                title: "Removed!",
-                text: `${item.Title} Suucessfuly Removed.`,
-                icon: "success"
-              });
-              } catch (error) {
-                console.log("Error in deleting the subsite",error);
-              }
+    //         setRefresh(!refresh);
+    //           Swal.fire({
+    //             title: "Removed!",
+    //             text: `${item.Title} Suucessfuly Removed.`,
+    //             icon: "success"
+    //           });
+    //           } catch (error) {
+    //             console.log("Error in deleting the subsite",error);
+    //           }
             
-            }
-          });
+    //         }
+    //       });
+    // }
+
+      const handleDeleteEntity = async (item: any) => {
+  console.log("Entity Item", item);
+ 
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, Remove it!"
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+ 
+        // ✅ FIX 1: Item ke siteCollectionUrl se targetSp banao
+        const targetSp = item.siteCollectionUrl
+          ? spfi(item.siteCollectionUrl).using(SPFx(context))
+          : sp;
+ 
+        // ✅ FIX 2: sp.site nahi, targetSp.site use karo
+        const subsite = await targetSp.site.openWebById(item.SiteID);
+        await subsite.web.delete();
+        console.log("Subsite deleted");
+ 
+        // File master list delete
+        try {
+          await targetSp.web.lists
+            .getByTitle(`DMS${item.Title}FileMaster`)
+            .delete();
+        } catch (e) {
+          console.warn("FileMaster list not found", e);
+        }
+ 
+        // MasterSiteURL se item delete
+        const masterSiteItems = await targetSp.web.lists
+          .getByTitle("MasterSiteURL")
+          .items.select("Id")
+          .filter(`Title eq '${item.Title}'`)();
+ 
+        for (const siteItem of masterSiteItems) {
+          try {
+            await targetSp.web.lists
+              .getByTitle("MasterSiteURL")
+              .items.getById(siteItem.Id)  // ✅ FIX 3: .Id (lowercase d)
+              .delete();
+          } catch (e) {
+            console.error("Error deleting from MasterSiteURL:", e);
+          }
+        }
+ 
+        // DMSFolderMaster se delete
+        const folderMasterItems = await targetSp.web.lists
+          .getByTitle("DMSFolderMaster")
+          .items.select("Id")
+          .filter(`SiteTitle eq '${item.Title}'`)();
+ 
+        for (const folderItem of folderMasterItems) {
+          try {
+            await targetSp.web.lists
+              .getByTitle("DMSFolderMaster")
+              .items.getById(folderItem.Id)  // ✅ FIX 3: .Id
+              .delete();
+          } catch (e) {
+            console.error("Error deleting from DMSFolderMaster:", e);
+          }
+        }
+ 
+        setRefresh(!refresh);
+ 
+        Swal.fire({
+          title: "Removed!",
+          text: `${item.Title} successfully removed.`,
+          icon: "success"
+        });
+ 
+      } catch (error) {
+        console.error("Error in deleting the subsite", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Check console.",
+          icon: "error"
+        });
+      }
     }
+  });
+};
 
   return (
 <div>

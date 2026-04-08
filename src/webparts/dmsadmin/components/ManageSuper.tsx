@@ -696,9 +696,16 @@ const [filters, setFilters] = React.useState({
                             {currentData.map((item:any, index:any) => (
                                 <React.Fragment key={item.Id + item.siteURL}>
                                 <tr>
-                                    <td style={{minWidth:'20px',maxWidth:'20px'}}>
+                                    {/* <td style={{minWidth:'20px',maxWidth:'20px'}}>
                                     <span className='indexdesign'> {index + 1}</span>
-                                    </td>
+                                    </td> */}
+                                     <td style={{ minWidth: '55px', maxWidth: '55px' }}>
+                                    <span className="indexdesign">
+                                      {/* {index + 1} */}
+                                      {(currentPage - 1) * itemsPerPage + index + 1}
+                                    </span>
+                                  </td>
+                                     {/* <td style={{ minWidth: '55px', maxWidth: '55px' }}><span className="indexdesign">{index + 1}</span></td> */}
                                     <td style={{minWidth:'80px',maxWidth:'80px'}}>
                                     {item.Title || ''}
                                     </td>
