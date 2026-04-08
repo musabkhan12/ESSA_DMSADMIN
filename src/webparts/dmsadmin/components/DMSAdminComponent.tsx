@@ -515,8 +515,16 @@ useEffect(() => {
     const users = await spContext.web.siteUsers();
 
     console.log("users fetch from the site", users);
+   
+    //  Sirf users (group hata diya)
+  const onlyUsers = users.filter(
+    (u: any) => u.PrincipalType === 1
+  );
 
-    const usersArray = users.map((u: any) => ({
+    // const usersArray = users.map((u: any) => ({
+        const usersArray = onlyUsers.map((u: any) => ({
+
+    
       id: String(u.Id),
       value: u.Title,
       email: u.Email,
@@ -1743,7 +1751,7 @@ useEffect(() => {
                         <div className="icon">
                           <img className="" src={manageUserAndPermissionImage} />
                         </div>
-                        <p className="text-dark">Manage Group Permissions</p>
+                        <p className="text-dark">Manage Super Admin</p>
                       </div>
                     </a>
                   </div>
@@ -1791,7 +1799,7 @@ useEffect(() => {
                 }}>
                   <p className="font-20 text-dark fw-bold mb-2" style={{
 
-                  }}>Manage Group Permissions</p>
+                  }}>Manage Super Admin</p>
                   <div className="row">
                     <div className="col-md-4">
   <label>Location</label>
@@ -1804,14 +1812,14 @@ useEffect(() => {
   />
 </div>
                     <div className="col-sm-4">
-                      <label>Entity</label>
+                      <label>Department</label>
                       <Select
                         options={adminPermissionEntity}
                         onChange={(selected: any) =>
                           handleEntitySelect(selected)
                         }
-                        placeholder="Select Entity..."
-                        noOptionsMessage={() => "No Entity Found..."}
+                        placeholder="Select Department..."
+                        noOptionsMessage={() => "No Department Found..."}
                       />
                     </div>
                     <div className="col-sm-4 ">
