@@ -149,6 +149,7 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
   // Aman 16/03/26: States for creating new site collection
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newSiteData, setNewSiteData] = useState({ Title: '', Siteurl: '', IsActive: true });
+  const [validationErrors, setValidationErrors] = useState({ location: false, department: false, groups: false, users: false });
 
   const fetchSiteCollections = async () => {
     try {
@@ -232,6 +233,10 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
   const handleGlobalSiteChange = async (selected: any, preserveManageCard = false) => {
      //adddhyan - 03/04/2026 start
     setSelectedGlobalSite(selected);
+    // Clear location error when location is selected
+    if (selected) {
+      setValidationErrors(prev => ({ ...prev, location: false }));
+    }
  //adddhyan - 03/04/2026 start
     if (preserveManageCard) {
       // Keep the Manage Users/Permission panel open and cards hidden
@@ -893,6 +898,10 @@ useEffect(() => {
   const handleEntitySelect = async (selectedEntity: any) => {
     console.log("selectedEntity", selectedEntity);
     selectedEntityForPermission = selectedEntity;
+    // Clear department error when department is selected
+    if (selectedEntity) {
+      setValidationErrors(prev => ({ ...prev, department: false }));
+    }
 
     try {
       // --- FIX: Use spfi with the Absolute URL for cross-site support ---
@@ -1040,6 +1049,10 @@ useEffect(() => {
   const handleGroupsSelect = async (selectedGrous: any) => {
     // Set selected groups start
     groupDetails = selectedGrous;
+    // Clear groups error when groups is selected
+    if (selectedGrous) {
+      setValidationErrors(prev => ({ ...prev, groups: false }));
+    }
     // End
     console.log("selectedGrous", selectedGrous);
     console.log("selectedEntityForPermission", selectedEntityForPermission);
@@ -1074,23 +1087,52 @@ useEffect(() => {
   const handleUsersSelect = (selectedUser: any) => {
     console.log("selectedUser", selectedUser);
     selectedUsersForPermission = selectedUser;
+    // Clear users error when user selects users
+    setValidationErrors(prev => ({ ...prev, users: false }));
   }
 
   const handleAddUsers = async () => {
     console.log("selectedUsersForPermission", selectedUsersForPermission);
     console.log("selectedGropuForPermission", selectedGropuForPermission);
     console.log("selectedEntityForPermission", selectedEntityForPermission);
+    console.log("selectedGlobalSite", selectedGlobalSite);
 
-    if (selectedUsersForPermission === undefined || selectedUsersForPermission.length === 0) {
-      checkValidation();
-      return;
+    const errors = { location: false, department: false, groups: false, users: false };
+    const missingFields = [];
+
+    // Validate Location
+    if (!selectedGlobalSite) {
+      errors.location = true;
+      missingFields.push('Location');
     }
-    if (selectedGropuForPermission === undefined) {
-      checkValidation();
-      return;
-    }
+
+    // Validate Department
     if (selectedEntityForPermission === undefined) {
-      checkValidation();
+      errors.department = true;
+      missingFields.push('Department');
+    }
+
+    // Validate Groups
+    if (selectedGropuForPermission === undefined) {
+      errors.groups = true;
+      missingFields.push('Groups');
+    }
+
+    // Validate Users
+    if (selectedUsersForPermission === undefined || selectedUsersForPermission.length === 0) {
+      errors.users = true;
+      missingFields.push('Users');
+    }
+
+    // If there are errors, show them and set error states
+    if (missingFields.length > 0) {
+      setValidationErrors(errors);
+      Swal.fire({
+        icon: 'error',
+        title: 'Please fill out the fields!',
+        html: `<b>Please select the following fields:</b><br/>${missingFields.join(', ')}`,
+        confirmButtonColor: '#d33'
+      });
       return;
     }
 
@@ -1104,12 +1146,15 @@ useEffect(() => {
         console.log("userObj", userObj);
         const users = await subsiteContext.web.siteGroups.getByName(`${selectedGropuForPermission.value}`).users.add(userObj.data.LoginName);
         console.log(`${user.email} added to the group successfully.`, users);
+        
       } catch (error) {
         console.error(`Failed to add ${user.email} to the group: `, error);
       }
     });
 
     await Promise.all(addUsersPromises);
+    // Clear all errors on success
+    setValidationErrors({ location: false, department: false, groups: false, users: false });
     onSuccess(selectedGropuForPermission.value);
     // Call handleEntitySelect once all users have been added
     // to refresh the user table
@@ -1204,7 +1249,7 @@ useEffect(() => {
     Swal.fire({
       title: "Added!",
       text: `User Added Suucessfuly to the ${groupName}.`,
-      icon: "success"
+      icon: "success",
     });
   }
   //  End
@@ -1751,7 +1796,7 @@ useEffect(() => {
                         <div className="icon">
                           <img className="" src={manageUserAndPermissionImage} />
                         </div>
-                        <p className="text-dark">Manage Super Admin</p>
+                        <p className="text-dark">Manage Group Permission</p>
                       </div>
                     </a>
                   </div>
@@ -1799,51 +1844,111 @@ useEffect(() => {
                 }}>
                   <p className="font-20 text-dark fw-bold mb-2" style={{
 
-                  }}>Manage Super Admin</p>
+                  }}>Manage Group Permission</p>
                   <div className="row">
                     <div className="col-md-4">
   <label>Location</label>
-  <Select
-    options={siteCollections}
-    value={selectedGlobalSite}
-    onChange={(selected: any) => handleGlobalSiteChange(selected, true)}
-     //adddhyan - 03/04/2026 start
-    placeholder="Select Location..."
-  />
+  <div className={`select-wrapper ${validationErrors.location ? 'select-error' : ''}`}>
+    <Select
+      options={siteCollections}
+      value={selectedGlobalSite}
+      onChange={(selected: any) => handleGlobalSiteChange(selected, true)}
+      onKeyDown={(e: any) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+        }
+      }}
+       //adddhyan - 03/04/2026 start
+      placeholder="Select Location..."
+      styles={{
+        control: (base) => ({
+          ...base,
+          borderColor: validationErrors.location ? '#dc3545' : base.borderColor,
+          borderWidth: validationErrors.location ? '2px' : '1px',
+          boxShadow: validationErrors.location ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+        })
+      }}
+    />
+  </div>
 </div>
                     <div className="col-sm-4">
                       <label>Department</label>
-                      <Select
-                        options={adminPermissionEntity}
-                        onChange={(selected: any) =>
-                          handleEntitySelect(selected)
-                        }
-                        placeholder="Select Department..."
-                        noOptionsMessage={() => "No Department Found..."}
-                      />
+                      <div className={`select-wrapper ${validationErrors.department ? 'select-error' : ''}`}>
+                        <Select
+                          options={adminPermissionEntity}
+                          onChange={(selected: any) =>
+                            handleEntitySelect(selected)
+                          }
+                          onKeyDown={(e: any) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                            }
+                          }}
+                          placeholder="Select Department..."
+                          noOptionsMessage={() => "No Department Found..."}
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              borderColor: validationErrors.department ? '#dc3545' : base.borderColor,
+                              borderWidth: validationErrors.department ? '2px' : '1px',
+                              boxShadow: validationErrors.department ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+                            })
+                          }}
+                        />
+                      </div>
                     </div>
                     <div className="col-sm-4 ">
                       <label>Groups</label>
-                      <Select
-                        options={groups}
-                        onChange={(selected: any) =>
-                          handleGroupsSelect(selected)
-                        }
-                        placeholder="Select Groups..."
-                        noOptionsMessage={() => "No Groups Found..."}
-                      />
+                      <div className={`select-wrapper ${validationErrors.groups ? 'select-error' : ''}`}>
+                        <Select
+                          options={groups}
+                          onChange={(selected: any) =>
+                            handleGroupsSelect(selected)
+                          }
+                          onKeyDown={(e: any) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                            }
+                          }}
+                          placeholder="Select Groups..."
+                          noOptionsMessage={() => "No Groups Found..."}
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              borderColor: validationErrors.groups ? '#dc3545' : base.borderColor,
+                              borderWidth: validationErrors.groups ? '2px' : '1px',
+                              boxShadow: validationErrors.groups ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+                            })
+                          }}
+                        />
+                      </div>
                     </div>
                     {<div className="col-sm-4 mt-3">
                       <label>Users</label>
-                      <Select
-                        isMulti
-                        options={user}
-                        onChange={(selected: any) =>
-                          handleUsersSelect(selected)
-                        }
-                        placeholder="Select User..."
-                        noOptionsMessage={() => "No User Found..."}
-                      />
+                      <div className={`select-wrapper ${validationErrors.users ? 'select-error' : ''}`}>
+                        <Select
+                          isMulti
+                          options={user}
+                          onChange={(selected: any) =>
+                            handleUsersSelect(selected)
+                          }
+                          onKeyDown={(e: any) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                            }
+                          }}
+                          placeholder="Select User..."
+                          noOptionsMessage={() => "No User Found..."}
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              borderColor: validationErrors.users ? '#dc3545' : base.borderColor,
+                              borderWidth: validationErrors.users ? '2px' : '1px',
+                              boxShadow: validationErrors.users ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+                            })
+                          }}
+                        />
+                      </div>
                     </div>
                     }
 
