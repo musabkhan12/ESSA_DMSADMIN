@@ -704,7 +704,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     />
   </div>
   <div className="col-sm-4">
-              <label>Entity</label>
+              <label>Department</label>
               {/* ritik 03/04/2026 added for entity selection and management */}
     <Select                        
     options={adminPermissionEntity}

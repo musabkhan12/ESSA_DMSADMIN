@@ -597,7 +597,7 @@ allData.push(...mappedItems);
           </div> */}
            <div style={{padding:'15px', marginTop:'35px'}} className={styles.container}>
             <div className="d-flex align-items-center justify-content-between">
-            <div className="page-title fw-bold mb-2 font-20">Location</div>
+            <div className="page-title fw-bold mb-2 font-20">Department</div>
              {/* Aman Chnage 3/4/26 start for Dropdown filter for site collection */}
 
            <div style={{ marginBottom: '15px', width: '380px', display:'flex', alignItems:'center' }}>
@@ -809,7 +809,7 @@ allData.push(...mappedItems);
         <div className={styles.argform}>
           <div style={{marginBottom:"20px"}} className='row mt-minus30'>
             <div className='col-md-7'>
-            <div className='page-title fw-bold mb-1 font-20 d-none'>Create Location</div>
+            <div className='page-title fw-bold mb-1 font-20 d-none'>Create Department</div>
             </div>
             <div className='col-md-5'>
              <div className='padd-right1 mt-0'>

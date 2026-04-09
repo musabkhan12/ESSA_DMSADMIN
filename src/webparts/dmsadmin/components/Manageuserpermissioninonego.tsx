@@ -1041,7 +1041,7 @@ export default function UserPermissionManager(props: IUserPermissionManagerProps
   const [tableSearchText, setTableSearchText] = React.useState("");
   // Aman 8/04/2026
   const [currentPage, setCurrentPage] = React.useState(1);     
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
   // Ritik 03/04/2026
   const [selectedSiteForUserPermission, setSelectedSiteForUserPermission] = React.useState<any>(null);
 const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);

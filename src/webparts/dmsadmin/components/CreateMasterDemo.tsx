@@ -425,7 +425,7 @@ try {
             <form id="createMaster" onSubmit={handleSubmit}>
                 <div className="p-3">
                     <div className='d-flex align-items-center justify-content-between'>
-                    <div className='page-title fw-bold mb-3 mt-0 font-20 '>{update ? 'Update' : 'Create'} Location</div>
+                    <div className='page-title fw-bold mb-3 mt-0 font-20 '>{update ? 'Update' : 'Create'} Department</div>
                     {/* Dropdown */}
 {!currentId && (
     

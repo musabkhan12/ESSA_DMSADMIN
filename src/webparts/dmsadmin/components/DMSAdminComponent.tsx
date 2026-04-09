@@ -1606,7 +1606,7 @@ useEffect(() => {
                   </div>
                 </div>) : (
                   <div className="position-relative">
-                    {activeComponent === 'Create Location' || activeComponent === 'Create Entity' && (
+                    {activeComponent === 'Create Location' || activeComponent === 'Create Department' && (
                       <div>
                         <button className="btn back-to-admin" onClick={() => handleReturnToMain('')}> Back to Home </button>
                         <CreateEntity context={context}
@@ -1698,7 +1698,7 @@ useEffect(() => {
                         ) : (
                           <>
                             <div className="d-flex justify-content-end gap-2 mb-3 mt-minus30">
-                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} onClick={() => setShowCreateForm(true)}>Create New</button>
+                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} onClick={() => setShowCreateForm(true)}>Add New</button>
                               <button className="btn btn-secondary shadow-sm" onClick={() => handleReturnToMain('')}>Back to Home</button>
                             </div>
 
@@ -1745,13 +1745,13 @@ useEffect(() => {
                         )}
                       </div>
                     )}
-                    {activeComponent === 'Create Department' && (
+                    {/* {activeComponent === 'Create Department' && (
                       <div className="position-relative">
                         <button className="btn back-to-admin" onClick={() => handleReturnToMain('')}> Back to Home </button>
                         <Department sp={activeSp} />
                       </div>
 
-                    )}
+                    )} */}
                     {activeComponent === 'Map Division & Department' && (
                       <div className="position-relative">
                         <button className="btn back-to-admin" onClick={() => handleReturnToMain('')}> Back to Home </button>
@@ -1782,7 +1782,7 @@ useEffect(() => {
                           <div className="icon">
                             <img className="" src={managesuperadmin} />
                           </div>
-                          <p className="text-dark">Manage Super Admin</p>
+                          <p className="text-dark">Manage Location Admin</p>
                         </div>
                       </a>
                     </div>

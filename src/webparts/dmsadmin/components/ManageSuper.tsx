@@ -657,7 +657,7 @@ const [filters, setFilters] = React.useState({
                         <div style={{padding:'15px', marginTop:'25px', marginBottom:'30px'}} className={styles.container}>
                              <div className="d-flex align-items-center justify-content-between"> 
                               
-                              <div style={{lineHeight:'1.3'}} className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Super Admin
+                              <div style={{lineHeight:'1.3'}} className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Location Admin
                                 <div className='mb-2 mt-0'>
                             <span className='text-muted font-14' style={{
                                 color:"Black", fontWeight:'500'
@@ -773,7 +773,7 @@ const [filters, setFilters] = React.useState({
                       background:"#fff",
  
                     }}>
-                      <div className="page-title fw-bold mb-2 font-20 mt-0">Admin Panel &gt; Manage Super Admin &gt; Add Super Admin</div>
+                      <div className="page-title fw-bold mb-2 font-20 mt-0">Admin Panel &gt; Manage Location Admin &gt; Add Location Admin</div>
                         <p style={{
                             color:"Black",
                            
