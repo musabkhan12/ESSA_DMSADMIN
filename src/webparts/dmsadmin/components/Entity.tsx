@@ -155,6 +155,7 @@ allData.push(...mappedItems);
     const [currentJobTitle, setCurrentJobTitle] = React.useState('');
     const [currentIsActive, setCurrentIsActive] = React.useState('');
     const [CurrentisExternal, setCurrentIsExternal] = React.useState('');
+    const [CurrentDescription, setCurrentDescription] = React.useState(''); //ritik 08/04/2026
     // Aman change 3/4/26 state for site collection filter
     const [selectedSiteFilter, setSelectedSiteFilter] = React.useState<string>("ALL");
     const handleButtonClickShow = () => {
@@ -181,15 +182,17 @@ allData.push(...mappedItems);
         setCurrentIsActive(entity.Active);
       setCurrentIsExternal(entity.IsExternal); 
       setSelectedSiteFilter(entity.siteCollectionUrl || "");
+      setCurrentDescription(entity.Description || "");
     }
-    const [filters, setFilters] = React.useState({
+    const [filters, setFilters] = React.useState({ //Ritik 09/04/26
       SNo: '',
-      Title : '',
-      // Title: '',
-      CurrentUser: '',
-      Modified: '',
+      Title: '',
+      Description: '',    // add
+      URL: '',            // add
       Status: '',
-  
+      CreatedAt: '',      // add
+      CurrentUser: '',
+      Location: '',       // add
       SubmittedDate: ''
     });
     const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
@@ -199,6 +202,7 @@ allData.push(...mappedItems);
         ...filters,
         [field]: e.target.value,
       });
+      setCurrentPage(1);//Ritik 09/04/26
       console.log(filters , "filters filters")
     };
 
@@ -211,16 +215,19 @@ allData.push(...mappedItems);
     };
     const applyFiltersAndSorting = (data: any[]) => {
       const filteredData = data.filter((item, index) => {
+        const locationLabel = siteCollections?.find((s: any) => s.siteUrl === item.siteCollectionUrl)?.label || item.siteCollectionUrl || '';
         return (
           (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
-          (filters.Title === '' || 
-            (item.Title && item.Title.toLowerCase().includes(filters.Title.toLowerCase()))) &&
-          (filters.CurrentUser === '' || 
-            (item.Author.Title && item.Author.Title.toLowerCase().includes(filters.CurrentUser.toLowerCase()))) &&
-          (filters.Status === '' || 
-            (item.Modified && item.Modified.toLowerCase().includes(filters.Status.toLowerCase()))) &&
-          (filters.SubmittedDate === '' || 
-            (item.Status && item.Status.toLowerCase().includes(filters.SubmittedDate.toLowerCase())))
+          (filters.Title === '' || (item.Title && item.Title.toLowerCase().includes(filters.Title.toLowerCase()))) &&
+          (filters.Description === '' || (item.Description && item.Description.toLowerCase().includes(filters.Description.toLowerCase()))) &&
+          (filters.URL === '' || (item.SiteURL && item.SiteURL.toLowerCase().includes(filters.URL.toLowerCase()))) &&
+          (filters.Status === '' || (
+            (item.Active === "Yes" ? "active" : "inactive").includes(filters.Status.toLowerCase())
+          )) &&
+          (filters.CreatedAt === '' || (item.Created && new Date(item.Created).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12: false }).includes(filters.CreatedAt))) &&
+          (filters.CurrentUser === '' || (item.Author?.Title && item.Author.Title.toLowerCase().includes(filters.CurrentUser.toLowerCase()))) &&
+          (filters.Location === '' || locationLabel.toLowerCase().includes(filters.Location.toLowerCase())) &&
+          (filters.SubmittedDate === '' || (item.Status && item.Status.toLowerCase().includes(filters.SubmittedDate.toLowerCase())))
         );
       });
     
@@ -509,7 +516,8 @@ allData.push(...mappedItems);
           </div> */}
            <div style={{padding:'15px', marginTop:'35px'}} className={styles.container}>
             <div className="d-flex align-items-center justify-content-between">
-            <div className="page-title fw-bold mb-2 font-20">Location</div>
+              {/* Ritik 08/04/2026 */}
+            <div className="page-title fw-bold mb-2 font-20">Manage Department</div> 
              {/* Aman Chnage 3/4/26 start for Dropdown filter for site collection */}
 
            <div style={{ marginBottom: '15px', width: '380px', display:'flex', alignItems:'center' }}>
@@ -567,6 +575,9 @@ allData.push(...mappedItems);
                       <span className="Sorting" onClick={() => handleSortChange('Title')}>
                         <FontAwesomeIcon icon={faSort} /> 
                       </span>
+                      <div className="bd-highlight">
+  <input type="text" placeholder="Search title" onChange={(e) => handleFilterChange(e, 'Title')} className="inputcss" style={{ width: '100%' }} />
+</div>
                     </div>
                     {/* <div className=" bd-highlight">
                       <input 
@@ -584,14 +595,18 @@ allData.push(...mappedItems);
                
                     <div className=" pb-0" >
                       <span >Description</span> 
-                  
+                      <div className="bd-highlight">
+  <input type="text" placeholder="Search desc" onChange={(e) => handleFilterChange(e, 'Description')} className="inputcss" style={{ width: '100%' }} />
+</div>
                     </div>
                     {/* <div className="d-flex flex-column bd-highlight "> </div> */}
                   </th>
                   <th >
                   <div className="pb-0" >
                       <span >URL</span> 
-                  
+                      <div className="bd-highlight">
+  <input type="text" placeholder="Search URL" onChange={(e) => handleFilterChange(e, 'URL')} className="inputcss" style={{ width: '100%' }} />
+</div>
                     </div>
                     {/* <div className="d-flex flex-column bd-highlight "> </div> */}
                     
@@ -599,19 +614,23 @@ allData.push(...mappedItems);
                   <th style={{minWidth: '70px', maxWidth: '70px' }}>
                   <div className=" pb-0" >
                       <span >Status</span> 
-                  
+                      <div className="bd-highlight">
+  <input type="text" placeholder="Active/Inactive" onChange={(e) => handleFilterChange(e, 'Status')} className="inputcss" style={{ width: '100%' }} />
+</div>
                     </div>
                     {/* <div className="d-flex flex-column bd-highlight "> </div> */}
                     </th>
                   <th >
                   <div className="pb-0" >
                       <span >Created At</span> 
-                  
+                      <div className="bd-highlight">
+  <input type="text" placeholder="dd/mm/yyyy" onChange={(e) => handleFilterChange(e, 'CreatedAt')} className="inputcss" style={{ width: '100%' }} />
+</div>
                     </div>
                     {/* <div className="d-flex flex-column bd-highlight "> </div> */}
                     </th>
                   {/* <th className={styles.tabledept}>Created By</th> */}
-                  <th  >
+                  <th>
                   
                       <div className=" pb-0" >
                         <span >	Created By</span> &nbsp; 
@@ -619,6 +638,9 @@ allData.push(...mappedItems);
                           onClick={() => handleSortChange('Entity')}>
                               <FontAwesomeIcon icon={faSort} /> 
                         </span>
+                        <div className="bd-highlight">
+  <input type="text" placeholder="Search user" onChange={(e) => handleFilterChange(e, 'CurrentUser')} className="inputcss" style={{ width: '100%' }} />
+</div>
                       </div>
                         {/* <div className=" bd-highlight">
                           <input 
@@ -630,6 +652,15 @@ allData.push(...mappedItems);
                         </div> */}
                     
                   </th>
+{/* Ritik 08/04/2026 added "Location" column in the table to show the that data belongs from which (Site Collection) */}
+                  <th>
+  <div className="pb-0">
+    <span>Location</span>
+    <div className="bd-highlight">
+  <input type="text" placeholder="Search location" onChange={(e) => handleFilterChange(e, 'Location')} className="inputcss" style={{ width: '100%' }} />
+</div>
+  </div>
+</th>
                   <th style={{ borderBottomLeftRadius: '0px', minWidth: '70px', maxWidth: '70px', borderTopLeftRadius: '0px' }}>
                     
                   <div className=" pb-0" >
@@ -666,12 +697,17 @@ allData.push(...mappedItems);
                         <td >
                     
                         {/* {format(new Date(item.Created), 'MMM dd, yyyy') || 'No Date'} */}
-                        {format((item.Created), 'MMM dd, yyyy') || 'No Date'}
+                        {/* {format((item.Created), 'MMM dd, yyyy') || 'No Date'} Ritik 08/04/2026 commented and added new date format */}
+                        {item.Created ? new Date(item.Created).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12: false }) : 'No Date'}
                         
                         </td>
                         <td >
                         {item.Author.Title || 'No Author'}
                         </td>
+                        {/* ritik 08/04/2026 Added "Location" column in the table to show the that data belongs from which (Site Collection) */}
+                        <td>
+  {siteCollections?.find((s: any) => s.siteUrl === item.siteCollectionUrl)?.label || item.siteCollectionUrl || ''}
+</td>
                         <td style={{ borderBottomLeftRadius: '0px', minWidth: '70px', maxWidth: '70px', borderTopLeftRadius: '0px' }}>
                         <img
                             className='editicon12'
@@ -721,7 +757,8 @@ allData.push(...mappedItems);
         <div className={styles.argform}>
           <div style={{marginBottom:"20px"}} className='row mt-minus30'>
             <div className='col-md-7'>
-            <div className='page-title fw-bold mb-1 font-20 d-none'>Create Location</div>
+              {/* Ritik 08/04/2026*/}
+            <div className='page-title fw-bold mb-1 font-20 d-none'>Create Department</div> 
             </div>
             <div className='col-md-5'>
              <div className='padd-right1 mt-0'>
@@ -750,6 +787,7 @@ allData.push(...mappedItems);
                 currentJobTitle={currentJobTitle}
                 currentIsActive={currentIsActive}
                 IsExternal={CurrentisExternal}
+                currentDescription={CurrentDescription}//Ritik 08/04/2026
                 onCancel={() =>{ 
                   setShowFirstDiv(true)
                   setRefresh(!refresh)

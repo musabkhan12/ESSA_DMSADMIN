@@ -1636,7 +1636,7 @@ const Pagination = ( { currentPage, totalPages, handlePageChange }: PaginationPr
                    
                   }}>
                        <button style={{padding:'8px 10px', borderRadius:'4px'}} type="button" className="mt-4 btn btn-primary" onClick={handleAddUsers}>
-                       Add
+                       Add New
                     </button>
                 
                   </div>

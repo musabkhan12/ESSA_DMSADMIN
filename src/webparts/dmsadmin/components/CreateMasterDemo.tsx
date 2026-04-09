@@ -32,6 +32,7 @@ interface BasicFormProps {
   currentIsActive: any;
   onCancel: any;
   IsExternal: any;
+  currentDescription?: any; //Ritik 08/04/2026
 
   selectedSiteFilter?: string;
   siteCollections?: any[];
@@ -61,7 +62,8 @@ const Basic: React.FC<BasicFormProps> = ({
     currentJobTitle,
     currentIsActive,
     onCancel,
-    IsExternal
+    IsExternal,
+    currentDescription //Ritik 08/04/2026
 })=>{
 
     //const sp: SPFI = getSP();
@@ -71,27 +73,26 @@ const Basic: React.FC<BasicFormProps> = ({
     const [isActive, setIsActive] = useState(currentIsActive || '');
     const [isExternal, setIsExternal] = useState(IsExternal || '');
     const [update, setUpdate] = useState(currentId ? true : false);
+    const [submitted, setSubmitted] = useState(false);
     React.useEffect(() => {
     setIsActive(currentIsActive || '');
     setIsExternal(IsExternal || '');
 }, [currentIsActive, IsExternal]);
 
-    const [description,setDescription] = useState('');
+    // const [description,setDescription] = useState('');
+    const [description,setDescription] = useState(currentDescription || '');
     // const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [disableInput, setDisableInput]=useState(false);
 
     React.useEffect(()=>{
         setDisableInput(true);
     },[]);
-
+// Ritik 08/04/2026
     if(currentId !== null && disableInput){
-                const title=document.getElementById("jobTitle") as HTMLInputElement;;
-                const description=document.getElementById("description") as HTMLInputElement;;
-                console.log("title",title);
-                console.log("description",description);
-                title.disabled = true;
-                description.disabled = true;
-    }
+        const title=document.getElementById("jobTitle") as HTMLInputElement;;
+        console.log("title",title);
+        title.disabled = true;
+}
 
 
     // Handle form submission 
@@ -119,8 +120,9 @@ const Basic: React.FC<BasicFormProps> = ({
 
 
 const handleSubmit = async (event: any) => {
+    setSubmitted(true); // Ritik 08/04/2026
         if (!currentId && !selectedSiteFilter) {
-          Swal.fire("Please select a Site Collection");
+          Swal.fire("Please select a Site Locatio"); //Ritik 08/04/2026 replace site collection to location
           return;
         }
 
@@ -425,29 +427,10 @@ try {
             <form id="createMaster" onSubmit={handleSubmit}>
                 <div className="p-3">
                     <div className='d-flex align-items-center justify-content-between'>
-                    <div className='page-title fw-bold mb-3 mt-0 font-20 '>{update ? 'Update' : 'Create'} Location</div>
+                        {/* Ritik 08/04/2026 Update location to Create Department */}
+                    <div className='page-title fw-bold mb-3 mt-0 font-20 '>{update ? 'Update' : 'Create'} Department</div> 
                     {/* Dropdown */}
-{!currentId && (
-    
-  <div style={{ marginBottom: '15px', width: '370px' }}>
-   <div className='d-flex align-items-center gap-2'> <label style={{width:'200px', paddingTop:'5px'}} className=" mb-0">Select Location <span style={{
-                          color:'red',
-                          fontWeight:"Bold"
-                        }}> *</span></label>
-    <select
-      className="form-select"
-      value={selectedSiteFilter}
-      onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
-    >
-      <option value="">Select Location...</option>
-      {siteCollections?.map((site: any) => (
-        <option key={site.siteUrl} value={site.siteUrl}>
-          {site.label}
-        </option>
-      ))}
-    </select>
-  </div> </div>
-)}
+
                     {/* <div className={classNames(styles.halfleftform, styles.form1)}>
                         <label className={styles.label} htmlFor="company">
                             Name
@@ -463,6 +446,25 @@ try {
                         />
                     </div> */}</div>
                     <div className='row'>
+                        {/* Select Location - before the tittle  */}
+  {!currentId && (
+    <div className="col-sm-4 mb-3">
+      <label className={styles.label}>Select Location <span style={{color:'red', fontWeight:'Bold'}}> *</span></label>
+      <select
+        className="form-select"
+        style={{ border: selectedSiteFilter ? '1px solid #ced4da' : '1.5px solid red' }}
+        value={selectedSiteFilter}
+        onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
+      >
+        <option value="">Select Location...</option>
+        {siteCollections?.map((site: any) => (
+          <option key={site.siteUrl} value={site.siteUrl}>
+            {site.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )}
                  <div className="col-sm-4 mb-3">
                     <label className={styles.label} htmlFor="jobTitle">
                             Title<span style={{
@@ -470,14 +472,16 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
+                        {/* Ritik 08/04/2026 replace the input for Validation → highlight empty fields in red  */}
                         <input
-                            className={styles.inputform1}
-                            id="jobTitle"
-                            name="jobTitle"
-                            value={jobTitle}
-                            onChange={(e) => setJobTitle(e.target.value)}
-                            required
-                        />
+    className={styles.inputform1}
+    id="jobTitle"
+    name="jobTitle"
+    value={jobTitle}
+    onChange={(e) => setJobTitle(e.target.value)}
+    required
+    style={{ border: submitted && !jobTitle ? '1.5px solid red' : '1px solid #ced4da' }}
+/>
                     </div>
                     
                     <div className="col-sm-3 mb-3">
@@ -487,7 +491,8 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <div className={styles.radioContainer}>
+                        {/* <div className={styles.radioContainer}> Ritik 08/04/2026 Commented and replace for validation */}
+                        <div className={styles.radioContainer} style={{ border: submitted && !isActive ? '1.5px solid red' : 'none', padding:'4px', borderRadius:'4px' }}>
                         <div className={styles.radioContainer}>
                             <div className={styles.radioItem}>
                             <input
@@ -523,7 +528,8 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <div className={styles.radioContainer}>
+                        {/* <div className={styles.radioContainer}> Ritik 08/04/2026 Commented and replace for validation  */}
+                        <div className={styles.radioContainer} style={{ border: submitted && !isExternal ? '1.5px solid red' : 'none', padding:'4px', borderRadius:'4px' }}>
                         <div className={styles.radioContainer}>
                             <div className={styles.radioItem}>
                             <input
@@ -560,7 +566,7 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <input style={{height:'80px'}}
+                        <input style={{height:'80px', border: submitted && !description ? '1.5px solid red' : '1px solid #ced4da' }} //ritik added 08/04/2026 border 
                             className={styles.inputform1}
                             id="description"
                             name="description"
@@ -614,7 +620,8 @@ const BasicForm: React.FC<BasicFormProps> = ({
     currentJobTitle,
     currentIsActive,
     onCancel,
-    IsExternal
+    IsExternal,
+    currentDescription
 })=>{ return (
         <Provider>
             <Basic
@@ -628,6 +635,7 @@ const BasicForm: React.FC<BasicFormProps> = ({
             currentIsActive={currentIsActive}
             onCancel={onCancel} 
             IsExternal={IsExternal}
+            currentDescription={currentDescription}//Ritik 08/04/2026
             />
         </Provider>
     );

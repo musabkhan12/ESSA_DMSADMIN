@@ -148,7 +148,16 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
   const [locationData, setLocationData] = useState<any[]>([]);
   // Aman 16/03/26: States for creating new site collection
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);//Ritik 08/04/2026
+  const formSubmittedRef = React.useRef(false);//Ritik 08/04/2026
+  const [showErrors, setShowErrors] = useState(false);
   const [newSiteData, setNewSiteData] = useState({ Title: '', Siteurl: '', IsActive: true });
+  // Ritik added 09/04/26
+const [locationFilters, setLocationFilters] = React.useState({
+  Title: '',
+  SiteURL: '',
+  Status: '',
+});
 
   const fetchSiteCollections = async () => {
     try {
@@ -192,16 +201,23 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
     }
   };
 
-  // Aman 16/03/26: Function to save new site and auto-generate URL
+  // Aman 16/03/26: Function to save new site and auto-generate URL ritik 
   const handleSaveNewSite = async () => {
-    if (!newSiteData.Title) {
-      Swal.fire("Error", "Please enter a title", "error");
+    setShowErrors(true);  // yeh re-render trigger karega
+    
+    if (!newSiteData.Title || !newSiteData.Siteurl) {
+      setTimeout(() => {  // Swal ko next tick mein call karo taaki render pehle ho
+        if (!newSiteData.Title && !newSiteData.Siteurl) {
+          Swal.fire("Error", "Please fill all required fields", "error");
+        } else if (!newSiteData.Title) {
+          Swal.fire("Error", "Please enter a title", "error");
+        } else {
+          Swal.fire("Error", "Please enter a Site URL", "error");
+        }
+      }, 50);
       return;
     }
-    if (!newSiteData.Siteurl) {
-      Swal.fire("Error", "Please enter a Siteurl", "error");
-      return;
-    }
+  
     try {
       // URL auto generation: spaces remove karke lower case mein
       const generatedUrl = `https://officeindia.sharepoint.com/sites/${newSiteData.Title.replace(/\s+/g, '')}`;
@@ -1453,6 +1469,14 @@ useEffect(() => {
   };
   // End
 
+  // Ritik 09/04/2026 added 
+  const filteredLocationData = locationData.filter((item: any) => {
+    return (
+      (locationFilters.Title === '' || (item.Title && item.Title.toLowerCase().includes(locationFilters.Title.toLowerCase()))) &&
+      (locationFilters.SiteURL === '' || (item.SiteURL && item.SiteURL.toLowerCase().includes(locationFilters.SiteURL.toLowerCase()))) &&
+      (locationFilters.Status === '' || (item.IsActive ? 'active' : 'inactive').includes(locationFilters.Status.toLowerCase()))
+    );
+  });
   return (
     <div id="wrapper" ref={elementRef}>
       <div
@@ -1553,7 +1577,7 @@ useEffect(() => {
                   </div>
                 </div>) : (
                   <div className="position-relative">
-                    {activeComponent === 'Create Location' || activeComponent === 'Create Entity' && (
+                    {activeComponent === 'Create Location' || activeComponent === 'Create Department' && ( //Ritik 08/04/2026 replaced Create entity to department 
                       <div>
                         <button className="btn back-to-admin" onClick={() => handleReturnToMain('')}> Back to Home </button>
                         <CreateEntity context={context}
@@ -1594,7 +1618,8 @@ useEffect(() => {
                                   <input
                                     type="text"
                                     className="form-control shadow-sm"
-                                    style={{ borderRadius: "6px", border: "1px solid #ccc", padding: '10px' }}
+                                    value={newSiteData.Title}
+                                    style={{ borderRadius: "6px", border: showErrors && !newSiteData.Title ? "1.5px solid red" : "1px solid #ccc", padding: '10px', boxShadow: 'none' }}
                                     onChange={(e) => setNewSiteData({ ...newSiteData, Title: e.target.value })}
                                   />
 
@@ -1604,7 +1629,8 @@ useEffect(() => {
                                   <input
                                     type="text"
                                     className="form-control shadow-sm"
-                                    style={{ borderRadius: "6px", border: "1px solid #ccc", padding: '10px' }}
+                                    value={newSiteData.Siteurl}
+                                    style={{ borderRadius: "6px", border: showErrors && !newSiteData.Siteurl ? "1.5px solid red" : "1px solid #ccc", padding: '10px', boxShadow: 'none' }}
                                     onChange={(e) => setNewSiteData({ ...newSiteData, Siteurl: e.target.value })}
                                   />
 
@@ -1624,16 +1650,18 @@ useEffect(() => {
 
                               <div className="d-flex justify-content-center gap-2 mt-3">
                                 <button
+                                type="button" //Ritik 08/04/2026 added 
                                   className="btn text-white"
                                   style={{ backgroundColor: "#2c9942", padding: "8px 25px", border: 'none', borderRadius: '6px' }}
                                   onClick={handleSaveNewSite}
                                 >
-                                  Submit
+                                  Add{/* Submit replace with add ritik 08/04/2026 */}
                                 </button>
+            
                                 <button
                                   className="btn btn-secondary shadow-sm"
                                   style={{ backgroundColor: "#6c757d", padding: "8px 25px", border: 'none', borderRadius: '6px' }}
-                                  onClick={() => setShowCreateForm(false)}
+                                  onClick={() => { setShowCreateForm(false); setFormSubmitted(false); }} //Ritik 08/04/2026
                                 >
                                   Cancel
                                 </button>
@@ -1645,7 +1673,8 @@ useEffect(() => {
                         ) : (
                           <>
                             <div className="d-flex justify-content-end gap-2 mb-3 mt-minus30">
-                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} onClick={() => setShowCreateForm(true)}>Create New</button>
+                              {/* Create replace with add by Ritik 08/04/2026 */}
+                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} onClick={() => setShowCreateForm(true)}>Add New</button> 
                               <button className="btn btn-secondary shadow-sm" onClick={() => handleReturnToMain('')}>Back to Home</button>
                             </div>
 
@@ -1657,23 +1686,37 @@ useEffect(() => {
                               <table className='mtbalenew'>
                                 <thead>
                                   <tr>
-                                    <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
-                                    <th style={{ textAlign: 'center', minWidth: '120px', maxWidth: '120px' }}>Title</th>
-                                    <th style={{ textAlign: 'center', minWidth: '200px', maxWidth: '200px' }}>Site URL</th>
-                                    <th style={{ maxWidth: '200px', minWidth: '200px', textAlign: 'center' }}>Master Site Share Path</th>
-                                    <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Status</th>
+                                    {/* Ritik 09/04/2026 added  */}
+                                  <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
+                                  <th style={{ textAlign: 'center', minWidth: '120px', maxWidth: '120px' }}>
+  <div>Title</div>
+  <input type="text" placeholder="Search title" className="inputcss" style={{ width: '100%' }}
+    onChange={(e) => setLocationFilters({ ...locationFilters, Title: e.target.value })} />
+</th>
+<th style={{ textAlign: 'center', minWidth: '200px', maxWidth: '200px' }}>
+  <div>Site URL</div>
+  <input type="text" placeholder="Search URL" className="inputcss" style={{ width: '100%' }}
+    onChange={(e) => setLocationFilters({ ...locationFilters, SiteURL: e.target.value })} />
+</th>
+<th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>
+  <div>Status</div>
+  <input type="text" placeholder="active/inactive" className="inputcss" style={{ width: '100%' }}
+    onChange={(e) => setLocationFilters({ ...locationFilters, Status: e.target.value })} />
+</th>
+
                                     <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action</th>
                                     {/* addhyan 01/04/26: */}
                                     
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {locationData.map((item: any, index: number) => (
+                                  {/* {locationData.map((item: any, index: number) => ( commented and added by Ritik 09/04/2026 */}
+                                  {filteredLocationData.map((item: any, index: number) => (
                                     <tr key={item.Id}>
                                       <td style={{ minWidth: '55px', maxWidth: '55px' }}><span className="indexdesign">{index + 1}</span></td>
                                       <td style={{ maxWidth: '120px', minWidth: '120px', textAlign: 'center' }}>{item.Title}</td>
                                       <td title={item.SiteURL} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SiteURL}</td>
-                                      <td title={item.SharewithOtherMeMasterSite} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SharewithOtherMeMasterSite}</td>
+                                      {/* <td title={item.SharewithOtherMeMasterSite} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SharewithOtherMeMasterSite}</td> */}
                                       <td style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>
                                         {item.IsActive ? <span className="badge bg-success">Active</span> : <span className="badge bg-danger">Inactive</span>}
                                       </td>
@@ -1692,13 +1735,13 @@ useEffect(() => {
                         )}
                       </div>
                     )}
-                    {activeComponent === 'Create Department' && (
+                    {/* {activeComponent === 'Create Department' && (
                       <div className="position-relative">
                         <button className="btn back-to-admin" onClick={() => handleReturnToMain('')}> Back to Home </button>
                         <Department sp={activeSp} />
                       </div>
 
-                    )}
+                    )} Ritik 08/04/2026 commented coz it create duplications */}
                     {activeComponent === 'Map Division & Department' && (
                       <div className="position-relative">
                         <button className="btn back-to-admin" onClick={() => handleReturnToMain('')}> Back to Home </button>
