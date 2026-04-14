@@ -135,7 +135,7 @@ table .no-results{position: absolute;
   overflow: hidden;
   border-radius: 20px;
 }
-.btn-success{background: rgba(31,176,229,1) !important;    border-color: #7fc4de !important;
+.btn-success{background: #2c9942 !important;    border-color: #2c9942 !important;
 }
 
 
@@ -1470,7 +1470,7 @@ margin: 10px 0px !important ;
 
 }
 .sidebar .menu_items .active{
-  background: #7fc4de !important; 
+  background: #2c9942 !important; 
 }
 .sidebar .menu_items .active .link_name1{
 color: #fff !important;
@@ -1485,11 +1485,11 @@ color: #fff !important;
     }
     
     .close .menu_content .menu_items .active .link_name1:hover span{
-      color: #7fc4de !important;
+      color: #2c9942 !important;
       }
 
 .sidebar .menu_items .active{
-  background: #7fc4de !important; 
+  background: #2c9942 !important; 
 }
 .sidebar .menu_items .active .link_name1{
   color: #fff !important;
@@ -1503,7 +1503,7 @@ color: #fff !important;
   .sidebar.close .navlink:focus .submenuactive:hover{
     color: #7fc4de !important;
     }
-.sidebar .menu_items .active .menu_items .link_name1:hover span{color: #7fc4de !important;}
+.sidebar .menu_items .active .menu_items .link_name1:hover span{color: #2c9942 !important;}
 @media(max-width:1280px)
 {
   .card {
@@ -2134,4 +2134,9 @@ label{color: #6c757d !important;font-size: .875rem !important;}
   background-color: #0075a9 !important;
       border-color: #0075a9 !important;
     color: #fff !important;
+}
+.mtable th .svg-inline--fa, .mtbalenew th .svg-inline--fa{
+      top: 16px;
+    /* left: -17px; */
+    margin-left: 5px;
 }

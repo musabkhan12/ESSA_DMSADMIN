@@ -416,7 +416,7 @@ try {
   return (
         
     <>  
-      <div className={styles.DmsAdminForm}>
+      <div style={{marginTop:'10px'}} className={styles.DmsAdminForm}>
         <div className={styles.formcontainer}>            
             {/* <div className={styles.apphier}>
                 <h1 className={styles.apptitle}>Create Entity</h1>
@@ -427,27 +427,7 @@ try {
                     <div className='d-flex align-items-center justify-content-between'>
                     <div className='page-title fw-bold mb-3 mt-0 font-20 '>{update ? 'Update' : 'Create'} Department</div>
                     {/* Dropdown */}
-{!currentId && (
-    
-  <div style={{ marginBottom: '15px', width: '370px' }}>
-   <div className='d-flex align-items-center gap-2'> <label style={{width:'200px', paddingTop:'5px'}} className=" mb-0">Select Location <span style={{
-                          color:'red',
-                          fontWeight:"Bold"
-                        }}> *</span></label>
-    <select
-      className="form-select"
-      value={selectedSiteFilter}
-      onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
-    >
-      <option value="">Select Location...</option>
-      {siteCollections?.map((site: any) => (
-        <option key={site.siteUrl} value={site.siteUrl}>
-          {site.label}
-        </option>
-      ))}
-    </select>
-  </div> </div>
-)}
+
                     {/* <div className={classNames(styles.halfleftform, styles.form1)}>
                         <label className={styles.label} htmlFor="company">
                             Name
@@ -463,6 +443,30 @@ try {
                         />
                     </div> */}</div>
                     <div className='row'>
+                        <div className="col-sm-4 mb-3">
+                            {!currentId && (
+    
+  <div>
+   <div> <label className={styles.label}>Select Location <span style={{
+                          color:'red',
+                          fontWeight:"Bold"
+                        }}> *</span></label>
+    <select style={{padding:'5px 10px'}}
+      className="form-select"
+      value={selectedSiteFilter}
+      onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
+    >
+      <option value="">Select Location...</option>
+      {siteCollections?.map((site: any) => (
+        <option key={site.siteUrl} value={site.siteUrl}>
+          {site.label}
+        </option>
+      ))}
+    </select>
+  </div> </div>
+)}
+
+                        </div>
                  <div className="col-sm-4 mb-3">
                     <label className={styles.label} htmlFor="jobTitle">
                             Title<span style={{
@@ -480,7 +484,7 @@ try {
                         />
                     </div>
                     
-                    <div className="col-sm-3 mb-3">
+                    <div className="col-sm-4 mb-3">
                     <label className={styles.label} htmlFor="isActive">
                             Active<span style={{
                           color:'red',
@@ -516,7 +520,7 @@ try {
                         </div>
                     </div>
                     </div>
-                    <div className="col-sm-3 mb-3">
+                    <div className="col-sm-4 mb-3">
                     <label className={styles.label} htmlFor="isExternal">
                             Public<span style={{
                           color:'red',
@@ -553,7 +557,7 @@ try {
                     </div>
                     </div>
 
-                    <div className="col-sm-12 mb-1">
+                    <div className="col-sm-8 mb-1">
                     <label className={styles.label} htmlFor="isActive">
                             Description<span style={{
                           color:'red',

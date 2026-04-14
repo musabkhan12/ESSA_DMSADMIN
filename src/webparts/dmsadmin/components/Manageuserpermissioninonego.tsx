@@ -1474,30 +1474,30 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
 <table className="mtbalenew">
   <thead>
     <tr>
-      <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
-      <th>User</th>
-      <th>Email</th>
-      <th>Group</th>
-      <th style={{ minWidth: '100px', maxWidth: '120px', textAlign: 'center' }}>Action</th>
+      <th style={{ minWidth: '40px', maxWidth: '40px' }}>S.No.</th>
+      <th style={{ minWidth: '130px', maxWidth: '130px' }}>User</th>
+      <th style={{ minWidth: '180px', maxWidth: '180px' }}>Email</th>
+      <th style={{ minWidth: '250px', maxWidth: '250px' }}>Group</th>
+      <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action</th>
     </tr>
   </thead>
   <tbody>
     {currentData && currentData.map((item: any, index: number) => (
       <tr key={index}>
-        <td style={{ minWidth: '55px', maxWidth: '55px' }}>
-          <span className="indexdesign">
+        <td style={{ minWidth: '40px', maxWidth: '40px' }}>
+        <div className="d-flex align-items-center justify-content-center"> <span style={{marginLeft:'0px'}} className="indexdesign">
             {startIndex + index + 1}
-          </span>
+          </span></div> 
         </td>
-        <td>{item.Title || ''}</td>
-        <td>{item.Email || ''}</td>
+        <td style={{ minWidth: '130px', maxWidth: '130px' }}>{item.Title || ''}</td>
+        <td style={{ minWidth: '180px', maxWidth: '180px' }}>{item.Email || ''}</td>
         <td 
-  style={{ padding: '8px 0', fontSize: '13px', cursor: 'help' }} 
+  style={{ padding: '8px 0', fontSize: '13px', cursor: 'help',minWidth: '250px', maxWidth: '250px' }} 
   title={item.Groups && item.Groups.join(", ")}
 >
   {item.Groups && item.Groups.join(", ")}
 </td>
-        <td style={{ textAlign: 'center' }}>
+        <td style={{ textAlign: 'center',minWidth: '100px', maxWidth: '100px' }}>
           {/* Action: Calls the same existing modal function */}
           <button 
             type="button" 
@@ -1552,8 +1552,8 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
            <a style={{right:'45px'}}  className="close-button"   onClick={() => setIsModalOpen(false)}>
                                    
                                    
-     <img style={{width:'13px'}}
-       src={require("../assets/crosssvg.svg")}
+     <img style={{width:'8px'}}
+       src={require("../assets/crodel.png")}
        alt="Clear"
        className="search-icon"
      />
@@ -1569,8 +1569,8 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
                 <span><a >
                                    
                                    
-     <img style={{width:'13px'}}
-       src={require("../assets/crosssvg.svg")}
+     <img style={{width:'8px'}}
+       src={require("../assets/crodel.png")}
        alt="Clear"
        className="search-icon"
      />
@@ -1601,8 +1601,8 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
                     Remove <span><a >
                                    
                                    
-     <img style={{width:'13px'}}
-       src={require("../assets/crosssvg.svg")}
+     <img style={{width:'8px'}}
+       src={require("../assets/crodel.png")}
        alt="Clear"
        className="search-icon"
      />
@@ -1640,7 +1640,7 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
                         </a>
             </div>
 
-            <div className="available-groups-list">
+            <div className="available-groups-list mb-3">
               {groups
                 .filter(
                   (g) =>
@@ -1677,6 +1677,7 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
                   </div>
                 ))}
             </div>
+
           </div>
         </div>
       </Modal>

@@ -256,7 +256,7 @@ display: flex;
 }
 .manage-master .col-sm-3{ width:20% !important;}
 .active>.page-link, .page-link.active{
-  background: #2c9942 !important; color: #fff !important;
+  background: #2c9942 !important; color: #fff !important; border-color:#2c9942 !important;
 }
 a
 {

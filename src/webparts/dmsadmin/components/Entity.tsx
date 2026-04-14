@@ -638,6 +638,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
  
                     <div className="pb-0">
                       <span>S.No.</span>
+                      <div style={{height:'34px'}}></div>
                       {/*<span onClick={() => handleSortChange('SNo')}>
                         <FontAwesomeIcon icon={faSort} />
                       </span> */}
@@ -777,7 +778,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                     
                   <div className=" pb-0" >
                       <span >Action</span> 
-                  
+                  <div style={{height:'34px'}}></div>
                     </div>
                     {/* <div className="d-flex flex-column bd-highlight "> </div> */}
                     </th>
@@ -818,7 +819,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                         </td>
                         <td style={{ borderBottomLeftRadius: '0px', minWidth: '70px', maxWidth: '70px', borderTopLeftRadius: '0px' }}>
                         <img
-                            className='editicon12'
+                            className='editicon12 me-2'
                             src={require("../assets/edit.png")}
                             alt="Edit"
                             onClick={() => handleEditClick(item)}

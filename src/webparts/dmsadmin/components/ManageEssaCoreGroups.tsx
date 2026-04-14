@@ -310,12 +310,12 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
 
   return (
     <div className="argform">
-      <div className="page-title fw-bold font-20 mb-3">
+   
+ <div style={{marginTop:'78px'}} className="card card-body">
+ <div className="page-title fw-bold font-20 mb-3">
         Admin Panel &gt; Manage Core Groups
       </div>
-
-      {/* Top Controls */}
-      <div className="d-flex gap-3 align-items-center mb-3">
+         <div className="d-flex gap-3 align-items-center mb-3">
         <label className="fw-bold">Select Group:</label>
         <select
           className="form-select w-25"
@@ -337,17 +337,17 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
           />
         </div>
 
-        <button className="btn btn-success" onClick={handleAdd}>
+        <button style={{backgroundColor: 'rgb(44, 153, 66)', borderColor:'rgb(44, 153, 66)'}} className="btn btn-success" onClick={handleAdd}>
           Add
         </button>
       </div>
-
+ </div>
       {/* Table */}
-      <table className="mtbalenew">
+      <table className="mtbalenew mt-2">
         <thead>
           <tr>
-            <th>S.No</th>
-            <th>
+            <th style={{minWidth:'70px',maxWidth:'70px'}}>S.No</th>
+            <th style={{minWidth:'250px',maxWidth:'250px'}}>
               <span onClick={() => handleSort("Title")}>
                 User <FontAwesomeIcon icon={faSort} />
               </span>
@@ -357,7 +357,7 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
                 onChange={(e) => handleFilterChange(e, "Title")}
               />
             </th>
-            <th>
+            <th style={{minWidth:'250px',maxWidth:'250px'}}>
               <span onClick={() => handleSort("Email")}>
                 Email <FontAwesomeIcon icon={faSort} />
               </span>
@@ -367,16 +367,19 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
                 onChange={(e) => handleFilterChange(e, "Email")}
               />
             </th>
-            <th>Action</th>
+            <th style={{minWidth:'70px',maxWidth:'70px'}}>Action</th>
           </tr>
         </thead>
         <tbody>
           {currentData.map((u, i) => (
             <tr key={u.Id}>
-              <td>{start + i + 1}</td>
-              <td>{u.Title}</td>
-              <td>{u.Email}</td>
-              <td>
+              <td style={{minWidth:'70px',maxWidth:'70px'}}>
+                <div className="d-flex align-items-center justify-content-center">
+                    <span className="indexdesign" style={{marginLeft:'0px'}}> {start + i + 1}</span></div>
+               </td>
+              <td style={{minWidth:'250px',maxWidth:'250px'}}>{u.Title}</td>
+              <td style={{minWidth:'250px',maxWidth:'250px'}}>{u.Email}</td>
+              <td style={{minWidth:'70px',maxWidth:'70px'}}>
                 <img
                   src={require("../assets/del.png")}
                   className="action-icon"

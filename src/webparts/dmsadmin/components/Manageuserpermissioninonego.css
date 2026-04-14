@@ -166,9 +166,9 @@
 /* ==================== MANAGE BUTTON ==================== */
 .manage-button {
    background: #fff !important;
-    border: 1px solid #7fc4de !important;
+    border: 1px solid #2c9942 !important;
     border-radius: 2px !important;
-    color: #7fc4de !important;
+    color: #2c9942 !important;
     cursor: pointer !important;
     font-size: 14px !important;
     font-weight: 400 !important;
@@ -178,7 +178,7 @@
 }
 
 .manage-button:hover {
-    background: #7fc4de !important;
+    background: #2c9942 !important;
     color: #fff !important;
     /* border-color: #0b5a08 !important; */
     /* color: #0b5a08 !important; */
@@ -191,8 +191,8 @@
 
 /* ==================== MODAL STYLING ==================== */
 .ms-Dialog-main {
-    max-width: 750px !important;
-    width: 750px !important;
+    max-width: 80% !important;
+    width: 80% !important;
     border-radius: 4px !important;
     box-shadow: 0 4px 23px rgba(0, 0, 0, 0.2) !important;
 }

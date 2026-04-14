@@ -139,6 +139,8 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
   const manageUserAndPermissionImage = require('../assets/manage-users.png');
   const managefolderdeligation = require('../assets/manage-f.png');
   const managesuperadmin = require('../assets/man-s_ad.png');
+   const managesuperadmin1 = require('../assets/managesuperadmin1.png');
+    const managesuperadmin2 = require('../assets/managesuperadmin2.png');
   const sitep = require('../assets/site_permission_new.png');
   const viewi = require('../assets/viewocpn.png');
   //aman 27/2/26
@@ -1716,12 +1718,12 @@ useEffect(() => {
                               <table className='mtbalenew'>
                                 <thead>
                                   <tr>
-                                    <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
+                                    <th style={{ minWidth: '50px', maxWidth: '50px' }}>S.No.</th>
                                     <th style={{ textAlign: 'center', minWidth: '120px', maxWidth: '120px' }}>Title</th>
-                                    <th style={{ textAlign: 'center', minWidth: '200px', maxWidth: '200px' }}>Site URL</th>
+                                    <th style={{ textAlign: 'center', minWidth: '250px', maxWidth: '250px' }}>Site URL</th>
                                     {/* <th style={{ maxWidth: '200px', minWidth: '200px', textAlign: 'center' }}>Master Site Share Path</th> */}
-                                    <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Status</th>
-                                    <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action</th>
+                                    <th style={{ minWidth: '70px', maxWidth: '70px', textAlign: 'center' }}>Status</th>
+                                    <th style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>Action</th>
                                     {/* addhyan 01/04/26: */}
                                     
                                   </tr>
@@ -1729,14 +1731,15 @@ useEffect(() => {
                                 <tbody>
                                   {locationData.map((item: any, index: number) => (
                                     <tr key={item.Id}>
-                                      <td style={{ minWidth: '55px', maxWidth: '55px' }}><span className="indexdesign">{index + 1}</span></td>
+                                      <td style={{ minWidth: '50px', maxWidth: '50px' }}>
+                                    <div className="d-flex align-items-center justify-content-center">  <span style={{marginLeft:'0px'}} className="indexdesign">{index + 1}</span></div>  </td>
                                       <td style={{ maxWidth: '120px', minWidth: '120px', textAlign: 'center' }}>{item.Title}</td>
-                                      <td title={item.SiteURL} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SiteURL}</td>
+                                      <td title={item.SiteURL} style={{ maxWidth: '250px', minWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SiteURL}</td>
                                       {/* <td title={item.SharewithOtherMeMasterSite} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SharewithOtherMeMasterSite}</td> */}
-                                      <td style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>
+                                      <td style={{ minWidth: '70px', maxWidth: '70px', textAlign: 'center' }}>
                                         {item.IsActive ? <span className="badge bg-success">Active</span> : <span className="badge bg-danger">Inactive</span>}
                                       </td>
-                                      <td style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>
+                                      <td style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>
                                         <button className="btn btn-sm btn-outline-primary" onClick={() => handleToggleStatus(item.Id, item.IsActive)}>
                                           {item.IsActive ? "Deactivate" : "Activate"}
                                         </button>
@@ -1800,7 +1803,7 @@ useEffect(() => {
                       <a href="">
                         <div className="card-master box1" onClick={(event) => { handleToggleSuper(event, "ManageGlobalPermission") }}>
                           <div className="icon">
-                            <img className="" src={managesuperadmin} />
+                            <img className="" src={managesuperadmin2} />
                           </div>
                           <p className="text-dark">Manage Global Permission</p>
                         </div>
@@ -1813,7 +1816,7 @@ useEffect(() => {
                       <a href="">
                         <div className="card-master box1" onClick={(event) => { handleToggleSuper(event, "ManageSuper") }}>
                           <div className="icon">
-                            <img className="" src={managesuperadmin} />
+                            <img className="" src={managesuperadmin1} />
                           </div>
                           <p className="text-dark">Manage Location Admin</p>
                         </div>
@@ -1875,7 +1878,7 @@ useEffect(() => {
                   width: "100%"
 
                 }}>
-                  <p className="font-20 text-dark fw-bold mb-2" style={{
+                  <p className="page-title font-20 text-dark fw-bold mb-2" style={{
 
                   }}>Manage Group Permission</p>
                   <div className="row">
@@ -2129,10 +2132,11 @@ useEffect(() => {
               )
             }
              {activeComponent === "ManageGlobalPermission" &&
-              (
+              ( 
                 <div className="position-relative">
-                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
-                  {/*Aman 27/2/26*/}
+                  <div className="mt-minus30">
+                  <button className="btn back-to-admin mt-minus30" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+              </div>    {/*Aman 27/2/26*/}
                   {/* <ManageSuper sp={activeSp} /> */}
                   <ManageEssaCoreGroups  context={context} />
                 </div>

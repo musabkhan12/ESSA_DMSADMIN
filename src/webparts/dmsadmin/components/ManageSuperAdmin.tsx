@@ -387,11 +387,11 @@ export const ManageSuperAdmin = (props:any) => {
 <>
               {activeComponent === '' && (
                     <div className={styles.argform}>
-                        <div className='row'>
-                            <div className='col-md-7'>
-                            <div className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Super Admin
+                      <div className='row mt-minus30'>
+                            <div className='col-md-7 '>
+                            <div className='page-title fw-bold mb-0 font-20 d-none'>Admin Panel &gt; Manage Super Admin
                             </div>
-                            <div className='mb-2 mt-0'>
+                            <div className='mb-2 mt-0 d-none'>
                             <span className='text-muted font-14' style={{
                                 color:"Black"
                             }}>User From Super Admin Group Will Have Full Control 1.</span>
@@ -423,7 +423,16 @@ export const ManageSuperAdmin = (props:any) => {
                         
                         </div>
                        
-                        <div style={{padding:'15px'}} className={styles.container}>
+                        <div style={{padding:'15px', marginTop:'20px'}} className={styles.container}>
+                          <div className='col-md-12'>
+                            <div className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Super Admin
+                            </div>
+                            <div className='mb-2 mt-0'>
+                            <span className='text-muted font-14' style={{
+                                color:"Black"
+                            }}>User From Super Admin Group Will Have Full Control 1.</span>
+                        </div>
+                            </div>
                         <table className="mtbalenew">
                             <thead>
                             <tr>
@@ -473,12 +482,12 @@ export const ManageSuperAdmin = (props:any) => {
               {activeComponent === "AddUser" && 
                 (
                 <div className={styles.argform}>
-                    <div className='row'>
+                    <div className='row mt-minus30'>
                         <div className='col-md-7'>
 
                       
                 
-                    <div className={styles.title}>Admin Panel &gt; Manage Super Admin &gt; Add Super Admin</div>
+                    <div className='d-none'>Admin Panel &gt; Manage Super Admin &gt; Add Super Admin</div>
                     </div>
                     <div className='col-md-5'>
                     <div className='padd-right1 mt-0'>
@@ -492,13 +501,15 @@ export const ManageSuperAdmin = (props:any) => {
                       
                       position:"relative",
                       
-                      marginTop:"10px",
-                      padding:"20px",
-                      border:"2px solid #7fc4de",
-                      borderRadius:"10px",
+                      marginTop:"20px",
+                      padding:"16px",
+                      border:"1px solid #ccc",
+                      borderRadius:"8px",
                       background:"#fff",
 
                     }}>
+                    <div className='page-title fw-bold mb-3 font-20'>Admin Panel &gt; Manage Super Admin &gt; Add Super Admin</div>
+
                         <p style={{
                             color:"Black",
                            

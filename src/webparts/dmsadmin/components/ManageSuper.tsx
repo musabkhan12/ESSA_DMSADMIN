@@ -620,7 +620,7 @@ const [filters, setFilters] = React.useState({
                     <div className={styles.argform}>
                         <div className='row mt-minus30'>
                             <div className='col-md-7'>
-                            <div className='page-title fw-bold mb-0 font-20 d-none'>Admin Panel &gt; Manage Location Admin
+                            <div className='fw-bold mb-0 font-20 d-none'>Admin Panel &gt; Manage Location Admin
                             </div>
                             <div className='mb-1 mt-0 d-none'>
                             <span className='text-muted font-14' style={{
@@ -690,10 +690,10 @@ const [filters, setFilters] = React.useState({
                         <table className="mtbalenew">
                             <thead>
                             <tr>
-                                <th style={{minWidth:'20px',maxWidth:'20px'}}>S.No.</th>
-                                <th>Site Location</th>
-                                <th style={{minWidth:'80px',maxWidth:'80px'}}>User</th>
-                                <th>Email</th>
+                                <th style={{minWidth:'40px',maxWidth:'40px'}}>S.No.</th>
+                                <th style={{minWidth:'130px',maxWidth:'130px'}}>Site Location</th>
+                                <th style={{minWidth:'100px',maxWidth:'100px'}}>User</th>
+                                <th style={{minWidth:'200px',maxWidth:'200px'}}>Email</th>
                                 
                                 <th style={{minWidth:'40px',maxWidth:'40px'}}>Action</th>
                             </tr>
@@ -705,20 +705,20 @@ const [filters, setFilters] = React.useState({
                                     {/* <td style={{minWidth:'20px',maxWidth:'20px'}}>
                                     <span className='indexdesign'> {index + 1}</span>
                                     </td> */}
-                                     <td style={{ minWidth: '55px', maxWidth: '55px' }}>
+                                     <td style={{ minWidth: '40px', maxWidth: '40px' }}>
                                     <span className="indexdesign">
                                       {/* {index + 1} */}
                                       {(currentPage - 1) * itemsPerPage + index + 1}
                                     </span>
                                   </td>
-                                  <td style={{minWidth:'40px',maxWidth:'40px'}}>
+                                  <td style={{minWidth:'130px',maxWidth:'130px'}}>
                                     {item.siteName || 'N/A'}
                                     </td>
                                      {/* <td style={{ minWidth: '55px', maxWidth: '55px' }}><span className="indexdesign">{index + 1}</span></td> */}
-                                    <td style={{minWidth:'80px',maxWidth:'80px'}}>
+                                    <td style={{minWidth:'100px',maxWidth:'100px'}}>
                                     {item.Title || ''}
                                     </td>
-                                    <td >
+                                    <td style={{minWidth:'200px',maxWidth:'200px'}}>
                                     {item.Email || ''}
                                     </td>
                                     

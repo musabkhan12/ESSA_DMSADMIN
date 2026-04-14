@@ -688,7 +688,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
                       width:"100%"
   
                     }}>
-                    <p className="font-20 text-dark fw-bold" style={{ 
+                    <p className="page-title font-20 text-dark fw-bold" style={{ 
                   
           }}>Manage Folder Delegation</p>
           {/* Ritik 03/04/2026 added site collection dropdown */}
