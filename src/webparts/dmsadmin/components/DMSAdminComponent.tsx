@@ -51,6 +51,8 @@ import "../../verticalSideBar/components/VerticalSidebar.scss";
 import "./dmscss";
 import "./DMSAdmincss"
 import Manageuserpermissioninonego from "./Manageuserpermissioninonego";
+import {ManageSuperAdmin} from "./ManageSuperAdmin"
+import ManageEssaCoreGroups from "./ManageEssaCoreGroups"
 import { useState, useRef, useEffect } from "react";
 
 // import {IDmsMusaibProps} from './IDmsMusaibProps'
@@ -396,10 +398,14 @@ useEffect(() => {
   const getDetailsOfSuperAdmin = async () => {
     try {
       const usersFromDMSSuperAdmin = await sp.web.siteGroups.getByName('DMSSuper_Admin').users();
+
       superAdminArray = usersFromDMSSuperAdmin;
       usersFromDMSSuperAdmin.forEach((user) => {
+        console.log("current user email from super admin", currentUserEmailRef.current);
+        console.log("user email from super admin group", user.Email);
         if (user.Email === currentUserEmailRef.current) {
           superA = true;
+          console.log(superA, "is super admin");
           setIsSuperAdmin(true);
           // setToggleManagePermission('Yes');
         }
@@ -1713,7 +1719,7 @@ useEffect(() => {
                                     <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
                                     <th style={{ textAlign: 'center', minWidth: '120px', maxWidth: '120px' }}>Title</th>
                                     <th style={{ textAlign: 'center', minWidth: '200px', maxWidth: '200px' }}>Site URL</th>
-                                    <th style={{ maxWidth: '200px', minWidth: '200px', textAlign: 'center' }}>Master Site Share Path</th>
+                                    {/* <th style={{ maxWidth: '200px', minWidth: '200px', textAlign: 'center' }}>Master Site Share Path</th> */}
                                     <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Status</th>
                                     <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action</th>
                                     {/* addhyan 01/04/26: */}
@@ -1726,7 +1732,7 @@ useEffect(() => {
                                       <td style={{ minWidth: '55px', maxWidth: '55px' }}><span className="indexdesign">{index + 1}</span></td>
                                       <td style={{ maxWidth: '120px', minWidth: '120px', textAlign: 'center' }}>{item.Title}</td>
                                       <td title={item.SiteURL} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SiteURL}</td>
-                                      <td title={item.SharewithOtherMeMasterSite} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SharewithOtherMeMasterSite}</td>
+                                      {/* <td title={item.SharewithOtherMeMasterSite} style={{ maxWidth: '200px', minWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.SharewithOtherMeMasterSite}</td> */}
                                       <td style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>
                                         {item.IsActive ? <span className="badge bg-success">Active</span> : <span className="badge bg-danger">Inactive</span>}
                                       </td>
@@ -1775,7 +1781,34 @@ useEffect(() => {
               <div className="DMSMasterContainer">
                 {/* {!selectedGlobalSite && ( */}
                 <div className="row manage-master mt-3">
+                 {IsSuperAdmin && (
+                    
+                    <div className="col-sm-3 col-md-3">
+                      <a href="">
+                        <div className="card-master box1" onClick={(event) => { handleToggleSuper(event, "ManageSuperAdmin") }}>
+                          <div className="icon">
+                            <img className="" src={managesuperadmin} />
+                          </div>
+                          <p className="text-dark">Manage Super Admin</p>
+                        </div>
+                      </a>
+                    </div>
+                  )}
+                 {IsSuperAdmin && (
+                    
+                    <div className="col-sm-3 col-md-3">
+                      <a href="">
+                        <div className="card-master box1" onClick={(event) => { handleToggleSuper(event, "ManageGlobalPermission") }}>
+                          <div className="icon">
+                            <img className="" src={managesuperadmin} />
+                          </div>
+                          <p className="text-dark">Manage Global Permission</p>
+                        </div>
+                      </a>
+                    </div>
+                  )}
                   {IsSuperAdmin && (
+                    
                     <div className="col-sm-3 col-md-3">
                       <a href="">
                         <div className="card-master box1" onClick={(event) => { handleToggleSuper(event, "ManageSuper") }}>
@@ -2092,6 +2125,26 @@ useEffect(() => {
                     selectedEntityForPermission={selectedEntityForPermission}
                     onBack={() => handleBackToManagePermissionCard()}
                   />
+                </div>
+              )
+            }
+             {activeComponent === "ManageGlobalPermission" &&
+              (
+                <div className="position-relative">
+                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/*Aman 27/2/26*/}
+                  {/* <ManageSuper sp={activeSp} /> */}
+                  <ManageEssaCoreGroups  context={context} />
+                </div>
+              )
+            }
+             {activeComponent === "ManageSuperAdmin" &&
+              (
+                <div className="position-relative">
+                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/*Aman 27/2/26*/}
+                  {/* <ManageSuper sp={activeSp} /> */}
+                  <ManageSuperAdmin  context={context} />
                 </div>
               )
             }

@@ -182,25 +182,22 @@ allData.push(...mappedItems);
       setCurrentIsExternal(entity.IsExternal); 
       setSelectedSiteFilter(entity.siteCollectionUrl || "");
     }
-    const [filters, setFilters] = React.useState({
-      SNo: '',
-      Title : '',
-      // Title: '',
-      CurrentUser: '',
-      Modified: '',
-      Status: '',
-  
-      SubmittedDate: ''
-    });
+   const [filters, setFilters] = React.useState<any>({
+  Title: '',
+  Description: '',
+  SiteURL: '',
+  Active: '',
+  Author: '',
+  Created: ''
+});
     const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
-    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-      setFilters({
-        ...filters,
-        [field]: e.target.value,
-      });
-      console.log(filters , "filters filters")
-    };
+   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  setFilters((prev: any) => ({
+    ...prev,
+    [field]: e.target.value.toLowerCase()
+  }));
+};
 
     const handleSortChange = (key: string) => {
       let direction = 'ascending';
@@ -209,40 +206,42 @@ allData.push(...mappedItems);
       }
       setSortConfig({ key, direction });
     };
-    const applyFiltersAndSorting = (data: any[]) => {
-      const filteredData = data.filter((item, index) => {
-        return (
-          (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
-          (filters.Title === '' || 
-            (item.Title && item.Title.toLowerCase().includes(filters.Title.toLowerCase()))) &&
-          (filters.CurrentUser === '' || 
-            (item.Author.Title && item.Author.Title.toLowerCase().includes(filters.CurrentUser.toLowerCase()))) &&
-          (filters.Status === '' || 
-            (item.Modified && item.Modified.toLowerCase().includes(filters.Status.toLowerCase()))) &&
-          (filters.SubmittedDate === '' || 
-            (item.Status && item.Status.toLowerCase().includes(filters.SubmittedDate.toLowerCase())))
-        );
-      });
-    
-      const naturalSort = (a: any, b: any) => {
-        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-      };
-    
-      const sortedData = filteredData.sort((a, b) => {
-        if (sortConfig.key === 'SNo') {
-          const aIndex = data.indexOf(a);
-          const bIndex = data.indexOf(b);
-          return sortConfig.direction === 'ascending' ? aIndex - bIndex : bIndex - aIndex;
-        } else if (sortConfig.key) {
-          const aValue = a[sortConfig.key] ? a[sortConfig.key].toLowerCase() : '';
-          const bValue = b[sortConfig.key] ? b[sortConfig.key].toLowerCase() : '';
-          return sortConfig.direction === 'ascending' ? naturalSort(aValue, bValue) : naturalSort(bValue, aValue);
-        }
-        return 0;
-      });
-    
-      return sortedData;
-    };
+   const applyFiltersAndSorting = (data: any[]) => {
+
+  const filteredData = data.filter((item) => {
+    return (
+      (filters.Title === '' || (item.Title || '').toLowerCase().includes(filters.Title)) &&
+      (filters.Description === '' || (item.Description || '').toLowerCase().includes(filters.Description)) &&
+      // (filters.SiteURL === '' || (item.SiteURL || '').toLowerCase().includes(filters.SiteURL)) &&
+      (filters.SiteURL === '' ||
+  getLocationFromUrl(item.SiteURL).toLowerCase().includes(filters.SiteURL)) &&
+      (filters.Active === '' || (item.Active || '').toLowerCase().includes(filters.Active)) &&
+      (filters.Author === '' || (item.Author?.Title || '').toLowerCase().includes(filters.Author)) &&
+      (filters.Created === '' || (item.Created || '').toString().toLowerCase().includes(filters.Created))
+    );
+  });
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+
+    const aValueRaw = sortConfig.key === 'SiteURL'
+  ? getLocationFromUrl(a.SiteURL)
+  : a[sortConfig.key];
+
+const bValueRaw = sortConfig.key === 'SiteURL'
+  ? getLocationFromUrl(b.SiteURL)
+  : b[sortConfig.key];
+
+const aVal = (aValueRaw || '').toString().toLowerCase();
+const bVal = (bValueRaw || '').toString().toLowerCase();
+
+    if (aVal < bVal) return sortConfig.direction === 'ascending' ? -1 : 1;
+    if (aVal > bVal) return sortConfig.direction === 'ascending' ? 1 : -1;
+    return 0;
+  });
+
+  return sortedData;
+};
     //Aman change 3/4/26 start 
     //const filteredEntityData=applyFiltersAndSorting(entityDetails);
 
@@ -420,6 +419,12 @@ allData.push(...mappedItems);
     //       });
     // }
 
+    const getLocationFromUrl = (url: string): string => {
+  if (!url) return '';
+
+  const match = url.match(/\/sites\/([^\/]+)/i);
+  return match ? match[1] : '';
+};
       const handleDeleteEntity = async (item: any) => {
   console.log("Entity Item", item);
  
@@ -648,58 +653,104 @@ allData.push(...mappedItems);
                     </div> */}
                   </th>
                   {/* <th className={styles.tabledept}>Title</th> */}
-                  <th className="" >
+                  {/* <th className="" >
                   
                     <div className="pb-0" >
-                      <span >Title</span> &nbsp;
-                      <span className="Sorting" onClick={() => handleSortChange('Title')}>
+                      <span >Department</span> &nbsp;
+                      <span className="Sorting" onClick={() => handleSortChange('Department')}>
                         <FontAwesomeIcon icon={faSort} /> 
                       </span>
                     </div>
-                    {/* <div className=" bd-highlight">
-                      <input 
-                        type="text" 
-                        placeholder="Filter by Title" 
-                        onChange={(e) => handleFilterChange(e, 'Title')}
-                        className='inputcss' 
-                        style={{ width: '100%' }} 
-                      />
-                    </div> */}
-                
-                  </th>
+               
+                  </th> */}
+                  <th>
+  <div>
+    <span onClick={() => handleSortChange('Title')}>Department <FontAwesomeIcon icon={faSort} /></span>
+    <input
+      type="text"
+      placeholder="Search Title"
+      className="inputcss"
+      onChange={(e) => handleFilterChange(e, 'Title')}
+    />
+  </div>
+</th>
                   {/* <th  className={styles.tabledept}>Description</th> */}
-                  <th  >
+                  {/* <th  >
                
                     <div className=" pb-0" >
                       <span >Description</span> 
                   
                     </div>
-                    {/* <div className="d-flex flex-column bd-highlight "> </div> */}
-                  </th>
-                  <th >
+                 
+                  </th> */}
+                  <th>
+  <div>
+    <span onClick={() => handleSortChange('Description')}>Description <FontAwesomeIcon icon={faSort} /></span>
+    <input
+      type="text"
+      placeholder="Search Description"
+      className="inputcss"
+      onChange={(e) => handleFilterChange(e, 'Description')}
+    />
+  </div>
+</th>
+                  {/* <th >
                   <div className="pb-0" >
                       <span >URL</span> 
                   
                     </div>
-                    {/* <div className="d-flex flex-column bd-highlight "> </div> */}
+                  
+                    </th> */}
                     
-                    </th>
-                  <th style={{minWidth: '70px', maxWidth: '70px' }}>
+                  {/* <th style={{minWidth: '70px', maxWidth: '70px' }}>
                   <div className=" pb-0" >
                       <span >Status</span> 
                   
                     </div>
-                    {/* <div className="d-flex flex-column bd-highlight "> </div> */}
-                    </th>
-                  <th >
+                    
+                    </th> */}
+                    <th>
+  <div>
+    <span onClick={() => handleSortChange('SiteURL')}>URL <FontAwesomeIcon icon={faSort} /></span>
+    <input
+      type="text"
+      placeholder="Search URL"
+      className="inputcss"
+      onChange={(e) => handleFilterChange(e, 'SiteURL')}
+    />
+  </div>
+</th>
+                    <th style={{minWidth: '70px', maxWidth: '70px' }}>
+  <div>
+    <span onClick={() => handleSortChange('Active')}>Status <FontAwesomeIcon icon={faSort} /></span>
+    <input
+      type="text"
+      placeholder="Search Status"
+      className="inputcss"
+      onChange={(e) => handleFilterChange(e, 'Active')}
+    />
+  </div>
+</th>
+                  {/* <th >
                   <div className="pb-0" >
                       <span >Created At</span> 
                   
                     </div>
-                    {/* <div className="d-flex flex-column bd-highlight "> </div> */}
-                    </th>
+                    
+                    </th> */}
+                    <th>
+  <div>
+    <span onClick={() => handleSortChange('Created')}>Created At <FontAwesomeIcon icon={faSort} /></span>
+    <input
+      type="text"
+      placeholder="Search Date"
+      className="inputcss"
+      onChange={(e) => handleFilterChange(e, 'Created')}
+    />
+  </div>
+</th>
                   {/* <th className={styles.tabledept}>Created By</th> */}
-                  <th  >
+                  {/* <th  >
                   
                       <div className=" pb-0" >
                         <span >	Created By</span> &nbsp; 
@@ -708,16 +759,20 @@ allData.push(...mappedItems);
                               <FontAwesomeIcon icon={faSort} /> 
                         </span>
                       </div>
-                        {/* <div className=" bd-highlight">
-                          <input 
-                            type="text" 
-                            placeholder="Filter by User" 
-                            onChange={(e) => handleFilterChange(e, 'CurrentUser')}
-                            className='inputcss' 
-                            style={{ width: '100%' }} />
-                        </div> */}
+                      
                     
-                  </th>
+                  </th> */}
+                  <th>
+  <div>
+    <span onClick={() => handleSortChange('Author')}>Created By <FontAwesomeIcon icon={faSort} /></span>
+    <input
+      type="text"
+      placeholder="Search User"
+      className="inputcss"
+      onChange={(e) => handleFilterChange(e, 'Author')}
+    />
+  </div>
+</th>
                   <th style={{ borderBottomLeftRadius: '0px', minWidth: '70px', maxWidth: '70px', borderTopLeftRadius: '0px' }}>
                     
                   <div className=" pb-0" >
@@ -743,9 +798,10 @@ allData.push(...mappedItems);
                         >
                         {item.Description || 'No Description'}
                         </td>
-                        <td  title={item.SiteURL}>
+                        {/* <td  title={item.SiteURL}>
                         {item.SiteURL || 'No URL'}
-                        </td>
+                        </td> */}
+                        <td >{getLocationFromUrl(item.SiteURL)}</td>
                         <td style={{minWidth: '70px', maxWidth: '70px' }}>
                           <div className='stausbg newsta'>
                         {item.Active === "Yes" ? 'Active' : 'Inactive'}
