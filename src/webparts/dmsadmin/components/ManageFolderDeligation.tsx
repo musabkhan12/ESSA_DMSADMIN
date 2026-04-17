@@ -694,7 +694,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
           {/* Ritik 03/04/2026 added site collection dropdown */}
                     <div className="row">
   <div className="col-sm-4 mb-3">
-    <label>Location</label>
+    <label>Location <span className="text-danger">*</span></label>
     <Select
       options={siteCollections}
       value={selectedSiteCollection}
@@ -709,7 +709,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     />
   </div>
   <div className="col-sm-4">
-              <label>Department</label>
+              <label>Department <span className="text-danger">*</span></label>
               {/* ritik 03/04/2026 added for entity selection and management */}
     <Select                        
     options={adminPermissionEntity}
@@ -729,7 +729,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
               {/* end here */}
                       </div>
                       <div className="col-sm-4">
-                        <label>Groups</label>
+                        <label>Groups <span className="text-danger">*</span></label>
                         <Select
                             isDisabled
                             options={groups}
@@ -741,7 +741,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
                           />
                       </div>
                          { <div  className="col-sm-4">
-              <label>Users</label>
+              <label>Users <span className="text-danger">*</span></label>
               {/* Ritik 03/04/2026 added for user selection and management */}
                         <Select
     options={user}
@@ -762,7 +762,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
                        </div> 
                        } 
                          { <div  className="col-sm-4">
-              <label>Select Approvers</label>
+              <label>Select Approvers <span className="text-danger">*</span></label>
               {/* Ritik 03/04/2026 added for approver selection and management */}
                         <Select
     isMulti

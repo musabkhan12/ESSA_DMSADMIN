@@ -513,7 +513,7 @@ export const ManageSuperAdmin = (props:any) => {
                         <p style={{
                             color:"Black",
                            
-                        }}>Add Users</p>
+                        }}>Add Users <span className="text-danger">*</span></p>
                         <div style={{
                             gap:"30px",
                             display:"flex"

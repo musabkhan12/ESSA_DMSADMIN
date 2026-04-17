@@ -2065,7 +2065,7 @@ useEffect(() => {
                   }}>Manage Group Permission</p>
                   <div className="row">
                     <div className="col-md-4">
-  <label>Location</label>
+  <label>Location <span className="text-danger">*</span></label>
   <div className={`select-wrapper ${validationErrors.location ? 'select-error' : ''}`}>
     <Select
       options={siteCollections}
@@ -2090,7 +2090,7 @@ useEffect(() => {
   </div>
 </div>
                     <div className="col-sm-4">
-                      <label>Department</label>
+                      <label>Department <span className="text-danger">*</span></label>
                       <div className={`select-wrapper ${validationErrors.department ? 'select-error' : ''}`}>
                         <Select
                           options={adminPermissionEntity}
@@ -2116,7 +2116,7 @@ useEffect(() => {
                       </div>
                     </div>
                     <div className="col-sm-4 ">
-                      <label>Groups</label>
+                      <label>Groups <span className="text-danger">*</span></label>
                       <div className={`select-wrapper ${validationErrors.groups ? 'select-error' : ''}`}>
                         <Select
                           options={groups}
@@ -2142,7 +2142,7 @@ useEffect(() => {
                       </div>
                     </div>
                     {<div className="col-sm-4 mt-3">
-                      <label>Users</label>
+                      <label>Users <span className="text-danger">*</span></label>
                       <div className={`select-wrapper ${validationErrors.users ? 'select-error' : ''}`}>
                         <Select
                           isMulti

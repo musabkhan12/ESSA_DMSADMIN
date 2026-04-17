@@ -195,9 +195,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
+import "../components/BasicForm.module.scss"
 
 interface Props {
   context: WebPartContext;
+}
+
+// srs 17/4/26
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  handlePageChange: (pageNumber: number) => void;
 }
 
 const GROUPS = ["ESSA Owners", "ESSA Members", "ESSA Visitors"];
@@ -380,6 +388,49 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
   const start = (currentPage - 1) * itemsPerPage;
   const currentData = processedData.slice(start, start + itemsPerPage);
 
+  // srs 17/4/26
+  const handlePageChange = (pageNumber: number) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  // NEW: The Pagination Component from your reference
+  const Pagination = ({ currentPage, totalPages, handlePageChange }: PaginationProps) => {
+    const pageLimit = 5; 
+    const startPage = Math.max(1, currentPage - Math.floor(pageLimit / 2));
+    const adjustedStartPage = Math.max(1, Math.min(startPage, totalPages - pageLimit + 1));
+    const visiblePages = Array.from(
+      { length: Math.min(pageLimit, totalPages) },
+      (_, index) => adjustedStartPage + index
+    );
+
+    return (
+      <nav className="pagination-container">
+        <ul className="pagination">
+          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+            <a className="page-link PreviousPage" onClick={() => handlePageChange(currentPage - 1)} aria-label="Previous">
+              «
+            </a>
+          </li>
+          {visiblePages.map((pageNumber) => (
+            <li key={pageNumber} className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}>
+              <a className="page-link" onClick={() => handlePageChange(pageNumber)}>
+                {pageNumber}
+              </a>
+            </li>
+          ))}
+          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+            <a className="page-link NextPage" onClick={() => handlePageChange(currentPage + 1)} aria-label="Next">
+              »
+            </a>
+          </li>
+        </ul>
+      </nav>
+    );
+  };
+  // srs 17/4/26 end
+ 
   return (
     <div className="argform">
    
@@ -399,15 +450,21 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
           ))}
         </select>
 
-        <div style={{ width: "420px" }}>
+        {/* <div style={{ width: "420px" }}> */}
+           <label className="fw-bold">Select User: <span className="text-danger">*</span></label>
           <Select
             isMulti
             options={principalOptions}
             value={selectedPrincipals}
             onChange={(val: any) => setSelectedPrincipals(val)}
             placeholder="Search user or group..."
+            onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
           />
-        </div>
+        {/* </div> */}
 
         <button type = "button" style={{backgroundColor: 'rgb(44, 153, 66)', borderColor:'rgb(44, 153, 66)'}} className="btn btn-success" onClick={handleAdd}>
           Add
@@ -476,7 +533,7 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
       </table>
 
       {/* Pagination */}
-      <div className="d-flex justify-content-center mt-3">
+      {/* <div className="pagination-container">
         <button
           className="btn btn-light me-2"
           disabled={currentPage === 1}
@@ -494,7 +551,15 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
         >
           »
         </button>
-      </div>
+      </div> */}
+      {/* // srs 17/4/26 */}
+      <Pagination 
+        currentPage={currentPage} 
+        totalPages={totalPages} 
+        handlePageChange={handlePageChange} 
+      />
+      {/* // srs 17/4/26 */}
+    
     </div>
   );
 };
