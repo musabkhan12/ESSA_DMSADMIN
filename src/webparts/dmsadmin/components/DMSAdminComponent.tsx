@@ -1805,7 +1805,7 @@ useEffect(() => {
                           <div className="icon">
                             <img className="" src={managesuperadmin2} />
                           </div>
-                          <p className="text-dark">Manage Global Permission</p>
+                          <p className="text-dark">Manage Team Permission</p>
                         </div>
                       </a>
                     </div>
