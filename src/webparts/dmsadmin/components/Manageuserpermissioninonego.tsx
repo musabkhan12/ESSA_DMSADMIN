@@ -1433,6 +1433,13 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
               value={selectedSiteForUserPermission}
               placeholder="Select Location..."
               noOptionsMessage={() => "No Locations Found..."}
+              // srs 17/4/26
+              onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
+    // srs 17/4/26 end
               styles={{
     container: (base) => ({
       ...base,
@@ -1466,6 +1473,12 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
             placeholder="Search by user name, email or group..."
             value={tableSearchText}
             onChange={(e) => setTableSearchText(e.target.value)}
+            // srs 17/4/26
+            onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
           />
         </div>
 

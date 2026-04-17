@@ -199,6 +199,14 @@ allData.push(...mappedItems);
   }));
 };
 
+// srs 17/4/26
+const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === 'Enter') {
+    e.preventDefault(); // This stops the "Form Submission/Reload"
+    console.log("Enter pressed, but page didn't reload! 🎉");
+  }
+};
+
     const handleSortChange = (key: string) => {
       let direction = 'ascending';
       if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -672,6 +680,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       placeholder="Search Title"
       className="inputcss"
       onChange={(e) => handleFilterChange(e, 'Title')}
+      onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
 </th>
@@ -692,6 +701,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       placeholder="Search Description"
       className="inputcss"
       onChange={(e) => handleFilterChange(e, 'Description')}
+      onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
 </th>
@@ -718,6 +728,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       placeholder="Search URL"
       className="inputcss"
       onChange={(e) => handleFilterChange(e, 'SiteURL')}
+      onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
 </th>
@@ -729,6 +740,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       placeholder="Search Status"
       className="inputcss"
       onChange={(e) => handleFilterChange(e, 'Active')}
+      onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
 </th>
@@ -747,6 +759,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       placeholder="Search Date"
       className="inputcss"
       onChange={(e) => handleFilterChange(e, 'Created')}
+      onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
 </th>
@@ -771,6 +784,7 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       placeholder="Search User"
       className="inputcss"
       onChange={(e) => handleFilterChange(e, 'Author')}
+      onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
 </th>

@@ -198,40 +198,112 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
   };
 
   // Aman 16/03/26: Function to save new site and auto-generate URL
-  const handleSaveNewSite = async () => {
-    if (!newSiteData.Title) {
-      Swal.fire("Error", "Please enter a title", "error");
-      return;
-    }
-    if (!newSiteData.Siteurl) {
-      Swal.fire("Error", "Please enter a Siteurl", "error");
-      return;
-    }
-    try {
-      // URL auto generation: spaces remove karke lower case mein
-      const generatedUrl = `https://officeindia.sharepoint.com/sites/${newSiteData.Title.replace(/\s+/g, '')}`;
+  // const handleSaveNewSite = async () => {
+  //   if (!newSiteData.Title) {
+  //     Swal.fire("Error", "Please enter a title", "error");
+  //     return;
+  //   }
+  //   if (!newSiteData.Siteurl) {
+  //     Swal.fire("Error", "Please enter a Siteurl", "error");
+  //     return;
+  //   }
+  //   try {
+  //     // URL auto generation: spaces remove karke lower case mein
+  //     const generatedUrl = `https://officeindia.sharepoint.com/sites/${newSiteData.Title.replace(/\s+/g, '')}`;
 
-      await sp.web.lists.getByTitle("MasterSiteCollection").items.add({
-        Title: newSiteData.Title,
-        // SiteURL: generatedUrl,
-        SiteURL: newSiteData.Siteurl,
+  //     await sp.web.lists.getByTitle("MasterSiteCollection").items.add({
+  //       Title: newSiteData.Title,
+  //       // SiteURL: generatedUrl,
+  //       SiteURL: newSiteData.Siteurl,
 
 
 
-        IsActive: newSiteData.IsActive,
-        // Aman 16/03/26: Dynamic path for share list
-        SharewithOtherMeMasterSite: `${generatedUrl}/Lists/DMSShareWithOtherMaster/AllItems.aspx`
-      });
+  //       IsActive: newSiteData.IsActive,
+  //       // Aman 16/03/26: Dynamic path for share list
+  //       SharewithOtherMeMasterSite: `${generatedUrl}/Lists/DMSShareWithOtherMaster/AllItems.aspx`
+  //     });
 
-      Swal.fire("Success", "New Site Collection added", "success");
-      setShowCreateForm(false);
-      setNewSiteData({ Title: '', Siteurl: '', IsActive: true }); // Reset form
-      fetchMasterSiteData(); // Refresh table data
-    } catch (error) {
-      console.error("Error adding site:", error);
-      Swal.fire("Error", "Could not add site", "error");
-    }
-  };
+  //     Swal.fire("Success", "New Site Collection added", "success");
+  //     setShowCreateForm(false);
+  //     setNewSiteData({ Title: '', Siteurl: '', IsActive: true }); // Reset form
+  //     fetchMasterSiteData(); // Refresh table data
+  //   } catch (error) {
+  //     console.error("Error adding site:", error);
+  //     Swal.fire("Error", "Could not add site", "error");
+  //   }
+  // };
+// srs 17/4/26
+ const handleSaveNewSite = async () => {
+  // Validation Check
+  if (!newSiteData.Title || !newSiteData.Siteurl) {
+    Swal.fire({
+      html: `
+        <div style="padding: 10px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <h2 style="
+            color: #595959; 
+            font-size: 28px; 
+            font-weight: 600; 
+            margin-bottom: 20px;
+          ">Please fill out the fields!</h2>
+          
+          <p style="
+            color: #545454; 
+            font-size: 18px; 
+            font-weight: 400; 
+            margin-bottom: 25px;
+          ">All fields are required</p>
+          
+          <button id="custom-ok-button" style="
+            background-color: #87CEEB; 
+            color: white; 
+            border: none; 
+            padding: 10px 40px; 
+            font-size: 18px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-weight: 500;
+          ">OK</button>
+        </div>
+      `,
+      showConfirmButton: false, 
+      width: '500px',
+      padding: '1.25rem',
+      background: '#fff',
+      // We handle the rounded corners via didOpen to avoid TS errors
+      didOpen: () => {
+        const popup = Swal.getPopup();
+        if (popup) {
+          popup.style.borderRadius = '5px';
+        }
+        // Manual click listener for the custom button
+        const btn = document.getElementById('custom-ok-button');
+        if (btn) {
+          btn.addEventListener('click', () => Swal.close());
+        }
+      }
+    });
+    return;
+  }
+
+  try {
+    const generatedUrl = `https://officeindia.sharepoint.com/sites/${newSiteData.Title.replace(/\s+/g, '')}`;
+
+    await sp.web.lists.getByTitle("MasterSiteCollection").items.add({
+      Title: newSiteData.Title,
+      SiteURL: newSiteData.Siteurl,
+      IsActive: newSiteData.IsActive,
+      SharewithOtherMeMasterSite: `${generatedUrl}/Lists/DMSShareWithOtherMaster/AllItems.aspx`
+    });
+
+    Swal.fire("Success", "New Site Collection added", "success");
+    setShowCreateForm(false);
+    setNewSiteData({ Title: '', Siteurl: '', IsActive: true });
+    fetchMasterSiteData();
+  } catch (error) {
+    console.error("Error adding site:", error);
+    Swal.fire("Error", "Could not add site", "error");
+  }
+};
 
   //after sourish 26/2/26 change aman changes in handleGlobalSiteChange function 27/2/26
   const handleGlobalSiteChange = async (selected: any, preserveManageCard = false) => {
@@ -1099,77 +1171,187 @@ useEffect(() => {
     setValidationErrors(prev => ({ ...prev, users: false }));
   }
 
-  const handleAddUsers = async () => {
-    console.log("selectedUsersForPermission", selectedUsersForPermission);
-    console.log("selectedGropuForPermission", selectedGropuForPermission);
-    console.log("selectedEntityForPermission", selectedEntityForPermission);
-    console.log("selectedGlobalSite", selectedGlobalSite);
+  // const handleAddUsers = async () => {
+  //   console.log("selectedUsersForPermission", selectedUsersForPermission);
+  //   console.log("selectedGropuForPermission", selectedGropuForPermission);
+  //   console.log("selectedEntityForPermission", selectedEntityForPermission);
+  //   console.log("selectedGlobalSite", selectedGlobalSite);
 
-    const errors = { location: false, department: false, groups: false, users: false };
-    const missingFields = [];
+  //   const errors = { location: false, department: false, groups: false, users: false };
+  //   const missingFields = [];
 
-    // Validate Location
-    if (!selectedGlobalSite) {
-      errors.location = true;
-      missingFields.push('Location');
-    }
+  //   // Validate Location
+  //   if (!selectedGlobalSite) {
+  //     errors.location = true;
+  //     missingFields.push('Location');
+  //   }
 
-    // Validate Department
-    if (selectedEntityForPermission === undefined) {
-      errors.department = true;
-      missingFields.push('Department');
-    }
+  //   // Validate Department
+  //   if (selectedEntityForPermission === undefined) {
+  //     errors.department = true;
+  //     missingFields.push('Department');
+  //   }
 
-    // Validate Groups
-    if (selectedGropuForPermission === undefined) {
-      errors.groups = true;
-      missingFields.push('Groups');
-    }
+  //   // Validate Groups
+  //   if (selectedGropuForPermission === undefined) {
+  //     errors.groups = true;
+  //     missingFields.push('Groups');
+  //   }
 
-    // Validate Users
-    if (selectedUsersForPermission === undefined || selectedUsersForPermission.length === 0) {
-      errors.users = true;
-      missingFields.push('Users');
-    }
+  //   // Validate Users
+  //   if (selectedUsersForPermission === undefined || selectedUsersForPermission.length === 0) {
+  //     errors.users = true;
+  //     missingFields.push('Users');
+  //   }
 
-    // If there are errors, show them and set error states
-    if (missingFields.length > 0) {
-      setValidationErrors(errors);
-      Swal.fire({
-        icon: 'error',
-        title: 'Please fill out the fields!',
-        html: `<b>Please select the following fields:</b><br/>${missingFields.join(', ')}`,
-        confirmButtonColor: '#d33'
-      });
-      return;
-    }
+  //   // If there are errors, show them and set error states
+  //   if (missingFields.length > 0) {
+  //     setValidationErrors(errors);
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Please fill out the fields!',
+  //       html: `<b>Please select the following fields:</b><br/>${missingFields.join(', ')}`,
+  //       confirmButtonColor: '#d33'
+  //     });
+  //     return;
+  //   }
 
-    // const subsiteContext = await sp.site.openWebById(selectedEntityForPermission.SiteID);
-    const subsiteContext = spfi(selectedEntityForPermission.SiteURL).using(SPFx(context)); //addhyan 
-    //wait for all add operations to complete
-    const addUsersPromises = selectedUsersForPermission.map(async (user: any) => {
-      try {
-        // const userObj = await sp.web.ensureUser(user.email);
-        const userObj = await subsiteContext.web.ensureUser(user.email); //addhyan
-        console.log("userObj", userObj);
-        const users = await subsiteContext.web.siteGroups.getByName(`${selectedGropuForPermission.value}`).users.add(userObj.data.LoginName);
-        console.log(`${user.email} added to the group successfully.`, users);
+  //   // const subsiteContext = await sp.site.openWebById(selectedEntityForPermission.SiteID);
+  //   const subsiteContext = spfi(selectedEntityForPermission.SiteURL).using(SPFx(context)); //addhyan 
+  //   //wait for all add operations to complete
+  //   const addUsersPromises = selectedUsersForPermission.map(async (user: any) => {
+  //     try {
+  //       // const userObj = await sp.web.ensureUser(user.email);
+  //       const userObj = await subsiteContext.web.ensureUser(user.email); //addhyan
+  //       console.log("userObj", userObj);
+  //       const users = await subsiteContext.web.siteGroups.getByName(`${selectedGropuForPermission.value}`).users.add(userObj.data.LoginName);
+  //       console.log(`${user.email} added to the group successfully.`, users);
         
-      } catch (error) {
-        console.error(`Failed to add ${user.email} to the group: `, error);
+  //     } catch (error) {
+  //       console.error(`Failed to add ${user.email} to the group: `, error);
+  //     }
+  //   });
+
+  //   await Promise.all(addUsersPromises);
+  //   // Clear all errors on success
+  //   setValidationErrors({ location: false, department: false, groups: false, users: false });
+  //   onSuccess(selectedGropuForPermission.value);
+  //   // Call handleEntitySelect once all users have been added
+  //   // to refresh the user table
+  //   // handleEntitySelect(selectedEntityForPermission);
+  //   // selectedUsersForPermission=undefined;
+  //   handleGroupsSelect(selectedGropuForPermission);
+  // }
+// srs 17/4/26
+  const handleAddUsers = async () => {
+  console.log("selectedUsersForPermission", selectedUsersForPermission);
+  console.log("selectedGropuForPermission", selectedGropuForPermission);
+  console.log("selectedEntityForPermission", selectedEntityForPermission);
+  console.log("selectedGlobalSite", selectedGlobalSite);
+
+  const errors = { location: false, department: false, groups: false, users: false };
+  const missingFields = [];
+
+  // Validate Location
+  if (!selectedGlobalSite) {
+    errors.location = true;
+    missingFields.push('Location');
+  }
+
+  // Validate Department
+  if (selectedEntityForPermission === undefined) {
+    errors.department = true;
+    missingFields.push('Department');
+  }
+
+  // Validate Groups
+  if (selectedGropuForPermission === undefined) {
+    errors.groups = true;
+    missingFields.push('Groups');
+  }
+
+  // Validate Users
+  if (selectedUsersForPermission === undefined || selectedUsersForPermission.length === 0) {
+    errors.users = true;
+    missingFields.push('Users');
+  }
+
+  // If there are errors, show them and set error states
+  if (missingFields.length > 0) {
+    setValidationErrors(errors);
+    
+    // UPDATED POPUP TO MATCH YOUR STYLE
+    Swal.fire({
+      html: `
+        <div style="padding: 10px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <h2 style="
+            color: #595959; 
+            font-size: 28px; 
+            font-weight: 600; 
+            margin-bottom: 20px;
+          ">Please fill out the fields!</h2>
+          
+          <p style="
+            color: #545454; 
+            font-size: 18px; 
+            font-weight: 400; 
+            margin-bottom: 10px;
+          ">Please select the following fields:</p>
+          
+          <p style="
+            color: #d33; 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px;
+          ">${missingFields.join(', ')}</p>
+          
+          <button id="val-error-ok-button" style="
+            background-color: #87CEEB; 
+            color: white; 
+            border: none; 
+            padding: 10px 40px; 
+            font-size: 18px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-weight: 500;
+          ">OK</button>
+        </div>
+      `,
+      showConfirmButton: false,
+      width: '500px',
+      background: '#fff',
+      didOpen: () => {
+        const popup = Swal.getPopup();
+        if (popup) {
+          popup.style.borderRadius = '5px';
+        }
+        const btn = document.getElementById('val-error-ok-button');
+        if (btn) {
+          btn.addEventListener('click', () => Swal.close());
+        }
       }
     });
-
-    await Promise.all(addUsersPromises);
-    // Clear all errors on success
-    setValidationErrors({ location: false, department: false, groups: false, users: false });
-    onSuccess(selectedGropuForPermission.value);
-    // Call handleEntitySelect once all users have been added
-    // to refresh the user table
-    // handleEntitySelect(selectedEntityForPermission);
-    // selectedUsersForPermission=undefined;
-    handleGroupsSelect(selectedGropuForPermission);
+    return;
   }
+
+  // Logic remains unchanged
+  const subsiteContext = spfi(selectedEntityForPermission.SiteURL).using(SPFx(context)); 
+  
+  const addUsersPromises = selectedUsersForPermission.map(async (user: any) => {
+    try {
+      const userObj = await subsiteContext.web.ensureUser(user.email); 
+      const users = await subsiteContext.web.siteGroups.getByName(`${selectedGropuForPermission.value}`).users.add(userObj.data.LoginName);
+      console.log(`${user.email} added to the group successfully.`, users);
+    } catch (error) {
+      console.error(`Failed to add ${user.email} to the group: `, error);
+    }
+  });
+
+  await Promise.all(addUsersPromises);
+  setValidationErrors({ location: false, department: false, groups: false, users: false });
+  onSuccess(selectedGropuForPermission.value);
+  handleGroupsSelect(selectedGropuForPermission);
+}
 
   const hanldeManagePermission = () => {
     if (selectedGroupUsers === undefined && selectedGropuForPermission === undefined) {
@@ -1684,14 +1866,14 @@ useEffect(() => {
                               </div>
 
                               <div className="d-flex justify-content-center gap-2 mt-3">
-                                <button
+                                <button type = "button"
                                   className="btn text-white"
                                   style={{ backgroundColor: "#2c9942", padding: "8px 25px", border: 'none', borderRadius: '6px' }}
                                   onClick={handleSaveNewSite}
                                 >
                                   Submit
                                 </button>
-                                <button
+                                <button type = "button"
                                   className="btn btn-secondary shadow-sm"
                                   style={{ backgroundColor: "#6c757d", padding: "8px 25px", border: 'none', borderRadius: '6px' }}
                                   onClick={() => setShowCreateForm(false)}
@@ -1896,14 +2078,14 @@ useEffect(() => {
       }}
        //adddhyan - 03/04/2026 start
       placeholder="Select Location..."
-      styles={{
-        control: (base) => ({
-          ...base,
-          borderColor: validationErrors.location ? '#dc3545' : base.borderColor,
-          borderWidth: validationErrors.location ? '2px' : '1px',
-          boxShadow: validationErrors.location ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
-        })
-      }}
+      // styles={{
+      //   control: (base) => ({
+      //     ...base,
+      //     borderColor: validationErrors.location ? '#dc3545' : base.borderColor,
+      //     borderWidth: validationErrors.location ? '2px' : '1px',
+      //     boxShadow: validationErrors.location ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+      //   })
+      // }}
     />
   </div>
 </div>
@@ -1922,14 +2104,14 @@ useEffect(() => {
                           }}
                           placeholder="Select Department..."
                           noOptionsMessage={() => "No Department Found..."}
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              borderColor: validationErrors.department ? '#dc3545' : base.borderColor,
-                              borderWidth: validationErrors.department ? '2px' : '1px',
-                              boxShadow: validationErrors.department ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
-                            })
-                          }}
+                          // styles={{
+                          //   control: (base) => ({
+                          //     ...base,
+                          //     borderColor: validationErrors.department ? '#dc3545' : base.borderColor,
+                          //     borderWidth: validationErrors.department ? '2px' : '1px',
+                          //     boxShadow: validationErrors.department ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+                          //   })
+                          // }}
                         />
                       </div>
                     </div>
@@ -1948,14 +2130,14 @@ useEffect(() => {
                           }}
                           placeholder="Select Groups..."
                           noOptionsMessage={() => "No Groups Found..."}
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              borderColor: validationErrors.groups ? '#dc3545' : base.borderColor,
-                              borderWidth: validationErrors.groups ? '2px' : '1px',
-                              boxShadow: validationErrors.groups ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
-                            })
-                          }}
+                          // styles={{
+                          //   control: (base) => ({
+                          //     ...base,
+                          //     borderColor: validationErrors.groups ? '#dc3545' : base.borderColor,
+                          //     borderWidth: validationErrors.groups ? '2px' : '1px',
+                          //     boxShadow: validationErrors.groups ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+                          //   })
+                          // }}
                         />
                       </div>
                     </div>
@@ -1975,14 +2157,14 @@ useEffect(() => {
                           }}
                           placeholder="Select User..."
                           noOptionsMessage={() => "No User Found..."}
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              borderColor: validationErrors.users ? '#dc3545' : base.borderColor,
-                              borderWidth: validationErrors.users ? '2px' : '1px',
-                              boxShadow: validationErrors.users ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
-                            })
-                          }}
+                          // styles={{
+                          //   control: (base) => ({
+                          //     ...base,
+                          //     borderColor: validationErrors.users ? '#dc3545' : base.borderColor,
+                          //     borderWidth: validationErrors.users ? '2px' : '1px',
+                          //     boxShadow: validationErrors.users ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
+                          //   })
+                          // }}
                         />
                       </div>
                     </div>

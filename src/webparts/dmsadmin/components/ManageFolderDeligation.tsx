@@ -701,6 +701,11 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
       onChange={handleSiteChange}
       placeholder="Select Location..."
       noOptionsMessage={() => "No Site Collections Found..."}
+      onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
     />
   </div>
   <div className="col-sm-4">
@@ -715,6 +720,11 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     }}
     placeholder="Select Entity..."
     noOptionsMessage={() => "No Entity Found..."}
+    onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
               />
               {/* end here */}
                       </div>
@@ -742,6 +752,11 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     }}
     placeholder="Select User..."
     noOptionsMessage={() => "No User Found..."}
+    onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
               />
               {/* end here  */}
                        </div> 
@@ -759,6 +774,11 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     }}
     placeholder="Select User..."
     noOptionsMessage={() => "No User Found..."}
+    onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
               />
               {/* end here  */}
                        </div> 

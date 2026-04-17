@@ -351,13 +351,13 @@ const handleAddUsers = async () => {
   console.log("Selected Site:", selectedSite);
   console.log("Selected Users:", selectedUsersForPermission);
  
-  if (!selectedSite) {
-    Swal.fire("Please select a Location!");
-    setValidationError(true);   // Aman 8/04/26
-    return;
-  }
+  // if (!selectedSite) {
+  //   Swal.fire("Please select a Location!");
+  //   setValidationError(true);   // Aman 8/04/26
+  //   return;
+  // }
  
-  if (!selectedUsersForPermission || selectedUsersForPermission.length === 0) {
+  if (!selectedUsersForPermission || selectedUsersForPermission.length === 0 || !selectedSite) {
     setValidationError(true);   // Aman 8/04/26
     checkValidation();
     return;
@@ -800,8 +800,8 @@ const [filters, setFilters] = React.useState({
     styles={{
       control: (base) => ({
         ...base,
-        borderColor: validationError && !selectedSite ? "red" : base.borderColor,
-        '&:hover': { borderColor: validationError && !selectedSite ? "red" : base.borderColor }
+        // borderColor: validationError && !selectedSite ? "red" : base.borderColor,
+        // '&:hover': { borderColor: validationError && !selectedSite ? "red" : base.borderColor }
       })
     }}
   />
@@ -828,11 +828,16 @@ const [filters, setFilters] = React.useState({
     }}
     placeholder="Select User..."
     noOptionsMessage={() => "No User Found..."}
+    onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
     styles={{
       control: (base) => ({
         ...base,
-        borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor,
-        '&:hover': { borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor }
+        // borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor,
+        // '&:hover': { borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor }
       })
     }}
   />

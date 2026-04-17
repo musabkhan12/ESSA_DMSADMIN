@@ -256,14 +256,86 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
   };
 
   // Add
+  // const handleAdd = async () => {
+  //   for (const p of selectedPrincipals) {
+  //     await sp.web.siteGroups.getByName(selectedGroup).users.add(p.value);
+  //   }
+  //   Swal.fire("Added!", "", "success");
+  //   setSelectedPrincipals([]);
+  //   loadGroupUsers();
+  // };
+
+
+// srs 17/4/26
   const handleAdd = async () => {
-    for (const p of selectedPrincipals) {
-      await sp.web.siteGroups.getByName(selectedGroup).users.add(p.value);
-    }
-    Swal.fire("Added!", "", "success");
+  // 1. Validation Check
+  // Check if Group is default/empty and if any Principals are selected
+  if (!selectedGroup || selectedGroup === "Select Group" || selectedPrincipals.length === 0) {
+    Swal.fire({
+      html: `
+        <div style="padding: 10px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <h2 style="
+            color: #595959; 
+            font-size: 28px; 
+            font-weight: 600; 
+            margin-bottom: 20px;
+          ">Please fill out the fields!</h2>
+          
+          <p style="
+            color: #545454; 
+            font-size: 18px; 
+            font-weight: 400; 
+            margin-bottom: 25px;
+          ">Please select a group and at least one user/group to add.</p>
+          
+          <button id="val-ok-button" style="
+            background-color: #87CEEB; 
+            color: white; 
+            border: none; 
+            padding: 10px 40px; 
+            font-size: 18px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-weight: 500;
+          ">OK</button>
+        </div>
+      `,
+      showConfirmButton: false,
+      width: '500px',
+      didOpen: () => {
+        const popup = Swal.getPopup();
+        if (popup) popup.style.borderRadius = '5px';
+        
+        const btn = document.getElementById('val-ok-button');
+        if (btn) btn.addEventListener('click', () => Swal.close());
+      }
+    });
+    return; // Stop execution
+  }
+
+  // 2. Process Addition
+  try {
+    // Using Promise.all is faster than a standard for-loop for multiple additions
+    const addPromises = selectedPrincipals.map(p => 
+      sp.web.siteGroups.getByName(selectedGroup).users.add(p.value)
+    );
+    
+    await Promise.all(addPromises);
+
+    Swal.fire({
+      title: "Added!",
+      text: "Users have been successfully added to the group.",
+      icon: "success",
+      confirmButtonColor: "rgb(44, 153, 66)"
+    });
+
     setSelectedPrincipals([]);
     loadGroupUsers();
-  };
+  } catch (error) {
+    console.error("Error adding users:", error);
+    Swal.fire("Error", "Failed to add users to the group. Check permissions.", "error");
+  }
+};
 
   // Delete
   const removeUser = async (login: string, name: string) => {
@@ -337,7 +409,7 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
           />
         </div>
 
-        <button style={{backgroundColor: 'rgb(44, 153, 66)', borderColor:'rgb(44, 153, 66)'}} className="btn btn-success" onClick={handleAdd}>
+        <button type = "button" style={{backgroundColor: 'rgb(44, 153, 66)', borderColor:'rgb(44, 153, 66)'}} className="btn btn-success" onClick={handleAdd}>
           Add
         </button>
       </div>
@@ -355,6 +427,12 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
                 className="inputcss"
                 placeholder="Search User"
                 onChange={(e) => handleFilterChange(e, "Title")}
+                // srs 17/4/26
+                onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
               />
             </th>
             <th style={{minWidth:'250px',maxWidth:'250px'}}>
@@ -365,6 +443,12 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
                 className="inputcss"
                 placeholder="Search Email"
                 onChange={(e) => handleFilterChange(e, "Email")}
+                //srs 17/4/26
+                onKeyDown={(e: any) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Prevents the page from submitting/going back
+      }
+    }}
               />
             </th>
             <th style={{minWidth:'70px',maxWidth:'70px'}}>Action</th>
