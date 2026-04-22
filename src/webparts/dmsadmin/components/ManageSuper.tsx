@@ -13,6 +13,8 @@ import Provider from '../../../GlobalContext/provider';
 import { useMediaQuery } from 'react-responsive';
 import styles from './Form.module.scss'
 import Swal from 'sweetalert2';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort } from '@fortawesome/free-solid-svg-icons';//Ritik 22/04/2026
 import Select from "react-select";
 import {  spfi } from '@pnp/sp';
 import { SPFx } from "@pnp/sp";
@@ -408,7 +410,14 @@ const handleAddUsers = async () => {
  // ritik 21/4/26 start
     if (successes.length > 0) {
       //Swal.fire("Users Added Successfully", `Added: ${successes.length}, Skipped (already in group): ${failures.filter(f => f.error === "Already in group").length}, Failed: ${failures.filter(f => f.error !== "Already in group").length}`, "success");
-       Swal.fire("Added Successfully", `Added: ${successes.length}, Skipped (already in group): ${failures.filter(f => f.error === "Already in group").length}, Failed: ${failures.filter(f => f.error !== "Already in group").length}`, "success"); 
+      //  Swal.fire("Added Successfully.", `${failures.filter(f => f.error === "Already in group").length}, Failed: ${failures.filter(f => f.error !== "Already in group").length}`, "success"); //Ritik 22/04/26
+      const alreadyCount = failures.filter(f => f.error === "Already in group").length;
+
+Swal.fire(
+  "Added Successfully.",
+  alreadyCount > 0 ? `${alreadyCount} user(s) already added` : "",
+  "success"
+);
    //Ritik 22/04/26 end
     }  
     else if (failures.every(f => f.error === "Already in group")) {
@@ -473,7 +482,7 @@ const handleAddUsers = async () => {
 //   End
 const confirmDelete=(group:any,userId:any,userTitle:any)=>{
     Swal.fire({
-      title: "Do you want to delete this request?",
+      title: "Do you want to delete this User/Group?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -508,7 +517,9 @@ const [filters, setFilters] = React.useState({
     SubmittedDate: ''
   });
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
-  
+  const [columnSearchTexts, setColumnSearchTexts] = React.useState({
+    Title: '', Email: '', siteName: ''
+  }); //Ritik 22/04/2026
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     setFilters({
       ...filters,
@@ -537,7 +548,12 @@ const [filters, setFilters] = React.useState({
           (item.Editor && item.Editor.Title && item.Editor.Title.toLowerCase().includes(filters.Modified.toLowerCase()))) &&
         (filters.SubmittedDate === '' ||
           (item.Status && item.Status.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))) &&
-        (siteFilter === 'All' || item.siteName === siteFilter)
+        (siteFilter === 'All' || item.siteName === siteFilter)&&
+        //Ritik 22/04/2026
+        (columnSearchTexts.Title === '' || (item.Title && item.Title.toLowerCase().includes(columnSearchTexts.Title.toLowerCase()))) &&
+        (columnSearchTexts.Email === '' || (item.Email && item.Email.toLowerCase().includes(columnSearchTexts.Email.toLowerCase()))) &&
+        (columnSearchTexts.siteName === '' || (item.siteName && item.siteName.toLowerCase().includes(columnSearchTexts.siteName.toLowerCase())))
+      
       );
     });
   
@@ -652,7 +668,7 @@ const [filters, setFilters] = React.useState({
                             <div className='mb-1 mt-0 d-none'>
                             <span className='text-muted font-14' style={{
                                 color:"Black", fontWeight:'500'
-                            }}>User From Super Admin Group Will Have Full Control 1.</span>
+                            }}>User From Super Admin Group Will Have Full Control.</span>
                         </div>
                             </div>
                             <div className='col-md-5'>
@@ -719,11 +735,48 @@ const [filters, setFilters] = React.useState({
                             <thead>
                             <tr>
                                 <th style={{minWidth:'40px',maxWidth:'40px'}}>S.No.</th>
-                                {/* Rohit 21/4/26 start*/}
-                                <th style={{minWidth:'130px',maxWidth:'130px'}}>Location</th> 
-                                 {/* Rohit 21/4/26 end*/}
+                                {/* <th style={{minWidth:'130px',maxWidth:'130px'}}>Location</th> 
                                 <th style={{minWidth:'100px',maxWidth:'100px'}}>User</th>
-                                <th style={{minWidth:'200px',maxWidth:'200px'}}>Email</th>
+                                <th style={{minWidth:'200px',maxWidth:'200px'}}>Email</th> */}
+                                <th style={{minWidth:'130px',maxWidth:'130px'}}>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => handleSortChange('siteName')}>
+      Location <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Location" className="inputcss"
+      value={columnSearchTexts.siteName}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, siteName: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th style={{minWidth:'100px',maxWidth:'100px'}}>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => handleSortChange('Title')}>
+      User <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search User" className="inputcss"
+      value={columnSearchTexts.Title}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, Title: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th style={{minWidth:'200px',maxWidth:'200px'}}>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => handleSortChange('Email')}>
+      Email <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Email" className="inputcss"
+      value={columnSearchTexts.Email}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, Email: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
                                 
                                 <th style={{minWidth:'40px',maxWidth:'40px'}}>Action</th>
                             </tr>

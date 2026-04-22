@@ -3,6 +3,8 @@ import Select from "react-select";
 import { getSP , getGraphClient } from "../loc/pnpjsConfig";
 import { SPFI } from "@pnp/sp";
 import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort } from '@fortawesome/free-solid-svg-icons';//Ritik 22/04/2026
 import styles from './Form.module.scss'
 let superA=false;
 let usersFromGroups:any[]=[];
@@ -567,7 +569,7 @@ selectedUsersForPermission = undefined;
 const confirmDelete=(group:any,userId:any,groupName:any,userEmail:any,siteTitle:any)=>{
     Swal.fire({
       // Rohit 21/4/26
-      title: "Do you want to delete this request?",
+      title: "Do you want to delete this User/Group?", //Ritik 22/04/2026
       //text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
@@ -617,11 +619,55 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     }
 }
 
+// Ritik 22/04/2026
+const [folderSearchText, setFolderSearchText] = React.useState("");
+const [folderSortConfig, setFolderSortConfig] = React.useState({ key: '', direction: 'ascending' });
+const [folderColumnSearch, setFolderColumnSearch] = React.useState({
+  email: '', groupName: '', permission: '', Descirption: ''
+});
+
+const filteredFolderData = React.useMemo(() => {
+  let result = allUsersFromGroups;
+  if (folderSearchText) {
+    const s = folderSearchText.toLowerCase();
+    result = result.filter((u: any) => (u.user || '').toLowerCase().includes(s));
+  }
+  if (folderColumnSearch.email) {
+    const s = folderColumnSearch.email.toLowerCase();
+    result = result.filter((u: any) => (u.email || '').toLowerCase().includes(s));
+  }
+  if (folderColumnSearch.groupName) {
+    const s = folderColumnSearch.groupName.toLowerCase();
+    result = result.filter((u: any) => (u.groupName || '').toLowerCase().includes(s));
+  }
+  if (folderColumnSearch.permission) {
+    const s = folderColumnSearch.permission.toLowerCase();
+    result = result.filter((u: any) => 
+      'folder deligation'.includes(s)
+    );
+  }
+  if (folderColumnSearch.Descirption) {
+    const s = folderColumnSearch.Descirption.toLowerCase();
+    result = result.filter((u: any) => 
+      'can create folder(folder created by user will go for approval) and can add, view, update , download documents.'.includes(s)
+    );
+  }
+  if (folderSortConfig.key) {
+    result = [...result].sort((a: any, b: any) => {
+      const aVal = (a[folderSortConfig.key] || '').toLowerCase();
+      const bVal = (b[folderSortConfig.key] || '').toLowerCase();
+      if (aVal < bVal) return folderSortConfig.direction === 'ascending' ? -1 : 1;
+      if (aVal > bVal) return folderSortConfig.direction === 'ascending' ? 1 : -1;
+      return 0;
+    });
+  }
+  return result;
+}, [allUsersFromGroups, folderSearchText, folderSortConfig, folderColumnSearch]);
+//end here
   // Add pagination start
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(allUsersFromGroups.length / itemsPerPage);
-  
   const handlePageChange = (pageNumber: any) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -630,7 +676,7 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
   
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = allUsersFromGroups.slice(startIndex, endIndex);
+  const currentData = filteredFolderData.slice(startIndex, endIndex);//Ritik 22/04/26
 
   interface PaginationProps{
     currentPage: number;
@@ -730,8 +776,8 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
       styles={{
       control: (base) => ({
         ...base,
-        border: formErrors.location ? "2px solid red" : base.border,
-        backgroundColor: formErrors.location ? "#fff5f5" : base.backgroundColor
+        border: formErrors.location ? "2px solid #fe0100" : base.border,
+        backgroundColor: formErrors.location ? "#fee6e6" : base.backgroundColor
       })
     }}
       
@@ -760,8 +806,8 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
      styles={{
       control: (base) => ({
         ...base,
-        border: formErrors.department ? "2px solid red" : base.border,
-        backgroundColor: formErrors.department ? "#fff5f5" : base.backgroundColor
+        border: formErrors.department ? "2px solid #fe0100" : base.border,
+        backgroundColor: formErrors.department ? "#fee6e6" : base.backgroundColor
       })
     }}
     // Aman 21/4/26 end
@@ -803,8 +849,8 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     styles={{
       control: (base) => ({
         ...base,
-        border: formErrors.users ? "2px solid red" : base.border,
-        backgroundColor: formErrors.users ? "#fff5f5" : base.backgroundColor
+        border: formErrors.users ? "2px solid #fe0100" : base.border,
+        backgroundColor: formErrors.users ? "#fee6e6" : base.backgroundColor
       })
     }}
     // Aman 21/4/26 end
@@ -836,8 +882,8 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     styles={{
       control: (base) => ({
         ...base,
-        border: formErrors.approvers ? "2px solid red" : base.border,
-        backgroundColor: formErrors.approvers ? "#fff5f5" : base.backgroundColor
+        border: formErrors.approvers ? "2px solid #fe0100" : base.border,
+        backgroundColor: formErrors.approvers ? "#fee6e6" : base.backgroundColor
       })
     }}
     // Aman 21/4/26 end
@@ -924,11 +970,76 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
                             <thead>
                             <tr>
                                 <th style={{minWidth:'55px', maxWidth:'55px'}}>S.No.</th>
-                                <th>User</th>
+                                {/* <th>User</th>
                                 <th>User Email</th>
                                 <th>Group Name</th>
                                 <th>Permission</th>
-                                <th>Description</th>
+                                <th>Description</th> */}
+                                <th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => { setFolderSortConfig(prev => ({ key: 'user', direction: prev.key === 'user' && prev.direction === 'ascending' ? 'descending' : 'ascending' })); }}>
+      User <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search User" className="inputcss"
+      value={folderSearchText}
+      onChange={(e) => { setFolderSearchText(e.target.value); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => { setFolderSortConfig(prev => ({ key: 'email', direction: prev.key === 'email' && prev.direction === 'ascending' ? 'descending' : 'ascending' })); }}>
+      User Email <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Email" className="inputcss"
+      value={folderColumnSearch.email}
+      onChange={(e) => { setFolderColumnSearch(prev => ({...prev, email: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => { setFolderSortConfig(prev => ({ key: 'groupName', direction: prev.key === 'groupName' && prev.direction === 'ascending' ? 'descending' : 'ascending' })); }}>
+      Group Name <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Group" className="inputcss"
+      value={folderColumnSearch.groupName}
+      onChange={(e) => { setFolderColumnSearch(prev => ({...prev, groupName: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => { setFolderSortConfig(prev => ({ key: 'permission', direction: prev.key === 'permission' && prev.direction === 'ascending' ? 'descending' : 'ascending' })); }}>
+      Permission <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Permission" className="inputcss"
+      value={folderColumnSearch.permission}
+      onChange={(e) => { setFolderColumnSearch(prev => ({...prev, permission: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={() => { setFolderSortConfig(prev => ({ key: 'Descirption', direction: prev.key === 'Descirption' && prev.direction === 'ascending' ? 'descending' : 'ascending' })); }}>
+      Description <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Description" className="inputcss"
+      value={folderColumnSearch.Descirption}
+      onChange={(e) => { setFolderColumnSearch(prev => ({...prev, Descirption: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
                                 <th style={{minWidth:'65px', maxWidth:'65px'}}>Action</th>
                             </tr>
                             </thead>

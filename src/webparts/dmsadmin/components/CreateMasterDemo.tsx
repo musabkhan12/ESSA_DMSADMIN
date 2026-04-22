@@ -189,7 +189,10 @@ event.preventDefault();
 
         // Validation Logic
         const errors = {
-            location: !currentId && (!selectedSiteFilter || selectedSiteFilter === ""),
+          // puja kumari 22/04/2026
+          location: !currentId && (!selectedSiteFilter || selectedSiteFilter.trim() === "" || selectedSiteFilter === "ALL"),
+            // location: !currentId && (!selectedSiteFilter || selectedSiteFilter === ""),
+            //end
             title: !jobTitle.trim(),
             isActive: !isActive,
             isExternal: !isExternal,
@@ -541,34 +544,77 @@ try {
      {/* ritik 21/4/26 end */}
                             {!currentId && (
         
-  <div>
-   <div> <label className={styles.label}>Select Location <span style={{
+//   <div>
+//    <div> <label className={styles.label}>Select Location <span style={{
+//                           color:'red',
+//                           fontWeight:"Bold"
+//                         }}> *</span></label>
+//                         {/* Aman 21/4/26 start*/}
+//     {/* <select style={{padding:'5px 10px'}}
+//       className="form-select"
+//       value={selectedSiteFilter}
+//       onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
+//     > */}
+//     <select
+//   style={{
+//     padding:'5px 10px',
+//     border: formErrors.location ? "2px solid red" : undefined,
+//     backgroundColor: formErrors.location ? "#fee6e6" : undefined
+//   }}
+//   className="form-select"
+//   value={selectedSiteFilter}
+//   onChange={(e) => {
+//     setSelectedSiteFilter?.(e.target.value);
+//     if (e.target.value) {
+//       setFormErrors(prev => ({ ...prev, location: false }));
+//     }
+//   }}
+//   required
+// >
+
+//     {/* Aman 21/4/26 end*/}
+//       <option value="">Select Location...</option>
+//       {siteCollections?.map((site: any) => (
+//         <option key={site.siteUrl} value={site.siteUrl}>
+//           {site.label}
+//         </option>
+//       ))}
+//     </select>
+//   </div> </div>
+//Puja kumari 22/04/2026
+<div>
+   <div> <label className={styles.label}>Select Location<span style={{
                           color:'red',
                           fontWeight:"Bold"
                         }}> *</span></label>
-                        {/* Aman 21/4/26 start*/}
-    {/* <select style={{padding:'5px 10px'}}
-      className="form-select"
-      value={selectedSiteFilter}
-      onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
-    > */}
+                        {/* Puja - Added wrapper div for consistent border styling */}
+                        <div
+                          style={{
+                            border: formErrors.location ? "2px solid #fe0100" : "1px solid #dee2e6",
+                            borderRadius: "5px",
+                            backgroundColor: formErrors.location ? "#fee6e6" : undefined,
+                            padding: "2px"
+                          }}
+                        >
     <select
   style={{
     padding:'5px 10px',
-    border: formErrors.location ? "2px solid red" : undefined,
-    backgroundColor: formErrors.location ? "#fff5f5" : undefined
+    border: "none",
+    backgroundColor: "transparent",
+    width: "100%"
   }}
   className="form-select"
   value={selectedSiteFilter}
   onChange={(e) => {
-    setSelectedSiteFilter?.(e.target.value);
-    if (e.target.value) {
+    const newValue = e.target.value;
+    setSelectedSiteFilter?.(newValue);
+    if (newValue && newValue.trim() !== "" && newValue.toUpperCase() !== "ALL") {
       setFormErrors(prev => ({ ...prev, location: false }));
     }
   }}
   required
 >
-
+ 
     {/* Aman 21/4/26 end*/}
       <option value="">Select Location...</option>
       {siteCollections?.map((site: any) => (
@@ -577,8 +623,10 @@ try {
         </option>
       ))}
     </select>
+                        </div>
   </div> </div>
 )}
+{/* end here  */}
 
                         </div>
                  <div className="col-sm-4 mb-3">
@@ -600,8 +648,8 @@ try {
                         <input
   className={styles.inputform1}
   style={{
-    border: formErrors.title ? "2px solid red" : undefined,
-    backgroundColor: formErrors.title ? "#fff5f5" : undefined
+    border: formErrors.title ? "2px solid #fe0100" : undefined,
+    backgroundColor: formErrors.title ? "#fee6e6" : undefined
   }}
   id="jobTitle"
   name="jobTitle"
@@ -628,10 +676,10 @@ try {
                         {/* <div className={styles.radioContainer}> */}
                         <div
   style={{
-    border: formErrors.isActive ? "2px solid red" : undefined,
+    border: formErrors.isActive ? "2px solid #fe0100" : undefined,
     padding: "5px",
     borderRadius: "5px",
-    backgroundColor: formErrors.isActive ? "#fff5f5" : undefined
+    backgroundColor: formErrors.isActive ? "#fee6e6" : undefined
   }}
 >
                       {/* Aman 21/4/26 end */}
@@ -686,10 +734,10 @@ try {
                         {/* <div className={styles.radioContainer}> */}
                         <div
   style={{
-    border: formErrors.isExternal ? "2px solid red" : undefined,
+    border: formErrors.isExternal ? "2px solid #fe0100" : undefined,
     padding: "5px",
     borderRadius: "5px",
-    backgroundColor: formErrors.isExternal ? "#fff5f5" : undefined
+    backgroundColor: formErrors.isExternal ? "#fee6e6" : undefined
   }}
 >
                       {/* Aman 21/4/26 end */}
@@ -753,8 +801,8 @@ try {
                                   <input
                                       style={{
                                           height: '80px',
-                                          border: formErrors.description ? "2px solid red" : undefined,
-                                          backgroundColor: formErrors.description ? "#fff5f5" : undefined
+                                          border: formErrors.description ? "2px solid #fe0100" : undefined,
+                                          backgroundColor: formErrors.description ? "#fee6e6" : undefined
                                       }}
                                       className={styles.inputform1}
                                       id="description"

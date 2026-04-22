@@ -1551,7 +1551,8 @@ const Pagination = ( { currentPage, totalPages, handlePageChange }: PaginationPr
     {toggleManagePermissionCard === "Yes" && (
       <div className="position-relative">
         <div>
-          <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+          {/* Ritik 22/04/26 */}
+          <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button>
          
          </div>
           <div style={{
@@ -1782,7 +1783,8 @@ const Pagination = ( { currentPage, totalPages, handlePageChange }: PaginationPr
     {activeComponent === "ManagePermission" && 
                       (
                         <div className="position-relative">
-                            <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                          {/* Ritik 22/04/26 */}
+                            <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                             <ManagePermission
                               // selectedGroupUsers={selectedGroupUsers}
                               selectedGropuForPermission={selectedGropuForPermission}
@@ -1795,7 +1797,8 @@ const Pagination = ( { currentPage, totalPages, handlePageChange }: PaginationPr
     {activeComponent === "ManageSuper" && 
                       (
                           <div className="position-relative">
-                            <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                            {/* Ritik 22/04/26 */}
+                            <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                             {/*Aman 27/2/26*/}
                             {/* <ManageSuper sp={activeSp} /> */}
                             <ManageSuper sp={activeSp} context={context} />
@@ -1805,7 +1808,8 @@ const Pagination = ( { currentPage, totalPages, handlePageChange }: PaginationPr
     {toggleManagePermissionCard === "Manage Folder Deligation" && 
                       (
                           <div className="position-relative">
-                            <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                            {/* Ritik 22/04/26 */}
+                            <button className="btn back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                             <ManageFolderDeligation
   sp={activeSp}
   siteCollections={siteCollections}

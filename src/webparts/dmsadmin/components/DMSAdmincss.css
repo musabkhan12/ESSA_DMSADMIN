@@ -116,3 +116,10 @@ label{color: #3c3c3c !important;
     .addbuttonargform{font-size: 12px !important; padding: 8px 4px; line-height: 30px;}
 .Addtext{font-size: 12px !important;}
 }
+/* Puja kumari 22/04/26 added input-error   */
+.input-error {
+    border: 2px solid #fe0100 !important;
+    background-color: #fee6e6 !important;
+    box-shadow: none !important;
+  }
+   

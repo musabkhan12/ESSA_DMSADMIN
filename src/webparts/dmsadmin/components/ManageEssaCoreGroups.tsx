@@ -342,8 +342,8 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
     await Promise.all(addPromises);
 
     Swal.fire({
-      title: "Added!",
-      text: "Users have been successfully added to the group.",
+      title: "Added successfully.",
+      // text: "Users have been successfully added to the group.", //Ritik 22/04/26
       icon: "success",
       confirmButtonColor: "rgb(44, 153, 66)"
     });
@@ -379,7 +379,7 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
   //ritik 22/04/26 Delete  start
 const removeUser = async (login: string, name: string) => {
   const confirm = await Swal.fire({
-    title: "Do you want to delete this request?",
+    title: "Do you want to delete this User/Group?",//Ritik 22/04/26
     //Ritik 22/04/26
     icon: "warning",
     showCancelButton: true,
@@ -538,11 +538,11 @@ const removeUser = async (login: string, name: string) => {
       ...base,
       minWidth: '250px',
       border: userError
-        ? "2px solid #dc3545"
+        ? "2px solid #fe0100"
         : state.isFocused
         ? "1px solid #86b7fe"
         : base.border,
-      backgroundColor: userError ? "#fff5f5" : "#fff",
+        backgroundColor: userError ? "#fee6e6" : "#fff",
       boxShadow: "none"
     })
   }}

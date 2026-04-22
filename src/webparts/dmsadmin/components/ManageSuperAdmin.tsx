@@ -15,6 +15,8 @@ import { useMediaQuery } from 'react-responsive';
 import styles from './Form.module.scss'
 import Swal from 'sweetalert2';
 import Select from "react-select";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort } from '@fortawesome/free-solid-svg-icons'; //Ritik 22/04/2026
 
 // import context from '../../../GlobalContext/context';
 // import classNames from "classnames";
@@ -216,7 +218,7 @@ export const ManageSuperAdmin = (props:any) => {
         setActiveComponent('');
     }
     const onSuccess=()=>{
-        Swal.fire(`Added Successsfully`,"", "success");  // ritik 21/4/26 
+        Swal.fire(`Added Successsfully.`,"", "success");  // ritik 22/04/26 
     }
     const onRemove=(UserTitle:any)=>{
         Swal.fire(`${UserTitle} Removed Successsfully`,"", "success");
@@ -243,7 +245,7 @@ export const ManageSuperAdmin = (props:any) => {
     //   cancelButtonColor: "#d33",
     //   confirmButtonText: "Yes, Removed it!"
     Swal.fire({
-  title: "Do you want to delete this request?",
+  title: "Do you want to delete this User/Group?", //Ritik 22/04/26
   icon: "warning",
   showCancelButton: true,
   confirmButtonColor: "#3085d6",
@@ -423,7 +425,7 @@ export const ManageSuperAdmin = (props:any) => {
                             <div className='mb-2 mt-0 d-none'>
                             <span className='text-muted font-14' style={{
                                 color:"Black"
-                            }}>User From Super Admin Group Will Have Full Control 1.</span>
+                            }}>User From Super Admin Group Will Have Full Control.</span>
                         </div>
                             </div>
                             <div className='col-md-5'>
@@ -466,8 +468,34 @@ export const ManageSuperAdmin = (props:any) => {
                             <thead>
                             <tr>
                                 <th style={{minWidth:'20px',maxWidth:'20px'}}>S.No.</th>
-                                <th style={{minWidth:'80px',maxWidth:'80px'}}>User</th>
-                                <th>Email</th>
+                                {/* <th style={{minWidth:'80px',maxWidth:'80px'}}>User</th>
+                                <th>Email</th>  Ritik 22/04/2026*/}
+                                <th style={{minWidth:'80px',maxWidth:'80px'}}>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSortChange('Title'); }}>
+      User <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search User" className="inputcss"
+      value={filters.Title}
+      onChange={(e) => { handleFilterChange(e, 'Title'); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSortChange('Email'); }}>
+      Email <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Email" className="inputcss"
+      value={filters.Email}
+      onChange={(e) => { handleFilterChange(e, 'Email'); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
                                 <th style={{minWidth:'40px',maxWidth:'40px'}}>Action</th>
                             </tr>
                             </thead>
@@ -577,11 +605,11 @@ export const ManageSuperAdmin = (props:any) => {
         control: (base, state) => ({
             ...base,
             border: userError
-                ? "2px solid #dc3545"
+                ? "2px solid #fe0100"
                 : state.isFocused
                     ? "1px solid #86b7fe"
                     : base.border,
-            backgroundColor: userError ? "#fff5f5" : "#fff",
+                    backgroundColor: userError ? "#fee6e6" : "#fff",
             boxShadow: "none",
             padding: "2px"
         })

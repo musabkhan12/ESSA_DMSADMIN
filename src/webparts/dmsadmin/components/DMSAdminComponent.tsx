@@ -1451,6 +1451,9 @@ useEffect(() => {
   // ritik 21/4/26 start
    const [userSearchText, setUserSearchText] = React.useState("");
 const [userSortConfig, setUserSortConfig] = React.useState({ key: '', direction: 'ascending' });
+const [columnSearchTexts, setColumnSearchTexts] = React.useState({
+  email: '', groupName: '', permission: '', Descirption: ''
+}); //Ritik 22/04/26
   // ritik 21/4/26 end
   // const [refresh,setRefresh]=useState(false);
 
@@ -1497,7 +1500,7 @@ const [userSortConfig, setUserSortConfig] = React.useState({ key: '', direction:
   const confirmDelete = (group: any, userId: any, groupName: any) => {
     Swal.fire({
       // Rohit 21/4/26 start
-      title: "Do you want to delete this request?",
+      title: "Do you want to delete this User/Group?",//Ritik 22/04/2026
       //text: "You won't be able to revert this!",
       // Rohit 21/4/26 end
       icon: "warning",
@@ -1725,6 +1728,24 @@ const filteredUsersData = React.useMemo(() => {
     const s = userSearchText.toLowerCase();
     result = result.filter((u: any) => (u.user || '').toLowerCase().includes(s));
   }
+  // Ritik 22/04/2026
+  if (columnSearchTexts.email) {
+    const s = columnSearchTexts.email.toLowerCase();
+    result = result.filter((u: any) => (u.email || '').toLowerCase().includes(s));
+  }
+  if (columnSearchTexts.groupName) {
+    const s = columnSearchTexts.groupName.toLowerCase();
+    result = result.filter((u: any) => (u.groupName || '').toLowerCase().includes(s));
+  }
+  if (columnSearchTexts.permission) {
+    const s = columnSearchTexts.permission.toLowerCase();
+    result = result.filter((u: any) => (u.permission || '').toLowerCase().includes(s));
+  }
+  if (columnSearchTexts.Descirption) {
+    const s = columnSearchTexts.Descirption.toLowerCase();
+    result = result.filter((u: any) => (u.Descirption || '').toLowerCase().includes(s));
+  }
+  // Sort
   if (userSortConfig.key) {
     result = [...result].sort((a: any, b: any) => {
       const aVal = (a[userSortConfig.key] || '').toLowerCase();
@@ -1735,7 +1756,7 @@ const filteredUsersData = React.useMemo(() => {
     });
   }
   return result;
-}, [allUsersFromGroups, userSearchText, userSortConfig]);
+}, [allUsersFromGroups, userSearchText, userSortConfig, columnSearchTexts]); //Ritik 22/04/2026
 const startIndex = (currentPage - 1) * itemsPerPage;
 const endIndex = startIndex + itemsPerPage;
 const currentData = filteredUsersData.slice(startIndex, endIndex);
@@ -1951,9 +1972,7 @@ const currentData = filteredUsersData.slice(startIndex, endIndex);
                                     // onChange={(e) => setNewSiteData({ ...newSiteData, Title: e.target.value })}
                                      className={`form-control shadow-sm ${locationFormErrors.Title ? 'input-error' : ''}`}
   style={{
-   border: locationFormErrors.Title ? "2px solid #dc3545" : "1px solid #ccc",
-padding: '10px',
-backgroundColor: locationFormErrors.Title ? "#fdecea" : "#fff",
+   padding: '10px',
 boxShadow: "none",
 outline: "none"
   }}
@@ -1964,6 +1983,7 @@ outline: "none"
       setLocationFormErrors(prev => ({ ...prev, Title: false }));
     }
   }}
+  // Puja - Added red border #fe0100 and background #fee6e6 for validation error
   // Aman 21/4/26 end
                                   />
 
@@ -1979,9 +1999,7 @@ outline: "none"
                                     className={`form-control shadow-sm ${locationFormErrors.Siteurl ? 'input-error' : ''}`}
   style={{
     borderRadius: "6px",
-   border: locationFormErrors.Siteurl ? "2px solid #dc3545" : "1px solid #ccc",
 padding: '10px',
-backgroundColor: locationFormErrors.Siteurl ? "#fdecea" : "#fff",
 boxShadow: "none",
 outline: "none"
   }}
@@ -1992,8 +2010,10 @@ outline: "none"
       setLocationFormErrors(prev => ({ ...prev, Siteurl: false }));
     }
   }}
-  // Aman 21/4/26 end
+  // Puja - Added red border #fe0100 and background #fee6e6 for validation error
                                   />
+  {/* // Aman 21/4/26 end */}
+                                
 
                                 </div>
                                 <div className="col-md-4 ">
@@ -2261,7 +2281,8 @@ outline: "none"
             {toggleManagePermissionCard === "Yes" && (
               <div className="position-relative">
                 <div className="mt-minus30">
-                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/* Ritik 22/04/26 */}
+                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Home</button>
 
                 </div>
                 <div style={{
@@ -2531,10 +2552,71 @@ outline: "none"
   </div>
 </th>
                         {/* ritik 21/4/26 end */}
-                              <th>User Email</th>
+                              {/* <th>User Email</th>
                               <th>Group Name</th>
                               <th>Permission</th>
-                              <th>Description</th>
+                              <th>Description</th>  Ritik 22/04/26*/}
+
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setUserSortConfig(prev => ({ key: 'email', direction: prev.key === 'email' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      User Email <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Email" className="inputcss"
+      value={columnSearchTexts.email}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, email: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setUserSortConfig(prev => ({ key: 'groupName', direction: prev.key === 'groupName' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      Group Name <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Group" className="inputcss"
+      value={columnSearchTexts.groupName}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, groupName: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setUserSortConfig(prev => ({ key: 'permission', direction: prev.key === 'permission' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      Permission <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Permission" className="inputcss"
+      value={columnSearchTexts.permission}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, permission: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setUserSortConfig(prev => ({ key: 'Descirption', direction: prev.key === 'Descirption' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      Description <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Description" className="inputcss"
+      value={columnSearchTexts.Descirption}
+      onChange={(e) => { setColumnSearchTexts(prev => ({...prev, Descirption: e.target.value})); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
                               <th style={{ minWidth: '65px', maxWidth: '65px' }}>Action</th>
                             </tr>
                           </thead>
@@ -2599,7 +2681,8 @@ outline: "none"
             {activeComponent === "ManagePermission" &&
               (
                 <div className="position-relative">
-                  <button className="btn back-to-admin newbutton_align" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/* Ritik 22/04/26 */}
+                  <button className="btn back-to-admin newbutton_align" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                   <ManagePermission
                     // selectedGroupUsers={selectedGroupUsers}
                     selectedGropuForPermission={selectedGropuForPermission}
@@ -2613,7 +2696,8 @@ outline: "none"
               ( 
                 <div className="position-relative">
                   <div className="mt-minus30">
-                  <button className="btn back-to-admin mt-minus30" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                    {/* Ritik 22/04/26 */}
+                  <button className="btn back-to-admin mt-minus30" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Home</button>
               </div>    {/*Aman 27/2/26*/}
                   {/* <ManageSuper sp={activeSp} /> */}
                   <ManageEssaCoreGroups  context={context} />
@@ -2623,7 +2707,8 @@ outline: "none"
              {activeComponent === "ManageSuperAdmin" &&
               (
                 <div className="position-relative">
-                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/* Ritik 22/04/26 */}
+                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                   {/*Aman 27/2/26*/}
                   {/* <ManageSuper sp={activeSp} /> */}
                   <ManageSuperAdmin  context={context} />
@@ -2633,7 +2718,8 @@ outline: "none"
             {activeComponent === "ManageSuper" &&
               (
                 <div className="position-relative">
-                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/* Ritik 22/04/26 */}
+                  <button className="btn back-to-admin" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                   {/*Aman 27/2/26*/}
                   {/* <ManageSuper sp={activeSp} /> */}
                   <ManageSuper sp={activeSp} context={context} />
@@ -2643,7 +2729,8 @@ outline: "none"
             {toggleManagePermissionCard === "Manage Folder Deligation" &&
               (
                 <div className="position-relative">
-                  <button className="btn back-to-admin newbutton_align" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                  {/* Ritik 22/04/26 */}
+                  <button className="btn back-to-admin newbutton_align" onClick={() => handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                   {/* <ManageFolderDeligation
                     sp={activeSp}
                     // selectedGroupUsers={selectedGroupUsers}

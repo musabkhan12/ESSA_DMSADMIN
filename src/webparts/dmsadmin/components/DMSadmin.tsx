@@ -618,7 +618,8 @@ const handleReturnToMain = (Name:any) => {
     }
     {toggleManagePermissionCard === "Yes" && (
       <div>
-          <button className="back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+        {/* Ritik 22/04/26 */}
+          <button className="back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button> 
           <div style={{
                     width:"fit-content",
                     position:"relative",
@@ -712,7 +713,8 @@ const handleReturnToMain = (Name:any) => {
     {activeComponent === "ManagePermission" && 
                       (
                         <div className="position-relative">
-                            <button className="back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                          {/* Ritik 22/04/26 */}
+                            <button className="back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                             <ManagePermission
                               // selectedGroupUsers={selectedGroupUsers}
                               selectedGropuForPermission={selectedGropuForPermission}
@@ -725,7 +727,8 @@ const handleReturnToMain = (Name:any) => {
     {activeComponent === "ManageSuper" && 
                       (
                         <div className="position-relative">
-                            <button className="back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Main</button>
+                          {/* Ritik 22/04/26 */}
+                            <button className="back-to-admin" onClick={()=>handleReturnToMainFromPermissionTable('')}>Back To Home</button>
                             {/*Aman 27/2/26*/}
                             {/* <ManageSuper sp={sp}/> */}
                             <ManageSuper sp={sp} context={props.context}/>
