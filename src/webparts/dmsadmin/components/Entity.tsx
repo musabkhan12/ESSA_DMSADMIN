@@ -188,7 +188,8 @@ allData.push(...mappedItems);
   SiteURL: '',
   Active: '',
   Author: '',
-  Created: ''
+  Created: '',
+  siteCollectionUrl: '' // Rohit 21/04/26
 });
     const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
@@ -226,19 +227,43 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       (filters.Active === '' || (item.Active || '').toLowerCase().includes(filters.Active)) &&
       (filters.Author === '' || (item.Author?.Title || '').toLowerCase().includes(filters.Author)) &&
       (filters.Created === '' || (item.Created || '').toString().toLowerCase().includes(filters.Created))
+      // Rohit 21/4/26 start
+//     );
+//   });
+
+//   const sortedData = [...filteredData].sort((a, b) => {
+//     if (!sortConfig.key) return 0;
+
+//     const aValueRaw = sortConfig.key === 'SiteURL'
+//   ? getLocationFromUrl(a.SiteURL)
+//   : a[sortConfig.key];
+
+// const bValueRaw = sortConfig.key === 'SiteURL'
+//   ? getLocationFromUrl(b.SiteURL)
+//   : b[sortConfig.key];
+      &&
+(filters.siteCollectionUrl === '' ||
+  (siteCollections?.find((s: any) => s.siteUrl === item.siteCollectionUrl)?.label || getLocationFromUrl(item.siteCollectionUrl || ''))
+    .toLowerCase()
+    .includes(filters.siteCollectionUrl)) //end here
     );
   });
-
+ 
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortConfig.key) return 0;
-
+// Rohit 21/04/26
     const aValueRaw = sortConfig.key === 'SiteURL'
   ? getLocationFromUrl(a.SiteURL)
+  : sortConfig.key === 'siteCollectionUrl'
+  ? (siteCollections?.find((s: any) => s.siteUrl === a.siteCollectionUrl)?.label || getLocationFromUrl(a.siteCollectionUrl || ''))
   : a[sortConfig.key];
-
+ 
 const bValueRaw = sortConfig.key === 'SiteURL'
   ? getLocationFromUrl(b.SiteURL)
+  : sortConfig.key === 'siteCollectionUrl'
+  ? (siteCollections?.find((s: any) => s.siteUrl === b.siteCollectionUrl)?.label || getLocationFromUrl(b.siteCollectionUrl || ''))
   : b[sortConfig.key];
+// Rohit 21/4/26 end
 
 const aVal = (aValueRaw || '').toString().toLowerCase();
 const bVal = (bValueRaw || '').toString().toLowerCase();
@@ -435,15 +460,24 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
 };
       const handleDeleteEntity = async (item: any) => {
   console.log("Entity Item", item);
- 
+  // Aman 21/4/26 start
+  // Swal.fire({
+  //   title: "Are you sure?",
+  //   text: "You won't be able to revert this!",
+  //   icon: "warning",
+  //   showCancelButton: true,
+  //   confirmButtonColor: "#3085d6",
+  //   cancelButtonColor: "#d33",
+  //   confirmButtonText: "Yes, Remove it!"
   Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Remove it!"
+  title: "Do you want to delete this request?",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "OK",
+  cancelButtonText: "Cancel"
+  // Aman 21/4/26 end
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
@@ -502,12 +536,20 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
         }
  
         setRefresh(!refresh);
- 
+       // Aman 21/4/26 start
+        // Swal.fire({
+        //   title: "Removed!",
+        //   text: `${item.Title} successfully removed.`,
+        //   icon: "success"
+        // });
+        
         Swal.fire({
-          title: "Removed!",
-          text: `${item.Title} successfully removed.`,
-          icon: "success"
+          title: "Deleted Successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK"
         });
+        // Aman 21/4/26
  
       } catch (error) {
         console.error("Error in deleting the subsite", error);
@@ -672,6 +714,22 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                     </div>
                
                   </th> */}
+                  {/* Rohit 21/4/26 start */}
+                    <th>
+                      <div>
+                        {/* //Rohit -- 21/04/2026 */}
+                        <span onClick={() => handleSortChange('siteCollectionUrl')}>Location <FontAwesomeIcon icon={faSort} /></span>
+                        <input
+                          type="text"
+                          placeholder="Search Location"
+                          className="inputcss"
+                          onChange={(e) => handleFilterChange(e, 'siteCollectionUrl')}
+                          onKeyDown={handleKeyDown}
+                        />
+                      </div>
+                    </th>
+{/* Rohit 21/4/26 end */}
+ 
                   <th>
   <div>
     <span onClick={() => handleSortChange('Title')}>Department <FontAwesomeIcon icon={faSort} /></span>
@@ -720,7 +778,9 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                     </div>
                     
                     </th> */}
-                    <th>
+                    {/* Rohit 21/4/26 start */}
+                    {/* <th>
+                      
   <div>
     <span onClick={() => handleSortChange('SiteURL')}>URL <FontAwesomeIcon icon={faSort} /></span>
     <input
@@ -731,7 +791,9 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
       onKeyDown={handleKeyDown} // srs 17/4/26
     />
   </div>
-</th>
+  
+</th> */}
+ {/* Rohit 21/4/26 end */}
                     <th style={{minWidth: '70px', maxWidth: '70px' }}>
   <div>
     <span onClick={() => handleSortChange('Active')}>Status <FontAwesomeIcon icon={faSort} /></span>
@@ -806,6 +868,13 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                           <span className='indexdesign'>
                         {(currentPage - 1) * itemsPerPage + index + 1}
                         </span>                        </td>
+                        {/* Rohit 21/4/26 start */}
+                      <td>
+                        {item.siteCollectionUrl
+                          ? siteCollections?.find((s: any) => s.siteUrl === item.siteCollectionUrl)?.label || getLocationFromUrl(item.siteCollectionUrl)
+                          : '—'}
+                      </td>
+{/* Rohit 21/4/26 end */}
                         <td className="">
                         {item.Title || 'No Title'}
                         </td>
@@ -816,7 +885,8 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                         {/* <td  title={item.SiteURL}>
                         {item.SiteURL || 'No URL'}
                         </td> */}
-                        <td >{getLocationFromUrl(item.SiteURL)}</td>
+                        {/* Rohit 21/4/26 rmeoved for duplicate */}
+                        {/* <td >{getLocationFromUrl(item.SiteURL)}</td> */}
                         <td style={{minWidth: '70px', maxWidth: '70px' }}>
                           <div className='stausbg newsta'>
                         {item.Active === "Yes" ? 'Active' : 'Inactive'}
@@ -825,7 +895,10 @@ const bVal = (bValueRaw || '').toString().toLowerCase();
                         <td >
                     
                         {/* {format(new Date(item.Created), 'MMM dd, yyyy') || 'No Date'} */}
-                        {format((item.Created), 'MMM dd, yyyy') || 'No Date'}
+                        {/* Rohit 21/4/26 start */}
+                          {item.Created ? new Date(item.Created).toLocaleDateString("en-GB") : 'No Date'}
+                         {/* Rohit 21/4/26 end */}
+                        {/* {format((item.Created), 'MMM dd, yyyy') || 'No Date'} */}
                         
                         </td>
                         <td >

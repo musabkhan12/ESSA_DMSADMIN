@@ -405,10 +405,13 @@ const handleAddUsers = async () => {
  
     const successes = results.filter(r => r.success);
     const failures = results.filter(r => !r.success);
- 
+ // ritik 21/4/26 start
     if (successes.length > 0) {
-      Swal.fire("Users Added Successfully", `Added: ${successes.length}, Skipped (already in group): ${failures.filter(f => f.error === "Already in group").length}, Failed: ${failures.filter(f => f.error !== "Already in group").length}`, "success");
-    } else if (failures.every(f => f.error === "Already in group")) {
+      //Swal.fire("Users Added Successfully", `Added: ${successes.length}, Skipped (already in group): ${failures.filter(f => f.error === "Already in group").length}, Failed: ${failures.filter(f => f.error !== "Already in group").length}`, "success");
+       Swal.fire("Added Successfully", `Added: ${successes.length}, Skipped (already in group): ${failures.filter(f => f.error === "Already in group").length}, Failed: ${failures.filter(f => f.error !== "Already in group").length}`, "success"); 
+   //Ritik 22/04/26 end
+    }  
+    else if (failures.every(f => f.error === "Already in group")) {
       Swal.fire("Users Already in Group", "All selected users are already super admins on this site", "info");
     } else {
       Swal.fire("Failed to Add Users", `Failed: ${failures.length}`, "error");
@@ -445,28 +448,52 @@ const handleAddUsers = async () => {
 // End
  
   // Added confirm popup start
-  const confirmDelete=(group:any,userId:any,userTitle:any)=>{
+  // Aman 21/4/26 start
+  // const confirmDelete=(group:any,userId:any,userTitle:any)=>{
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "You won't be able to revert this!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, Removed it!"
+  //   }).then(async(result) => {
+  //     if (result.isConfirmed) {
+  //     await group.users.removeById(userId);
+  //     setRefresh(!refresh);
+  //       Swal.fire({
+  //         title: "Removed!",
+  //         text: `${userTitle} Suucessfuly Removed.`,
+  //         icon: "success"
+  //       });
+  //     }
+  //   });
+  // }
+//   End
+const confirmDelete=(group:any,userId:any,userTitle:any)=>{
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Do you want to delete this request?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Removed it!"
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel"
     }).then(async(result) => {
       if (result.isConfirmed) {
-      await group.users.removeById(userId);
-      setRefresh(!refresh);
+        await group.users.removeById(userId);
+        setRefresh(!refresh);
         Swal.fire({
-          title: "Removed!",
-          text: `${userTitle} Suucessfuly Removed.`,
-          icon: "success"
+          title: "Deleted Successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK"
         });
       }
     });
   }
-//   End
+  // Aman 21/4/26 end
  
  
   // Code for filter and search start
@@ -657,11 +684,12 @@ const [filters, setFilters] = React.useState({
                         <div style={{padding:'15px', marginTop:'25px', marginBottom:'30px'}} className={styles.container}>
                              <div className="d-flex align-items-center justify-content-between"> 
                               
-                              <div style={{lineHeight:'1.3'}} className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Location Admin
+                              <div style={{lineHeight:'1.3'}} className='page-title fw-bold mb-0 font-20'>Manage Location Admin
                                 <div className='mb-2 mt-0'>
                             <span className='text-muted font-14' style={{
                                 color:"Black", fontWeight:'500'
-                            }}>User From Super Admin Group Will Have Full Control 1.</span>
+                            }}>Location Admin Will Have Full Control
+ </span>
                         </div>
                             </div>
 
@@ -691,7 +719,9 @@ const [filters, setFilters] = React.useState({
                             <thead>
                             <tr>
                                 <th style={{minWidth:'40px',maxWidth:'40px'}}>S.No.</th>
-                                <th style={{minWidth:'130px',maxWidth:'130px'}}>Site Location</th>
+                                {/* Rohit 21/4/26 start*/}
+                                <th style={{minWidth:'130px',maxWidth:'130px'}}>Location</th> 
+                                 {/* Rohit 21/4/26 end*/}
                                 <th style={{minWidth:'100px',maxWidth:'100px'}}>User</th>
                                 <th style={{minWidth:'200px',maxWidth:'200px'}}>Email</th>
                                 
@@ -773,11 +803,13 @@ const [filters, setFilters] = React.useState({
                       background:"#fff",
  
                     }}>
-                      <div className="page-title fw-bold mb-2 font-20 mt-0">Admin Panel &gt; Manage Location Admin &gt; Add Location Admin</div>
+                      <div className="page-title fw-bold mb-2 font-20 mt-0">Add Location Admin</div>
                         <p style={{
                             color:"Black",
                            
-                        }}>Add Users <span className="text-danger">*</span></p>
+                        }}>
+                          {/* Aman 21/4/26 start remove span from here */}
+                          Add Users </p>
                         <div style={{
                             gap:"30px",
                             display:"flex"
@@ -789,6 +821,11 @@ const [filters, setFilters] = React.useState({
     onChange={(site: any) => setSelectedSite(site)}
     placeholder="Select Location..."
   /> */}
+  {/* Aman 21/4/26 start */}
+    <label style={{ fontWeight: 600 }}>
+    Select Location <span className="text-danger">*</span>
+  </label>
+  {/* Aman 21/4/26 end */}
   <Select
     options={sites}
     value={selectedSite}
@@ -797,18 +834,33 @@ const [filters, setFilters] = React.useState({
       if(site) setValidationError(false);
     }}
     placeholder="Select Location..."
+    // Aman 21/4/26 start
+    // styles={{
+    //   control: (base) => ({
+    //     ...base,
+    //     // borderColor: validationError && !selectedSite ? "red" : base.borderColor,
+    //     // '&:hover': { borderColor: validationError && !selectedSite ? "red" : base.borderColor }
+    //   })
+    // }}
     styles={{
-      control: (base) => ({
-        ...base,
-        // borderColor: validationError && !selectedSite ? "red" : base.borderColor,
-        // '&:hover': { borderColor: validationError && !selectedSite ? "red" : base.borderColor }
-      })
-    }}
+  control: (base) => ({
+    ...base,
+    border: validationError && !selectedSite ? "2px solid red" : base.border,
+    backgroundColor: validationError && !selectedSite ? "#fff5f5" : base.backgroundColor,
+    boxShadow: "none"
+  })
+}}
+  // Aman 21/4/26 end 
   />
 </div>
                             <div  style={{
                                 width:"370px"
                             }}>
+                              {/* Aman 21/4/26 start */}
+                                <label style={{ fontWeight: 600 }}>
+    Select User <span className="text-danger">*</span>
+  </label>
+                              {/* Aman 21/4/26 end */}
                                 {/* <Select
                                     isMulti
                                     options={user}
@@ -833,13 +885,32 @@ const [filters, setFilters] = React.useState({
         e.preventDefault(); // Prevents the page from submitting/going back
       }
     }}
+    // Aman 21/4/26 start
+    // styles={{
+    //   control: (base) => ({
+    //     ...base,
+    //     // borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor,
+    //     // '&:hover': { borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor }
+    //   })
+    // }}
     styles={{
-      control: (base) => ({
-        ...base,
-        // borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor,
-        // '&:hover': { borderColor: validationError && (!selectedUsersForPermission || selectedUsersForPermission.length === 0) ? "red" : base.borderColor }
-      })
-    }}
+  control: (base) => ({
+    ...base,
+    border:
+      validationError &&
+      (!selectedUsersForPermission || selectedUsersForPermission.length === 0)
+        ? "2px solid red"
+        : base.border,
+    backgroundColor:
+      validationError &&
+      (!selectedUsersForPermission || selectedUsersForPermission.length === 0)
+        ? "#fff5f5"
+        : base.backgroundColor,
+    boxShadow: "none"
+  })
+}}
+
+// Aman 21/4/26 end
   />
                             </div>
  

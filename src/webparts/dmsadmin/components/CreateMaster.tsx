@@ -210,11 +210,25 @@ const Basic: React.FC<BasicFormProps> = ({
     }
 
     const onSuccess=(jobTitle:any)=>{
-        Swal.fire(`${jobTitle} is creating, This will reflect shortly in DMS`,"", "success");
+        // ritik 21/4/26 start
+        //Swal.fire(`${jobTitle} is creating, This will reflect shortly in DMS`,"", "success");
+        Swal.fire({
+            title: "Saved successfully.",
+            
+            icon: "success"
+          });
+          // ritik 21/4/26 end
     }
 
     const updateValue=(jobTitle:any)=>{
-        Swal.fire(`${jobTitle} Updated`,"", "success");
+        // ritik 21/4/26 start
+        //Swal.fire(`${jobTitle} Updated`,"", "success");
+         Swal.fire({
+            title: "Submitted successfully.",
+            
+            icon: "success"
+          });
+          // ritik 21/4/26 end
     }
 
     // new function added for check limit and alphanumeric character start

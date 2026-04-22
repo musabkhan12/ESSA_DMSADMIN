@@ -72,6 +72,11 @@ import { MSGraphClientV3 } from "@microsoft/sp-http";
 import ManageFolderDeligation from "./ManageFolderDeligation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+// Ritik 21/4/26 start
+import { faSort } from '@fortawesome/free-solid-svg-icons';
+import * as XLSX from 'xlsx'; //Ritik  21/04/26
+import { faFileExport } from '@fortawesome/free-solid-svg-icons';
+// Ritik 21/4/26 end
 interface IMyComponentProps {
   context: WebPartContext;
 }
@@ -153,7 +158,17 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
   // Aman 16/03/26: States for creating new site collection
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newSiteData, setNewSiteData] = useState({ Title: '', Siteurl: '', IsActive: true });
+// Aman 21/4/26 start
+const [locationFormErrors, setLocationFormErrors] = useState({
+  Title: false,
+  Siteurl: false
+});
+// Aman 21/4/26 end
   const [validationErrors, setValidationErrors] = useState({ location: false, department: false, groups: false, users: false });
+
+  // Aman 21/4/26 start
+  
+  // Aman 21/4/26 end
 
   const fetchSiteCollections = async () => {
     try {
@@ -189,7 +204,15 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
       await sp.web.lists.getByTitle("MasterSiteCollection").items.getById(id).update({
         IsActive: !currentStatus
       });
-      Swal.fire("Updated", "Status changed", "success");
+      // Aman 21/4/26 start
+      //Swal.fire("Updated", "Status changed", "success"); 
+      Swal.fire({
+        title: "Update successfully.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK"
+      });
+      // Aman 21/4/26 end
       fetchMasterSiteData();
       fetchSiteCollections();
     } catch (error) {
@@ -235,7 +258,16 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
 // srs 17/4/26
  const handleSaveNewSite = async () => {
   // Validation Check
-  if (!newSiteData.Title || !newSiteData.Siteurl) {
+  // Aman 21/4/26 start
+  //if (!newSiteData.Title || !newSiteData.Siteurl) {
+  const errors = {
+  Title: !newSiteData.Title,
+  Siteurl: !newSiteData.Siteurl
+};
+
+if (errors.Title || errors.Siteurl) {
+  setLocationFormErrors(errors);
+  // Aman 21/4/26 end
     Swal.fire({
       html: `
         <div style="padding: 10px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
@@ -294,8 +326,16 @@ const Dmsadmincomponent: React.FC<IDmsAdminComponentProps> = ({ context, someOth
       IsActive: newSiteData.IsActive,
       SharewithOtherMeMasterSite: `${generatedUrl}/Lists/DMSShareWithOtherMaster/AllItems.aspx`
     });
-
-    Swal.fire("Success", "New Site Collection added", "success");
+   // Aman 21/4/26 start
+   // Swal.fire("Success", "New Site Collection added", "success");
+   Swal.fire({
+      title: "Submitted successfully.",
+      icon: "success",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "OK"
+    });
+    // Aman 21/4/26 end
+    setLocationFormErrors({ Title: false, Siteurl: false });  // Aman 21/4/26
     setShowCreateForm(false);
     setNewSiteData({ Title: '', Siteurl: '', IsActive: true });
     fetchMasterSiteData();
@@ -415,6 +455,19 @@ useEffect(() => {
   const handleToggleCard = (event: any, name: any) => {
     event.preventDefault();
     // alert(name)
+    // Aman 21/4/26 start
+     setValidationErrors({
+    location: false,
+    department: false,
+    groups: false,
+    users: false
+  });
+
+  selectedEntityForPermission = undefined;
+  selectedGropuForPermission = undefined;
+  selectedUsersForPermission = undefined;
+
+    // Aman 21/4/26 end 
     setToggleManagePermissionCard(name);
     setToggleManagePermission("No");
     setActiveComponent(null);
@@ -1292,18 +1345,11 @@ useEffect(() => {
           ">Please fill out the fields!</h2>
           
           <p style="
-            color: #545454; 
-            font-size: 18px; 
-            font-weight: 400; 
-            margin-bottom: 10px;
-          ">Please select the following fields:</p>
-          
-          <p style="
-            color: #d33; 
-            font-size: 18px; 
-            font-weight: 600; 
-            margin-bottom: 25px;
-          ">${missingFields.join(', ')}</p>
+  color: #545454; 
+  font-size: 18px; 
+  font-weight: 400; 
+  margin-bottom: 25px;
+">All fields are required</p>
           
           <button id="val-error-ok-button" style="
             background-color: #87CEEB; 
@@ -1383,12 +1429,50 @@ useEffect(() => {
   const handleBackToManagePermissionCard = () => {
     setToggleManagePermissionCard('Yes');
     setActiveComponent(null);
+    // Aman 21/4/26 start
+     // reset only validation
+  setValidationErrors({
+    location: false,
+    department: false,
+    groups: false,
+    users: false
+  });
+
+  // reset table visibility (safe)
+  setShowGroupsTable("No");
+  setShowGroupsUsers("No");
+    // Aman 21/4/26 end
   }
 
   // New Code Added for Show the selceted entity Groups in table form and also  show the all users of the groups
   const [showGroupsTable, setShowGroupsTable] = useState("No");
   const [showGroupsUsers, setShowGroupsUsers] = useState("No");
+
+  // ritik 21/4/26 start
+   const [userSearchText, setUserSearchText] = React.useState("");
+const [userSortConfig, setUserSortConfig] = React.useState({ key: '', direction: 'ascending' });
+  // ritik 21/4/26 end
   // const [refresh,setRefresh]=useState(false);
+
+  // ritik 21/4/26 start
+  const exportGroupToExcel = () => {
+    const siteLabel = selectedGlobalSite?.label || "SiteCollection";
+    const fileName = `${siteLabel} Group Permissions.xlsx`;
+  
+    const exportData = filteredUsersData.map((item: any) => ({
+      "User": item.user || "",
+      "User Email": item.email || "",
+      "Group Name": item.groupName || "",
+      "Permission": item.permission || "",
+      "Description": item.Descirption || ""
+    }));
+  
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Group Permissions");
+    XLSX.writeFile(wb, fileName);
+  };
+  // ritik 21/4/26 end
 
   // this function remove the user from groups
   const handleDeleteUser = async (userId: any, groupName: any) => {
@@ -1412,13 +1496,15 @@ useEffect(() => {
 
   const confirmDelete = (group: any, userId: any, groupName: any) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      // Rohit 21/4/26 start
+      title: "Do you want to delete this request?",
+      //text: "You won't be able to revert this!",
+      // Rohit 21/4/26 end
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Removed it!"
+      cancelButtonColor: "#d33", 
+      confirmButtonText: "Ok"          // Rohit 21/4/26 
     }).then(async (result) => {
       if (result.isConfirmed) {
         await group.users.removeById(userId);
@@ -1427,8 +1513,10 @@ useEffect(() => {
         // handleEntitySelect(selectedEntityForPermission);
         handleGroupsSelect(selectedGropuForPermission);
         Swal.fire({
-          title: "Removed!",
-          text: `User Suucessfuly removed from ${groupName}.`,
+          // Rohit 21/4/26 start
+          title: "Deleted successfully.",
+          //text: `User Suucessfuly removed from ${groupName}.`,
+          // Rohit 21/4/26 end 
           icon: "success"
         });
       }
@@ -1437,8 +1525,10 @@ useEffect(() => {
 
   const onSuccess = (groupName: any) => {
     Swal.fire({
-      title: "Added!",
-      text: `User Added Suucessfuly to the ${groupName}.`,
+      // Rohit 21/4/26 start
+      title: "Added successfully.",
+      //text: `User Added Suucessfuly to the ${groupName}.`,
+      // Rohit 21/4/26 end
       icon: "success",
     });
   }
@@ -1628,10 +1718,29 @@ useEffect(() => {
       setCurrentPage(pageNumber);
     }
   };
+// ritik 21/4/26 start
+const filteredUsersData = React.useMemo(() => {
+  let result = allUsersFromGroups;
+  if (userSearchText) {
+    const s = userSearchText.toLowerCase();
+    result = result.filter((u: any) => (u.user || '').toLowerCase().includes(s));
+  }
+  if (userSortConfig.key) {
+    result = [...result].sort((a: any, b: any) => {
+      const aVal = (a[userSortConfig.key] || '').toLowerCase();
+      const bVal = (b[userSortConfig.key] || '').toLowerCase();
+      if (aVal < bVal) return userSortConfig.direction === 'ascending' ? -1 : 1;
+      if (aVal > bVal) return userSortConfig.direction === 'ascending' ? 1 : -1;
+      return 0;
+    });
+  }
+  return result;
+}, [allUsersFromGroups, userSearchText, userSortConfig]);
+const startIndex = (currentPage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+const currentData = filteredUsersData.slice(startIndex, endIndex);
+// ritik 21/4/26 end
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = allUsersFromGroups.slice(startIndex, endIndex);
 
   interface PaginationProps {
     currentPage: number;
@@ -1836,9 +1945,26 @@ useEffect(() => {
                                   <label className="fw-bold mb-1" style={{ color: '#666' }}>Title <span className="text-danger">*</span></label>
                                   <input
                                     type="text"
-                                    className="form-control shadow-sm"
-                                    style={{ borderRadius: "6px", border: "1px solid #ccc", padding: '10px' }}
-                                    onChange={(e) => setNewSiteData({ ...newSiteData, Title: e.target.value })}
+                                    // Aman 21/4/26 start
+                                    // className="form-control shadow-sm"
+                                    // style={{ borderRadius: "6px", border: "1px solid #ccc", padding: '10px' }}
+                                    // onChange={(e) => setNewSiteData({ ...newSiteData, Title: e.target.value })}
+                                     className={`form-control shadow-sm ${locationFormErrors.Title ? 'input-error' : ''}`}
+  style={{
+   border: locationFormErrors.Title ? "2px solid #dc3545" : "1px solid #ccc",
+padding: '10px',
+backgroundColor: locationFormErrors.Title ? "#fdecea" : "#fff",
+boxShadow: "none",
+outline: "none"
+  }}
+  value={newSiteData.Title}
+  onChange={(e) => {
+    setNewSiteData({ ...newSiteData, Title: e.target.value });
+    if (e.target.value) {
+      setLocationFormErrors(prev => ({ ...prev, Title: false }));
+    }
+  }}
+  // Aman 21/4/26 end
                                   />
 
                                 </div>
@@ -1846,9 +1972,27 @@ useEffect(() => {
                                   <label className="fw-bold mb-1" style={{ color: '#666' }}>Site Url <span className="text-danger">*</span></label>
                                   <input
                                     type="text"
-                                    className="form-control shadow-sm"
-                                    style={{ borderRadius: "6px", border: "1px solid #ccc", padding: '10px' }}
-                                    onChange={(e) => setNewSiteData({ ...newSiteData, Siteurl: e.target.value })}
+                                    // Aman 21/4/26 start
+                                    // className="form-control shadow-sm"
+                                    // style={{ borderRadius: "6px", border: "1px solid #ccc", padding: '10px' }}
+                                    // onChange={(e) => setNewSiteData({ ...newSiteData, Siteurl: e.target.value })}
+                                    className={`form-control shadow-sm ${locationFormErrors.Siteurl ? 'input-error' : ''}`}
+  style={{
+    borderRadius: "6px",
+   border: locationFormErrors.Siteurl ? "2px solid #dc3545" : "1px solid #ccc",
+padding: '10px',
+backgroundColor: locationFormErrors.Siteurl ? "#fdecea" : "#fff",
+boxShadow: "none",
+outline: "none"
+  }}
+  value={newSiteData.Siteurl}
+  onChange={(e) => {
+    setNewSiteData({ ...newSiteData, Siteurl: e.target.value });
+    if (e.target.value) {
+      setLocationFormErrors(prev => ({ ...prev, Siteurl: false }));
+    }
+  }}
+  // Aman 21/4/26 end
                                   />
 
                                 </div>
@@ -1876,7 +2020,14 @@ useEffect(() => {
                                 <button type = "button"
                                   className="btn btn-secondary shadow-sm"
                                   style={{ backgroundColor: "#6c757d", padding: "8px 25px", border: 'none', borderRadius: '6px' }}
-                                  onClick={() => setShowCreateForm(false)}
+                                  // Aman 21/4/26 start
+                                  //onClick={() => setShowCreateForm(false)}
+                                  onClick={() => {
+                                    setShowCreateForm(false);
+                                    setNewSiteData({ Title: '', Siteurl: '', IsActive: true });
+                                    setLocationFormErrors({ Title: false, Siteurl: false });
+                                  }}
+                                  // Aman 21/4/26 end 
                                 >
                                   Cancel
                                 </button>
@@ -1888,8 +2039,26 @@ useEffect(() => {
                         ) : (
                           <>
                             <div className="d-flex justify-content-end gap-2 mb-3 mt-minus30">
-                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} onClick={() => setShowCreateForm(true)}>Add New</button>
-                              <button className="btn btn-secondary shadow-sm" onClick={() => handleReturnToMain('')}>Back to Home</button>
+                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} 
+                              // Aman 21/4/26 start
+                              //onClick={() => setShowCreateForm(true)}
+                                  onClick={() => {
+                                    setNewSiteData({ Title: '', Siteurl: '', IsActive: true });
+                                    setLocationFormErrors({ Title: false, Siteurl: false });
+                                    setShowCreateForm(true);
+                                  }}
+                                  // Aman 21/4/26 end
+                                >Add New</button>
+                              <button className="btn btn-secondary shadow-sm" 
+                              // Aman 21/4/26 start
+                              //onClick={() => handleReturnToMain('')}
+                                  onClick={() => {
+                                    setNewSiteData({ Title: '', Siteurl: '', IsActive: true });
+                                    setLocationFormErrors({ Title: false, Siteurl: false });
+                                    handleReturnToMain('');
+                                  }}
+                                  // Aman 21/4/26 end
+                              >Back to Home</button>
                             </div>
 
                             <div style={{ padding: '15px', clear: 'both', float: 'left', width: '100%', background: '#fff', borderRadius: '10px', border: '1px solid #ccc', marginTop: '15px' }}>
@@ -1921,11 +2090,60 @@ useEffect(() => {
                                       <td style={{ minWidth: '70px', maxWidth: '70px', textAlign: 'center' }}>
                                         {item.IsActive ? <span className="badge bg-success">Active</span> : <span className="badge bg-danger">Inactive</span>}
                                       </td>
+                                      {/* Aman 21/4/26 start */}
+                                      {/* <td style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>
+                                        <button className="btn btn-sm btn-outline-primary" 
+                                        
+                                        //onClick={() => handleToggleStatus(item.Id, item.IsActive)}
+                                        onClick={() => {
+    const isActive = item.IsActive;
+
+    Swal.fire({
+      title: isActive ? "Do you want to deactivate?" : "Do you want to activate?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleToggleStatus(item.Id, item.IsActive);
+      }
+    });
+  }}
+                                  // Aman 21/4/26 end    
+                                     >
+                                          {item.IsActive ? "Deactivate" : "Activate"}
+                                        </button>
+                                      </td> */}
                                       <td style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>
-                                        <button className="btn btn-sm btn-outline-primary" onClick={() => handleToggleStatus(item.Id, item.IsActive)}>
+                                        <button
+                                          type="button"
+                                          className="btn btn-sm btn-outline-primary"
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            const isActive = item.IsActive;
+
+                                            Swal.fire({
+                                              title: isActive ? "Do you want to deactivate?" : "Do you want to activate?",
+                                              icon: "warning",
+                                              showCancelButton: true,
+                                              confirmButtonColor: "#3085d6",
+                                              cancelButtonColor: "#d33",
+                                              confirmButtonText: "OK",
+                                              cancelButtonText: "Cancel"
+                                            }).then((result) => {
+                                              if (result.isConfirmed) {
+                                                handleToggleStatus(item.Id, item.IsActive);
+                                              }
+                                            });
+                                          }}
+                                        >
                                           {item.IsActive ? "Deactivate" : "Activate"}
                                         </button>
                                       </td>
+                                      {/* Aman 21/4/26 end */}
                                       
                                     </tr>
                                   ))}
@@ -2086,6 +2304,16 @@ useEffect(() => {
       //     boxShadow: validationErrors.location ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
       //   })
       // }}
+      // Aman 21/4/26 start
+      styles={{
+  control: (base) => ({
+    ...base,
+    border: validationErrors.location ? "2px solid red" : base.border,
+    backgroundColor: validationErrors.location ? "#fff5f5" : base.backgroundColor,
+    boxShadow: "none"
+  })
+}}
+  // Aman 21/4/26 end
     />
   </div>
 </div>
@@ -2112,6 +2340,16 @@ useEffect(() => {
                           //     boxShadow: validationErrors.department ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
                           //   })
                           // }}
+                          // Aman 21/4/26 start
+                           styles={{
+  control: (base) => ({
+    ...base,
+    border: validationErrors.department ? "2px solid red" : base.border,
+    backgroundColor: validationErrors.department ? "#fff5f5" : base.backgroundColor,
+    boxShadow: "none"
+  })
+}}
+                          // Aman 21/4/26 end
                         />
                       </div>
                     </div>
@@ -2138,6 +2376,16 @@ useEffect(() => {
                           //     boxShadow: validationErrors.groups ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
                           //   })
                           // }}
+                          // Aman 21/4/26 start
+                          styles={{
+  control: (base) => ({
+    ...base,
+    border: validationErrors.groups ? "2px solid red" : base.border,
+    backgroundColor: validationErrors.groups ? "#fff5f5" : base.backgroundColor,
+    boxShadow: "none"
+  })
+}}
+                          // Aman 21/4/26 end
                         />
                       </div>
                     </div>
@@ -2165,6 +2413,16 @@ useEffect(() => {
                           //     boxShadow: validationErrors.users ? '0 0 0 0.2rem rgba(220, 53, 69, 0.25)' : base.boxShadow
                           //   })
                           // }}
+                          // Aman 21/4/26 start
+                            styles={{
+  control: (base) => ({
+    ...base,
+    border: validationErrors.users ? "2px solid red" : base.border,
+    backgroundColor: validationErrors.users ? "#fff5f5" : base.backgroundColor,
+    boxShadow: "none"
+  })
+}}
+                          // Aman 21/4/26 end
                         />
                       </div>
                     </div>
@@ -2220,7 +2478,8 @@ useEffect(() => {
                     </div>
                     {showGroupsUsers === "Yes" && (<>
                       <div style={{ padding: '15px', clear: 'both', float: 'left', marginTop: '15px' }} className={styles.container}>
-                        <header style={{ padding: '0px 0px 5px 0px' }}>
+                        {/* ritik 21/4/26 start */}
+                        {/* <header style={{ padding: '0px 0px 5px 0px' }}>
                           <div className='page-title fw-bold mb-1 font-20'>
                             {selectedEntityForPermission.value} &gt;
                             {groupDetails.value && groupDetails.value.includes('_')
@@ -2228,13 +2487,50 @@ useEffect(() => {
                               : groupDetails.value || ''}
                             &gt; Users
                           </div>
-                        </header>
+                        </header> */}
+                        <header style={{ padding: '0px 0px 5px 0px' }}>
+  <div className='d-flex align-items-center justify-content-between'>
+    <div className='page-title fw-bold mb-1 font-20'>
+      {selectedEntityForPermission.value} &gt;
+      {groupDetails.value && groupDetails.value.includes('_')
+        ? groupDetails.value.split('_')[1]
+        : groupDetails.value || ''}
+      &gt; Users
+    </div>
+    <button
+      type="button"
+      onClick={exportGroupToExcel}
+      title="Export to Excel"
+      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
+    >
+      <FontAwesomeIcon icon={faFileExport} style={{ fontSize: '18px', color: '#217346' }} />
+    </button>
+  </div>
+</header>
+   {/* ritik 21/4/26 end */}
                         <table className='mtbalenew'>
 
                           <thead>
                             <tr>
                               <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
-                              <th>User</th>
+                              {/* ritik 21/4/26 start */}
+                              {/* <th>User</th> */}
+                              <th>
+  <div>
+    <button type="button" style={{cursor:'pointer', background:'none', border:'none', padding:'0', fontWeight:'inherit', fontSize:'inherit'}}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setUserSortConfig(prev => ({ key: 'user', direction: prev.key === 'user' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      User <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search User" className="inputcss"
+      value={userSearchText}
+      onChange={(e) => { setUserSearchText(e.target.value); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+                        {/* ritik 21/4/26 end */}
                               <th>User Email</th>
                               <th>Group Name</th>
                               <th>Permission</th>

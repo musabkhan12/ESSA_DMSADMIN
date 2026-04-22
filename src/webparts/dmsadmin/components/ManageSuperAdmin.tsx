@@ -21,7 +21,7 @@ import Select from "react-select";
 // import { useState, useEffect, useRef , useMemo } from "react";
 // import JoditEditor from "jodit-react";
 // import Jodit from 'jodit-react';
-let selectedUsersForPermission:any[];
+//let selectedUsersForPermission:any[];  // Aman 22/4/26
 // let description:any;
 
 
@@ -34,6 +34,10 @@ export const ManageSuperAdmin = (props:any) => {
     const [refresh,setRefresh]=React.useState(false);
     const [activeComponent,setActiveComponent]=React.useState('');
     const [user,setUser]=React.useState<any[]>([]);
+    const [selectedUsersForPermission, setSelectedUsersForPermission] = React.useState<any[]>([]);  // Aman 22/4/26
+    // Aman 21/4/26 start
+    const [userError, setUserError] = React.useState(false);
+    // Aman 21/4/26 end 
     // const [description,setDescription]=React.useState('');
     console.log("selectedUser",selectedUser);
     console.log("props",props);
@@ -72,12 +76,18 @@ export const ManageSuperAdmin = (props:any) => {
     }
 
     const handleToggleAddUsers=()=>{
+      // Aman 21/4/26 start
+        //selectedUsersForPermission = undefined;  
+        setSelectedUsersForPermission([]);
+        setUserError(false);
+      // Aman 21/4/26 end
         setActiveComponent("AddUser");
     }
     
     const handleUsersSelect=(selectedUsers:any)=>{
         console.log("selectedUsers",selectedUsers);
-        selectedUsersForPermission=selectedUsers;
+        //selectedUsersForPermission=selectedUsers;
+        setSelectedUsersForPermission(selectedUsers || []);
     }
 
     React.useEffect(()=>{
@@ -144,6 +154,7 @@ export const ManageSuperAdmin = (props:any) => {
         // console.log("selectedEntityForPermission",props.selectedEntityForPermission.value);
 
         if(selectedUsersForPermission === undefined || selectedUsersForPermission.length === 0){
+          setUserError(true);  // Aman 21/4/26
           checkValidation();
           return;
         }
@@ -187,7 +198,8 @@ export const ManageSuperAdmin = (props:any) => {
               console.error(`Failed to add ${user.email} to the group: `, error);
             }
           }));
-        selectedUsersForPermission=undefined;
+        //selectedUsersForPermission=undefined;
+        setSelectedUsersForPermission([]); 
         //   End
         onSuccess();
         setActiveComponent('');
@@ -196,10 +208,15 @@ export const ManageSuperAdmin = (props:any) => {
       }
     
     const handleBackToTable=()=>{
+      // Aman 21/4/26 start
+        //selectedUsersForPermission = undefined;  
+        setSelectedUsersForPermission([]); 
+        setUserError(false);  
+      // Aman 21/4/26 end
         setActiveComponent('');
     }
     const onSuccess=()=>{
-        Swal.fire(`Users Added Successsfully`,"", "success");
+        Swal.fire(`Added Successsfully`,"", "success");  // ritik 21/4/26 
     }
     const onRemove=(UserTitle:any)=>{
         Swal.fire(`${UserTitle} Removed Successsfully`,"", "success");
@@ -216,21 +233,33 @@ export const ManageSuperAdmin = (props:any) => {
 
   // Added confirm popup start
   const confirmDelete=(group:any,userId:any,userTitle:any)=>{
+    // Aman 21/4/26 start
+    // Swal.fire({
+    //   title: "Are you sure?",
+    //   text: "You won't be able to revert this!",
+    //   icon: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonColor: "#3085d6",
+    //   cancelButtonColor: "#d33",
+    //   confirmButtonText: "Yes, Removed it!"
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Removed it!"
+  title: "Do you want to delete this request?",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "OK",
+  cancelButtonText: "Cancel"
+  // Aman 21/4/26 end
     }).then(async(result) => {
       if (result.isConfirmed) {
       await group.users.removeById(userId);
       setRefresh(!refresh);
         Swal.fire({
-          title: "Removed!",
-          text: `${userTitle} Suucessfuly Removed.`,
+          // ritik 21/4/26 start
+          title: "Deleted successfully.",
+          //text: `${userTitle} Suucessfuly Removed.`,
+          // ritik 21/4/26 end
           icon: "success"
         });
       }
@@ -389,7 +418,7 @@ export const ManageSuperAdmin = (props:any) => {
                     <div className={styles.argform}>
                       <div className='row mt-minus30'>
                             <div className='col-md-7 '>
-                            <div className='page-title fw-bold mb-0 font-20 d-none'>Admin Panel &gt; Manage Super Admin
+                            <div className='page-title fw-bold mb-0 font-20 d-none'>Manage Super Admin 
                             </div>
                             <div className='mb-2 mt-0 d-none'>
                             <span className='text-muted font-14' style={{
@@ -425,12 +454,12 @@ export const ManageSuperAdmin = (props:any) => {
                        
                         <div style={{padding:'15px', marginTop:'20px'}} className={styles.container}>
                           <div className='col-md-12'>
-                            <div className='page-title fw-bold mb-0 font-20'>Admin Panel &gt; Manage Super Admin
+                            <div className='page-title fw-bold mb-0 font-20'>Manage Super Admin
                             </div>
                             <div className='mb-2 mt-0'>
                             <span className='text-muted font-14' style={{
                                 color:"Black"
-                            }}>User From Super Admin Group Will Have Full Control 1.</span>
+                            }}>User From Super Admin Group Will Have Full Control</span>
                         </div>
                             </div>
                         <table className="mtbalenew">
@@ -508,7 +537,8 @@ export const ManageSuperAdmin = (props:any) => {
                       background:"#fff",
 
                     }}>
-                    <div className='page-title fw-bold mb-3 font-20'>Admin Panel &gt; Manage Super Admin &gt; Add Super Admin</div>
+                      {/* Rohit 21/4/26 */}
+                    <div className='page-title fw-bold mb-3 font-20'>Add Super Admin</div>  
 
                         <p style={{
                             color:"Black",
@@ -521,7 +551,8 @@ export const ManageSuperAdmin = (props:any) => {
                             <div  style={{
                                 width:"370px"
                             }}>
-                                <Select
+                              {/* Aman 21/4/26 start */}
+                                {/* <Select
                                     isMulti
                                     options={user}
                                     onChange={(selected: any) =>
@@ -529,7 +560,34 @@ export const ManageSuperAdmin = (props:any) => {
                                     }
                                     placeholder="Select User..."
                                     noOptionsMessage={() => "No User Found..."}
-                                />
+                                /> */}
+                <Select
+    isMulti
+    options={user}
+    value={selectedUsersForPermission} // Maps the state to UI
+    onChange={(selected: any) => {
+        handleUsersSelect(selected);
+        if (selected && selected.length > 0) {
+            setUserError(false);
+        }
+    }}
+    placeholder="Select User..."
+    noOptionsMessage={() => "No User Found..."}
+    styles={{
+        control: (base, state) => ({
+            ...base,
+            border: userError
+                ? "2px solid #dc3545"
+                : state.isFocused
+                    ? "1px solid #86b7fe"
+                    : base.border,
+            backgroundColor: userError ? "#fff5f5" : "#fff",
+            boxShadow: "none",
+            padding: "2px"
+        })
+    }}
+/>
+                    {/* Aman 21/4/26 end  */}
                             </div>
 
                             <div>

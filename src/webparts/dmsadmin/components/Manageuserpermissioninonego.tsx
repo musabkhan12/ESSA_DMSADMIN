@@ -1009,6 +1009,12 @@ import "@pnp/sp/sites"
 import "@pnp/sp/presets/all"
 import "@pnp/sp/site-groups";
 import Select from "react-select";
+// ritik 21/4/26 start
+import * as XLSX from 'xlsx';
+import { faSort } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExport } from '@fortawesome/free-solid-svg-icons';
+// ritik 21/4/26 end
 // srs 17/3/26
 interface IUserPermissionManagerProps {
   sp: SPFI;
@@ -1039,6 +1045,16 @@ export default function UserPermissionManager(props: IUserPermissionManagerProps
   const [loading, setLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [tableSearchText, setTableSearchText] = React.useState("");
+
+  // ritik 21/4/26 start
+  const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
+const [userNameSort, setUserNameSort] = React.useState("");
+  // ritik 21/4/26 end
+
+  // ritik 21/4/26 start
+const [emailSort, setEmailSort] = React.useState("");
+const [groupSort, setGroupSort] = React.useState("");
+  // ritik 21/4/26 end
   // Aman 8/04/2026
   const [currentPage, setCurrentPage] = React.useState(1);     
   const itemsPerPage = 10;
@@ -1257,6 +1273,25 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
     }
   };
 // end here
+
+// ritik 21/4/26 start
+const exportToExcel = () => {
+  const siteLabel = selectedSiteForUserPermission?.label || "SiteCollection";
+  const fileName = `${siteLabel} User Permissions.xlsx`;
+ 
+  const exportData = filteredUsers.map((user: any) => ({
+    "User Name": user.Title || "",
+    "Email": user.Email || "",
+    "Groups": (user.Groups || []).join(", ")
+  }));
+ 
+  const ws = XLSX.utils.json_to_sheet(exportData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "User Permissions");
+  XLSX.writeFile(wb, fileName);
+};
+ 
+// ritik 21/4/26 end
   const openManageModal = (user: any) => {
     setSelectedUser(user);
     setUserGroups(user.Groups);
@@ -1306,22 +1341,89 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
       setLoading(false);
     }
   };
+// ritik 21/4/26 start
+const filteredUsers = React.useMemo(() => {
+    let result = users;
+ 
+    // Global search (email + group)
+    if (tableSearchText) {
+      const searchLower = tableSearchText.toLowerCase();
+      result = result.filter((user: any) => {
+        const userName = (user.Title || "").toLowerCase();
+        const userEmail = (user.Email || "").toLowerCase();
+        const userGroups = (user.Groups || []).join(", ").toLowerCase();
+        return userName.includes(searchLower) ||
+               userEmail.includes(searchLower) ||
+               userGroups.includes(searchLower);
+      });
+    }
+ 
+    //  User Name filter
+    if (userNameSort) {
+      const nameLower = userNameSort.toLowerCase();
+      result = result.filter((user: any) =>
+        (user.Title || "").toLowerCase().includes(nameLower)
+      );
+    }
+ 
+  if (emailSort) {
+      const emailLower = emailSort.toLowerCase();
+      result = result.filter((user: any) =>
+        (user.Email || "").toLowerCase().includes(emailLower)
+      );
+    }
+  
+    if (groupSort) {
+      const groupLower = groupSort.toLowerCase();
+      result = result.filter((user: any) =>
+        (user.Groups || []).join(", ").toLowerCase().includes(groupLower)
+      );
+    }
+//end here
+  // Sorting logic Ritik 22/04/26
+  if (sortConfig.key) {
+    result = [...result].sort((a: any, b: any) => {
+      let valA = "";
+      let valB = "";
+      if (sortConfig.key === 'Title') {
+        valA = (a.Title || "").toLowerCase();
+        valB = (b.Title || "").toLowerCase();
+      } else if (sortConfig.key === 'Email') {
+        valA = (a.Email || "").toLowerCase();
+        valB = (b.Email || "").toLowerCase();
+      } else if (sortConfig.key === 'Groups') {
+        valA = (a.Groups || []).join(", ").toLowerCase();
+        valB = (b.Groups || []).join(", ").toLowerCase();
+      }
+      if (sortConfig.direction === 'ascending') return valA.localeCompare(valB);
+      return valB.localeCompare(valA);
+    });
+  }
+ 
+  return result;
+}, [users, tableSearchText, userNameSort, emailSort, groupSort, sortConfig]);
+// ritik 21/4/26 end
 
   // Filter users based on search
-  const filteredUsers = React.useMemo(() => {
-    if (!tableSearchText) return users;
+  // ritik 21/4/26 start
+  // const filteredUsers = React.useMemo(() => {
+  //   if (!tableSearchText) return users;
     
-    const searchLower = tableSearchText.toLowerCase();
-    return users.filter((user: any) => {
-      const userName = (user.Title || "").toLowerCase();
-      const userEmail = (user.Email || "").toLowerCase();
-      const userGroups = (user.Groups || []).join(", ").toLowerCase();
+  //   const searchLower = tableSearchText.toLowerCase();
+  //   return users.filter((user: any) => {
+  //     const userName = (user.Title || "").toLowerCase();
+  //     const userEmail = (user.Email || "").toLowerCase();
+  //     const userGroups = (user.Groups || []).join(", ").toLowerCase();
       
-      return userName.includes(searchLower) || 
-             userEmail.includes(searchLower) || 
-             userGroups.includes(searchLower);
-    });
-  }, [users, tableSearchText]);
+  //     return userName.includes(searchLower) || 
+  //            userEmail.includes(searchLower) || 
+  //            userGroups.includes(searchLower);
+  //   });
+  // }, [users, tableSearchText]);
+
+  // ritik 21/4/26 end
+
+
 // Aman 8/04/26 (commented the code here as we are using custom table instead of details list)
   // const columns: IColumn[] = [
   //   {
@@ -1481,16 +1583,79 @@ const [activeSp, setActiveSp] = React.useState<SPFI>(props.sp);
     }}
           />
         </div>
-
+            {/* ritik 21/4/26 start */}
+                <button
+                  type="button"
+                  onClick={exportToExcel}
+                  title="Export to Excel"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
+                >
+                  <FontAwesomeIcon icon={faFileExport} style={{ fontSize: '18px', color: '#217346' }} />
+                </button>
+            {/* ritik 21/4/26 end */}
             </div>
           {/* --- Aman 8/04/26 --- */}
 <table className="mtbalenew">
   <thead>
     <tr>
       <th style={{ minWidth: '40px', maxWidth: '40px' }}>S.No.</th>
-      <th style={{ minWidth: '130px', maxWidth: '130px' }}>User</th>
+      {/* ritik 21/4/26 start */}
+                    <th style={{ minWidth: '130px', maxWidth: '130px' }}>
+                      <div>
+                        <button type="button" style={{ cursor: 'pointer', background: 'none', border: 'none', padding: '0', fontWeight: 'inherit', fontSize: 'inherit' }}
+                          onClick={(e) => {
+                            e.preventDefault(); e.stopPropagation();
+                            setSortConfig(prev => ({ key: 'Title', direction: prev.key === 'Title' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+                          }}>
+                          User <FontAwesomeIcon icon={faSort} />
+                        </button>
+                        <input type="text" placeholder="Search Title"
+                          value={userNameSort}
+                          onChange={(e) => { setUserNameSort(e.target.value); setCurrentPage(1); }}
+                          onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+                        />
+                      </div>
+                    </th>
+      {/* ritik 21/4/26 end */}
+
+       {/* ritik 21/4/26 start */}
+
+      {/* <th style={{ minWidth: '130px', maxWidth: '130px' }}>User</th>
       <th style={{ minWidth: '180px', maxWidth: '180px' }}>Email</th>
-      <th style={{ minWidth: '250px', maxWidth: '250px' }}>Group</th>
+      <th style={{ minWidth: '250px', maxWidth: '250px' }}>Group</th> */}
+       <th style={{ minWidth: '180px', maxWidth: '180px' }}>
+  <div>
+    <button type="button" style={{ cursor: 'pointer', background: 'none', border: 'none', padding: '0', fontWeight: 'inherit', fontSize: 'inherit' }}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setSortConfig(prev => ({ key: 'Email', direction: prev.key === 'Email' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      Email <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Email"
+      value={emailSort}
+      onChange={(e) => { setEmailSort(e.target.value); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+<th style={{ minWidth: '250px', maxWidth: '250px' }}>
+  <div>
+    <button type="button" style={{ cursor: 'pointer', background: 'none', border: 'none', padding: '0', fontWeight: 'inherit', fontSize: 'inherit' }}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation();
+        setSortConfig(prev => ({ key: 'Groups', direction: prev.key === 'Groups' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
+      }}>
+      Group <FontAwesomeIcon icon={faSort} />
+    </button>
+    <input type="text" placeholder="Search Group"
+      value={groupSort}
+      onChange={(e) => { setGroupSort(e.target.value); setCurrentPage(1); }}
+      onKeyDown={(e: any) => { if (e.key === 'Enter') e.preventDefault(); }}
+    />
+  </div>
+</th>
+
+{/* ritik 21/4/26 end */}
+
       <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action</th>
     </tr>
   </thead>

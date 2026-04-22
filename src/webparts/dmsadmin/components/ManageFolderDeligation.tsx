@@ -39,6 +39,15 @@ const ManageFolderDeligation: React.FC<ManageFolderDeligationProps> = ({ sp, onB
   const [selectedEntity, setSelectedEntity] = React.useState<any>(null);
 const [selectedUser, setSelectedUser] = React.useState<any>(null);
 const [selectedApprovers, setSelectedApprovers] = React.useState<any[]>([]);
+
+// Aman 21/4/26 start
+ const [formErrors, setFormErrors] = useState({
+  location: false,
+  department: false,
+  users: false,
+  approvers: false
+});
+// Aman 21/4/26 end
   // end here
   // ritik 03/04/2026 - handle site collection change and set the sp context accordingly replaced with the below code
     useEffect(() => {
@@ -417,10 +426,12 @@ const [selectedApprovers, setSelectedApprovers] = React.useState<any[]>([]);
   }
   const onSuccess=(groupName:any)=>{
     Swal.fire({
-      title: "Added!",
-      text: `User Added Suucessfuly to the ${groupName}.`,
+      // Rohit 21/4/26 start 
+      title: "Added Successsfully.",
+      //text: `User Added Suucessfuly to the ${groupName}.`,  
       icon: "success"
     });
+    // Rohit 21/4/26 end 
   }
   const checkValidation=()=>{
     Swal.fire("Please fill out the fields!", "All fields are required");
@@ -429,14 +440,28 @@ const [selectedApprovers, setSelectedApprovers] = React.useState<any[]>([]);
     console.log("selectedUsersForPermission", selectedUsersForPermission);
     console.log("selectedGropuForPermission", selectedGropuForPermission);
     console.log("selectedEntityForPermission", selectedEntityForPermission);
+   // Aman 21/4/26 start
+    // if (
+    //   selectedUsersForPermission === undefined ||
+    //   selectedUsersForPermission.length === 0
+    // ) {
+    //   checkValidation();
+    //   return;
+    // }
+    let errors = {
+  location: !selectedSiteCollection,
+  department: !selectedEntityForPermission,
+  users: !selectedUsersForPermission,
+  approvers: !seleccteduserforapproval || seleccteduserforapproval.length === 0
+};
 
-    if (
-      selectedUsersForPermission === undefined ||
-      selectedUsersForPermission.length === 0
-    ) {
-      checkValidation();
-      return;
-    }
+setFormErrors(errors);
+
+if (errors.location || errors.department || errors.users || errors.approvers) {
+  checkValidation();
+  return;
+}
+// Aman 21/4/26 end
     if (
       allUsersFromADMINGroups === undefined ||
       allUsersFromADMINGroups.length === 0
@@ -541,13 +566,14 @@ selectedUsersForPermission = undefined;
 
 const confirmDelete=(group:any,userId:any,groupName:any,userEmail:any,siteTitle:any)=>{
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      // Rohit 21/4/26
+      title: "Do you want to delete this request?",
+      //text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Removed it!"
+      confirmButtonText: "Ok"      // Rohit 21/4/26 
     }).then(async(result) => {
       if (result.isConfirmed) {
         await group.users.removeById(userId);
@@ -565,8 +591,10 @@ const confirmDelete=(group:any,userId:any,groupName:any,userEmail:any,siteTitle:
           // handleEntitySelect(selectedEntityForPermission);
           handleGroupsSelect(selectedGropuForPermission);
         Swal.fire({
-          title: "Removed!",
-          text: `User Suucessfuly removed from ${groupName}.`,
+          // Rohit 21/4/26 start
+          title: "Deleted successfully.",                        
+          //text: `User Suucessfuly removed from ${groupName}.`,
+          // Rohit 21/4/26 end
           icon: "success"
         });
       }
@@ -696,9 +724,23 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
   <div className="col-sm-4 mb-3">
     <label>Location <span className="text-danger">*</span></label>
     <Select
+     // Aman 21/4/26 start
       options={siteCollections}
       value={selectedSiteCollection}
-      onChange={handleSiteChange}
+      styles={{
+      control: (base) => ({
+        ...base,
+        border: formErrors.location ? "2px solid red" : base.border,
+        backgroundColor: formErrors.location ? "#fff5f5" : base.backgroundColor
+      })
+    }}
+      
+      //onChange={handleSiteChange}
+      onChange={(selected) => {
+  handleSiteChange(selected);
+  setFormErrors(prev => ({ ...prev, location: false }));
+}}
+    // Aman 21/4/26 end
       placeholder="Select Location..."
       noOptionsMessage={() => "No Site Collections Found..."}
       onKeyDown={(e: any) => {
@@ -714,9 +756,19 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
     <Select                        
     options={adminPermissionEntity}
     value={selectedEntity}
+    // Amab 21/4/26 start
+     styles={{
+      control: (base) => ({
+        ...base,
+        border: formErrors.department ? "2px solid red" : base.border,
+        backgroundColor: formErrors.department ? "#fff5f5" : base.backgroundColor
+      })
+    }}
+    // Aman 21/4/26 end
     onChange={(selected: any) => {
       handleEntitySelect(selected);
       setSelectedEntity(selected);
+      setFormErrors(prev => ({ ...prev, department: false }));  // Aman 21/4/26
     }}
     placeholder="Select Entity..."
     noOptionsMessage={() => "No Entity Found..."}
@@ -741,14 +793,25 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
                           />
                       </div>
                          { <div  className="col-sm-4">
+                      {/* Aman 21/4/26 end */}
               <label>Users <span className="text-danger">*</span></label>
               {/* Ritik 03/04/2026 added for user selection and management */}
                         <Select
     options={user}
     value={selectedUser}
+    // Aman 21/4/26 start
+    styles={{
+      control: (base) => ({
+        ...base,
+        border: formErrors.users ? "2px solid red" : base.border,
+        backgroundColor: formErrors.users ? "#fff5f5" : base.backgroundColor
+      })
+    }}
+    // Aman 21/4/26 end
     onChange={(selected: any) => {
       handleUsersSelect(selected);
       setSelectedUser(selected);
+      setFormErrors(prev => ({ ...prev, users: false }));
     }}
     placeholder="Select User..."
     noOptionsMessage={() => "No User Found..."}
@@ -761,16 +824,27 @@ const handleDeleteUser=async(userId:any,groupName:any,item:any)=>{
               {/* end here  */}
                        </div> 
                        } 
-                         { <div  className="col-sm-4">
+                         { 
+                          <div  className="col-sm-4">
               <label>Select Approvers <span className="text-danger">*</span></label>
               {/* Ritik 03/04/2026 added for approver selection and management */}
                         <Select
     isMulti
     options={allUsersFromADMINGroups}
     value={selectedApprovers}
+    // Aman 21/4/26 start
+    styles={{
+      control: (base) => ({
+        ...base,
+        border: formErrors.approvers ? "2px solid red" : base.border,
+        backgroundColor: formErrors.approvers ? "#fff5f5" : base.backgroundColor
+      })
+    }}
+    // Aman 21/4/26 end
     onChange={(selected: any) => {
       handleUsersforapprovalSelect(selected);
       setSelectedApprovers(selected);
+      setFormErrors(prev => ({ ...prev, approvers: false }));  // Aman 21/4/26
     }}
     placeholder="Select User..."
     noOptionsMessage={() => "No User Found..."}

@@ -77,6 +77,16 @@ const Basic: React.FC<BasicFormProps> = ({
 }, [currentIsActive, IsExternal]);
 
     const [description,setDescription] = useState('');
+
+    // Aman 21/4/26 start
+const [formErrors, setFormErrors] = useState({
+  location: false,
+  title: false,
+  isActive: false,
+  isExternal: false,
+  description: false
+});
+    // Aman 21/4/26 end
     // const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [disableInput, setDisableInput]=useState(false);
 
@@ -120,6 +130,12 @@ const Basic: React.FC<BasicFormProps> = ({
 
 const handleSubmit = async (event: any) => {
         if (!currentId && !selectedSiteFilter) {
+            // Aman 21/4/26 start
+            setFormErrors(prev => ({
+                ...prev,
+                location: true
+            }));
+            // Aman 21/4/26 end 
           Swal.fire("Please select a Site Collection");
           return;
         }
@@ -142,13 +158,50 @@ if (selectedSiteFilter) {
             : '';
         }
 
-        event.preventDefault(); 
-        const form=document.getElementById('createMaster') as HTMLFormElement
-        if (!form.checkValidity()) {
-            // form.reportValidity(); // Show validation errors
+//         event.preventDefault(); 
+//         const form=document.getElementById('createMaster') as HTMLFormElement
+//         if (!form.checkValidity()) {
+//             // form.reportValidity(); // Show validation errors
+//             // Aman 21/4/26 start
 
-            checkValidation();
-            return;
+//             const errors = {
+//     location: !currentId && !selectedSiteFilter,
+//     title: !jobTitle,
+//     isActive: !isActive,
+//     isExternal: !isExternal,
+//     description: !description
+//   };
+
+//   setFormErrors(errors);
+
+//   Swal.fire(
+//   "Please fill out the fields!",
+//   "All fields are required"
+// );
+
+//   return;
+//             // checkValidation();
+//             // return;
+//             // Aman 21/4/26 end
+//         }
+event.preventDefault(); 
+        const form = document.getElementById('createMaster') as HTMLFormElement;
+
+        // Validation Logic
+        const errors = {
+            location: !currentId && (!selectedSiteFilter || selectedSiteFilter === ""),
+            title: !jobTitle.trim(),
+            isActive: !isActive,
+            isExternal: !isExternal,
+            description: !description.trim()
+        };
+
+        setFormErrors(errors);
+
+        
+        if (!form.checkValidity() || errors.location) {
+            Swal.fire("Please fill out the fields!", "All fields are required");
+            return; 
         }
 
         // Remove alphanumeric characters and also check the limit start
@@ -372,7 +425,17 @@ try {
     const clearForm=()=>{
         setJobTitle("");
         setIsActive("");
+        setIsExternal(""); // Aman 21/4/26
         setDescription("");
+        // Aman 21/4/26 start
+        setFormErrors({
+      location: false,
+      title: false,
+      isActive: false,
+      isExternal: false,
+      description: false
+    });
+    // Aman 21/4/26 end
     }
 
     const checkValidation=()=>{
@@ -396,11 +459,25 @@ try {
     }
 
     const onSuccess=(jobTitle:any)=>{
-        Swal.fire(`${jobTitle} is creating, This will reflect shortly in DMS`,"", "success");
+        // ritik 21/4/26 start
+        //Swal.fire(`${jobTitle} is creating, This will reflect shortly in DMS`,"", "success");
+         Swal.fire({
+                    title: "Saved successfully.",
+                    
+                    icon: "success"
+                  });
+        // ritik 21/4/26 end
     }
 
     const updateValue=(jobTitle:any)=>{
-        Swal.fire(`${jobTitle} Updated`,"", "success");
+        // ritik 21/4/26 start
+        //Swal.fire(`${jobTitle} Updated`,"", "success");
+         Swal.fire({
+                    title: "Submitted successfully.",
+                    
+                    icon: "success"
+                  });
+       // ritik 21/4/26 end
     }
 
     // new function added for check limit and alphanumeric character start
@@ -444,18 +521,55 @@ try {
                     </div> */}</div>
                     <div className='row'>
                         <div className="col-sm-4 mb-3">
+                            {/* ritik 21/4/26 start  */}
+                                  {currentId && (
+                                      <div>
+                                          <div>
+                                              <label className={styles.label}>Select Location <span style={{ color: 'red', fontWeight: "Bold" }}> *</span></label>
+                                              <select style={{ padding: '5px 10px', color: 'black', backgroundColor: 'white' }}
+                                                  className="form-select"
+                                                  value={selectedSiteFilter}
+                                                  disabled
+                                              >
+                                                  <option value={selectedSiteFilter}>
+                                                      {siteCollections?.find((site: any) => site.siteUrl === selectedSiteFilter)?.label || selectedSiteFilter}
+                                                  </option>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  )}
+     {/* ritik 21/4/26 end */}
                             {!currentId && (
-    
+        
   <div>
    <div> <label className={styles.label}>Select Location <span style={{
                           color:'red',
                           fontWeight:"Bold"
                         }}> *</span></label>
-    <select style={{padding:'5px 10px'}}
+                        {/* Aman 21/4/26 start*/}
+    {/* <select style={{padding:'5px 10px'}}
       className="form-select"
       value={selectedSiteFilter}
       onChange={(e) => setSelectedSiteFilter?.(e.target.value)}
-    >
+    > */}
+    <select
+  style={{
+    padding:'5px 10px',
+    border: formErrors.location ? "2px solid red" : undefined,
+    backgroundColor: formErrors.location ? "#fff5f5" : undefined
+  }}
+  className="form-select"
+  value={selectedSiteFilter}
+  onChange={(e) => {
+    setSelectedSiteFilter?.(e.target.value);
+    if (e.target.value) {
+      setFormErrors(prev => ({ ...prev, location: false }));
+    }
+  }}
+  required
+>
+
+    {/* Aman 21/4/26 end*/}
       <option value="">Select Location...</option>
       {siteCollections?.map((site: any) => (
         <option key={site.siteUrl} value={site.siteUrl}>
@@ -474,14 +588,33 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <input
+                        {/* Aman 21/4/26 start*/}
+                        {/* <input
                             className={styles.inputform1}
                             id="jobTitle"
                             name="jobTitle"
                             value={jobTitle}
                             onChange={(e) => setJobTitle(e.target.value)}
                             required
-                        />
+                        /> */}
+                        <input
+  className={styles.inputform1}
+  style={{
+    border: formErrors.title ? "2px solid red" : undefined,
+    backgroundColor: formErrors.title ? "#fff5f5" : undefined
+  }}
+  id="jobTitle"
+  name="jobTitle"
+  value={jobTitle}
+  onChange={(e) => {
+    setJobTitle(e.target.value);
+    if (e.target.value) {
+      setFormErrors(prev => ({ ...prev, title: false }));
+    }
+  }}
+  required
+/>
+     {/* Aman 21/4/26 end*/}
                     </div>
                     
                     <div className="col-sm-4 mb-3">
@@ -491,7 +624,17 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <div className={styles.radioContainer}>
+                        {/* Aman 21/4/26 start */}
+                        {/* <div className={styles.radioContainer}> */}
+                        <div
+  style={{
+    border: formErrors.isActive ? "2px solid red" : undefined,
+    padding: "5px",
+    borderRadius: "5px",
+    backgroundColor: formErrors.isActive ? "#fff5f5" : undefined
+  }}
+>
+                      {/* Aman 21/4/26 end */}
                         <div className={styles.radioContainer}>
                             <div className={styles.radioItem}>
                             <input
@@ -500,7 +643,13 @@ try {
                                 name="isActive"
                                 value="Yes"
                                 checked={isActive === 'Yes'}
-                                onChange={(e) => setIsActive(e.target.value)}
+                                // Aman 21/4/26 start
+                                //onChange={(e) => setIsActive(e.target.value)}
+                                                  onChange={(e) => {
+                                                      setIsActive(e.target.value);
+                                                      setFormErrors(prev => ({ ...prev, isActive: false }));
+                                                  }}
+                                                  // Aman 21/4/26 end
                                 required
                             />
                             <label htmlFor="yesOption" className='newf'>Yes</label>
@@ -512,7 +661,13 @@ try {
                                 name="isActive"
                                 value="No"
                                 checked={isActive === 'No'}
-                                onChange={(e) => setIsActive(e.target.value)}
+                                // Aman 21/4/26 start
+                               // onChange={(e) => setIsActive(e.target.value)}
+                                                  onChange={(e) => {
+                                                      setIsActive(e.target.value);
+                                                      setFormErrors(prev => ({ ...prev, isActive: false }));
+                                                  }}
+                                // Aman 21/4/26 end
                                 required
                             />
                             <label htmlFor="noOption" className='newf'>No</label>
@@ -527,7 +682,17 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <div className={styles.radioContainer}>
+                        {/* Aman 21/4/26 start */}
+                        {/* <div className={styles.radioContainer}> */}
+                        <div
+  style={{
+    border: formErrors.isExternal ? "2px solid red" : undefined,
+    padding: "5px",
+    borderRadius: "5px",
+    backgroundColor: formErrors.isExternal ? "#fff5f5" : undefined
+  }}
+>
+                      {/* Aman 21/4/26 end */}
                         <div className={styles.radioContainer}>
                             <div className={styles.radioItem}>
                             <input
@@ -536,7 +701,13 @@ try {
                                 name="isExternal"
                                 value="Yes"
                                 checked={isExternal === 'Yes'}
-                                onChange={(e) => setIsExternal(e.target.value)}
+                                // Aman 21/4/26 start
+                                //onChange={(e) => setIsExternal(e.target.value)}
+                                                  onChange={(e) => {
+                                                      setIsExternal(e.target.value);
+                                                      setFormErrors(prev => ({ ...prev, isExternal: false }));
+                                                  }}
+                                // Aman 21/4/26 end
                                 required
                             />
                             <label htmlFor="yesOption" className='newf'>Yes</label>
@@ -548,7 +719,13 @@ try {
                                 name="isExternal"
                                 value="No"
                                 checked={isExternal === 'No'}
-                                onChange={(e) => setIsExternal(e.target.value)}
+                                // Aman 21/4/26 start
+                                // onChange={(e) => setIsExternal(e.target.value)}
+                                                  onChange={(e) => {
+                                                      setIsExternal(e.target.value);
+                                                      setFormErrors(prev => ({ ...prev, isExternal: false }));
+                                                  }}
+                                // Aman 21/4/26 end
                                 required
                             />
                             <label htmlFor="noOption" className='newf'>No</label>
@@ -564,14 +741,34 @@ try {
                           fontWeight:"Bold"
                         }}> *</span>
                         </label>
-                        <input style={{height:'80px'}}
+                        {/* Aman 21/4/26 start  */}
+                        {/* <input style={{height:'80px'}}
                             className={styles.inputform1}
                             id="description"
                             name="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             required
-                        />
+                        /> */}
+                                  <input
+                                      style={{
+                                          height: '80px',
+                                          border: formErrors.description ? "2px solid red" : undefined,
+                                          backgroundColor: formErrors.description ? "#fff5f5" : undefined
+                                      }}
+                                      className={styles.inputform1}
+                                      id="description"
+                                      name="description"
+                                      value={description}
+                                      onChange={(e) => {
+                                          setDescription(e.target.value);
+                                          if (e.target.value) {
+                                              setFormErrors(prev => ({ ...prev, description: false }));
+                                          }
+                                      }}
+                                      required
+                                  />
+                                  {/* Aman 21/4/26 end  */}
                     </div>
                 </div>
                 </div>
@@ -583,7 +780,13 @@ try {
                         <p className={styles.Addtext}>Submit</p>
                     </button>
                     <button type="button" style={{marginBottom:'15px'}} className={styles.addbuttonargform1}
-                        onClick={onCancel}
+                    // Aman 21/4/26 start
+                        //onClick={onCancel}
+                      onClick={() => {
+                          clearForm();
+                          onCancel();
+                      }}
+                      // Aman 21/4/26 end
                     >
                         <p 
                             className={styles.Addtext}

@@ -218,6 +218,10 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
   const [principalOptions, setPrincipalOptions] = React.useState<any[]>([]);
   const [selectedPrincipals, setSelectedPrincipals] = React.useState<any[]>([]);
 
+  // Aman 21/4/26 start
+  const [userError, setUserError] = React.useState(false);
+  // Aman 21/4/26 end 
+
   // Filters & Sorting
   const [filters, setFilters] = React.useState<any>({
     Title: "",
@@ -279,6 +283,11 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
   // 1. Validation Check
   // Check if Group is default/empty and if any Principals are selected
   if (!selectedGroup || selectedGroup === "Select Group" || selectedPrincipals.length === 0) {
+    // Aman 21/4/26 start
+     if (selectedPrincipals.length === 0) {
+    setUserError(true);
+  }
+    // Aman 21/4/26 end
     Swal.fire({
       html: `
         <div style="padding: 10px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
@@ -290,11 +299,13 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
           ">Please fill out the fields!</h2>
           
           <p style="
-            color: #545454; 
-            font-size: 18px; 
-            font-weight: 400; 
-            margin-bottom: 25px;
-          ">Please select a group and at least one user/group to add.</p>
+  color: #545454; 
+  font-size: 18px; 
+  font-weight: 400; 
+  margin-bottom: 25px;
+">
+  All fields are required
+</p>
           
           <button id="val-ok-button" style="
             background-color: #87CEEB; 
@@ -346,13 +357,52 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
 };
 
   // Delete
-  const removeUser = async (login: string, name: string) => {
-    const confirm = await Swal.fire({ title: `Remove ${name}?`, showCancelButton: true });
-    if (confirm.isConfirmed) {
-      await sp.web.siteGroups.getByName(selectedGroup).users.removeByLoginName(login);
-      loadGroupUsers();
-    }
-  };
+//   const removeUser = async (login: string, name: string) => {
+//     // Aman 21/4/26 start
+//     //const confirm = await Swal.fire({ title: `Remove ${name}?`, showCancelButton: true });
+//     const confirm = await Swal.fire({
+//   title: `Do you want to delete ${name}?`,
+//   icon: "warning",
+//   showCancelButton: true,
+//   confirmButtonColor: "#3085d6",
+//   cancelButtonColor: "#d33",
+//   confirmButtonText: "OK",
+//   cancelButtonText: "Cancel"
+// });
+// // Aman 21/4/26 end
+//     if (confirm.isConfirmed) {
+//       await sp.web.siteGroups.getByName(selectedGroup).users.removeByLoginName(login);
+//       loadGroupUsers();
+//     }
+//   };
+
+  //ritik 22/04/26 Delete  start
+const removeUser = async (login: string, name: string) => {
+  const confirm = await Swal.fire({
+    title: "Do you want to delete this request?",
+    //Ritik 22/04/26
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Ok" //Ritik 22/04/26
+  });
+ 
+  if (confirm.isConfirmed) {
+    await sp.web.siteGroups
+      .getByName(selectedGroup)
+      .users.removeByLoginName(login);
+ 
+    await loadGroupUsers(); // ✅ await lagaya
+ 
+    await Swal.fire({ // ✅ await lagaya
+      title: "Deleted successfully.",
+      // text: `${name} Successfully Removed.`, //Ritik 22/04/26
+      icon: "success"
+    });
+  }
+};
+ // Ritik 22/4/26 end
 
   // Filtering
   const handleFilterChange = (e: any, field: string) => {
@@ -436,7 +486,7 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
    
  <div style={{marginTop:'78px'}} className="card card-body">
  <div className="page-title fw-bold font-20 mb-3">
-        Admin Panel &gt; Manage Core Groups
+        Manage Team Permission
       </div>
          <div className="d-flex gap-3 align-items-center mb-3">
         <label className="fw-bold">Select Group:</label>
@@ -452,7 +502,8 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
 
         {/* <div style={{ width: "420px" }}> */}
            <label className="fw-bold">Select User: <span className="text-danger">*</span></label>
-          <Select
+           {/* Aman 21/4/26 start */}
+          {/* <Select
             isMulti
             options={principalOptions}
             value={selectedPrincipals}
@@ -463,7 +514,40 @@ const ManageEssaCoreGroups: React.FC<Props> = ({ context }) => {
         e.preventDefault(); // Prevents the page from submitting/going back
       }
     }}
-          />
+          /> */}
+          
+          <Select
+  isMulti
+  options={principalOptions}
+  value={selectedPrincipals || []}
+  onChange={(val: any) => {
+    setSelectedPrincipals(val);
+
+    if (val && val.length > 0) {
+      setUserError(false);
+    }
+  }}
+  placeholder="Search user or group..."
+  onKeyDown={(e: any) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  }}
+  styles={{
+    control: (base, state ) => ({
+      ...base,
+      minWidth: '250px',
+      border: userError
+        ? "2px solid #dc3545"
+        : state.isFocused
+        ? "1px solid #86b7fe"
+        : base.border,
+      backgroundColor: userError ? "#fff5f5" : "#fff",
+      boxShadow: "none"
+    })
+  }}
+/>
+      {/* Aman 21/4/26 end */}
         {/* </div> */}
 
         <button type = "button" style={{backgroundColor: 'rgb(44, 153, 66)', borderColor:'rgb(44, 153, 66)'}} className="btn btn-success" onClick={handleAdd}>
