@@ -2059,7 +2059,7 @@ outline: "none"
                         ) : (
                           <>
                             <div className="d-flex justify-content-end gap-2 mb-3 mt-minus30">
-                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none' }} 
+                              <button className="btn btn-primary shadow-sm" style={{ backgroundColor: '#2c9942', border: 'none',width:'112px', textAlign:'center',padding:'0px',height:'40px', borderRadius:'6px', }} 
                               // Aman 21/4/26 start
                               //onClick={() => setShowCreateForm(true)}
                                   onClick={() => {
@@ -2069,7 +2069,7 @@ outline: "none"
                                   }}
                                   // Aman 21/4/26 end
                                 >Add New</button>
-                              <button className="btn btn-secondary shadow-sm" 
+                              <button style={{width:'112px', height:'40px', borderRadius:'6px', textAlign:'center', padding:'0px'}} className="btn btn-secondary shadow-sm" 
                               // Aman 21/4/26 start
                               //onClick={() => handleReturnToMain('')}
                                   onClick={() => {
@@ -2510,7 +2510,7 @@ outline: "none"
                           </div>
                         </header> */}
                         <header style={{ padding: '0px 0px 5px 0px' }}>
-  <div className='d-flex align-items-center justify-content-between'>
+  <div className='d-flex align-items-center justify-content-between w-100'>
     <div className='page-title fw-bold mb-1 font-20'>
       {selectedEntityForPermission.value} &gt;
       {groupDetails.value && groupDetails.value.includes('_')
@@ -2522,9 +2522,9 @@ outline: "none"
       type="button"
       onClick={exportGroupToExcel}
       title="Export to Excel"
-      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
+      style={{ background: 'none', border: 'none', minWidth:'auto', cursor: 'pointer', padding: '0px 0px' }}
     >
-      <FontAwesomeIcon icon={faFileExport} style={{ fontSize: '18px', color: '#217346' }} />
+      <FontAwesomeIcon icon={faFileExport} style={{ fontSize: '22px', color: '#217346' }} />
     </button>
   </div>
 </header>
@@ -2533,7 +2533,7 @@ outline: "none"
 
                           <thead>
                             <tr>
-                              <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No.</th>
+                              <th style={{ minWidth: '55px', maxWidth: '55px' }}>S.No. <div style={{height:'30px'}}></div></th>
                               {/* ritik 21/4/26 start */}
                               {/* <th>User</th> */}
                               <th>
@@ -2617,7 +2617,7 @@ outline: "none"
     />
   </div>
 </th>
-                              <th style={{ minWidth: '65px', maxWidth: '65px' }}>Action</th>
+                              <th style={{ minWidth: '65px', maxWidth: '65px' }}>Action <div style={{height:'30px'}}></div></th>
                             </tr>
                           </thead>
                           <tbody>

@@ -108,7 +108,16 @@ label{color: #3c3c3c !important;
   }
 
 .btn.back-to-admin{
-  background-color: #5c636a; color:#fff !important;
+  background-color: #5c636a; color:#fff !important;    width: 112px;
+    text-align: center;
+    justify-content: center;
+    padding: 0;
+}
+.btn.back-to-admin:hover{
+        background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
+    text-decoration: none;
 }
 
 @media(max-width:640px){

@@ -1568,6 +1568,7 @@ const filteredUsers = React.useMemo(() => {
     {/*end here */}
           <div className="d-flex align-items-center justify-content-between">
             <h3 className="font-18 text-dark fw-bold mb-2 m-0">User Permissions</h3> 
+            <div className="d-flex align-items-center gap-2">
  <div style={{width:'600px'}} className="search-container">
           <input
             type="text"
@@ -1588,17 +1589,21 @@ const filteredUsers = React.useMemo(() => {
                   type="button"
                   onClick={exportToExcel}
                   title="Export to Excel"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px' }}
+                  style={{ background: 'none', marginBottom:'15px', border: 'none', minWidth:'auto', cursor: 'pointer', padding: '4px 8px' }}
                 >
-                  <FontAwesomeIcon icon={faFileExport} style={{ fontSize: '18px', color: '#217346' }} />
+                  <FontAwesomeIcon icon={faFileExport} style={{ fontSize: '22px', color: '#217346' }} />
                 </button>
             {/* ritik 21/4/26 end */}
+            </div>
             </div>
           {/* --- Aman 8/04/26 --- */}
 <table className="mtbalenew">
   <thead>
     <tr>
-      <th style={{ minWidth: '40px', maxWidth: '40px' }}>S.No.</th>
+      <th style={{ minWidth: '40px', maxWidth: '40px' }}>S.No.
+  <div style={{height:'30px'}}></div>
+
+      </th>
       {/* ritik 21/4/26 start */}
                     <th style={{ minWidth: '130px', maxWidth: '130px' }}>
                       <div>
@@ -1607,7 +1612,7 @@ const filteredUsers = React.useMemo(() => {
                             e.preventDefault(); e.stopPropagation();
                             setSortConfig(prev => ({ key: 'Title', direction: prev.key === 'Title' && prev.direction === 'ascending' ? 'descending' : 'ascending' }));
                           }}>
-                          User <FontAwesomeIcon icon={faSort} />
+                          User <FontAwesomeIcon  icon={faSort} />
                         </button>
                         <input type="text" placeholder="Search Title"
                           value={userNameSort}
@@ -1656,7 +1661,7 @@ const filteredUsers = React.useMemo(() => {
 
 {/* ritik 21/4/26 end */}
 
-      <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action</th>
+      <th style={{ minWidth: '100px', maxWidth: '100px', textAlign: 'center' }}>Action  <div style={{height:'30px'}}></div></th>
     </tr>
   </thead>
   <tbody>

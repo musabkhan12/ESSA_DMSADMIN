@@ -734,7 +734,7 @@ const [filters, setFilters] = React.useState({
                         <table className="mtbalenew">
                             <thead>
                             <tr>
-                                <th style={{minWidth:'40px',maxWidth:'40px'}}>S.No.</th>
+                                <th style={{minWidth:'40px',maxWidth:'40px'}}>S.No. <div style={{height:'30px'}}></div></th>
                                 {/* <th style={{minWidth:'130px',maxWidth:'130px'}}>Location</th> 
                                 <th style={{minWidth:'100px',maxWidth:'100px'}}>User</th>
                                 <th style={{minWidth:'200px',maxWidth:'200px'}}>Email</th> */}
@@ -778,7 +778,7 @@ const [filters, setFilters] = React.useState({
   </div>
 </th>
                                 
-                                <th style={{minWidth:'40px',maxWidth:'40px'}}>Action</th>
+                                <th style={{minWidth:'40px',maxWidth:'40px'}}>Action <div style={{height:'30px'}}></div></th>
                             </tr>
                             </thead>
                             <tbody>

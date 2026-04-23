@@ -8,7 +8,15 @@
   padding-left: 0px;
 }
 .btn.back-to-admin{
-  background-color: #5c636a; color:#fff !important;
+  background-color: #5c636a; color:#fff !important;    width: 112px;
+    text-align: center;
+    justify-content: center;
+    padding: 0;
+}.btn.back-to-admin:hover{
+        background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
+    text-decoration: none;
 }
 
 .bd-highlight{height: 30px;}
@@ -29,10 +37,14 @@
  
  height: 40px; min-width: auto;
  text-decoration: none;
- cursor: pointer;
+ cursor: pointer;text-align: center;
+  justify-content: center;
+    width: 112px;
  }
  .backbuttonform:hover{
-   text-decoration: none; background-color:  #6c757d;
+   text-decoration: none;     background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
  }
 .padd-right{    padding-right: 122px;
   display: flex;
@@ -143,7 +155,10 @@
         color: #ccc;
     }
     .btn-primary{
-      background:#2c9942; border-color:#2c9942;
+      background:#2c9942; border-color:#2c9942;text-align: center;
+   
+    width: 112px;
+
     }
  
 .btn-secondary {
@@ -869,7 +884,9 @@ a.addbuttonargform:hover{
     padding: 5px;
     text-decoration: none;
     font-size: 12px;
-    line-height: 30px;
+    line-height: 30px;    width: 112px;
+    text-align: center;
+    justify-content: center;
 }
 .mtbalenew {overflow: auto;}
 .mtbalenew tbody{

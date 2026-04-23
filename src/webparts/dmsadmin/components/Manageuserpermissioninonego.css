@@ -71,8 +71,16 @@
 } */
  .btn.back-to-admin{
   background-color: #5c636a !important;
-  top: 0px !important; color:#fff !important;
- }
+  top: 0px !important; color:#fff !important;    width: 112px;
+    text-align: center;
+    justify-content: center;
+    padding: 0;
+ }.btn.back-to-admin:hover{
+        background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
+    text-decoration: none;
+}
   .btn.newbutton_align{
         top: -70px !important;
  }
@@ -183,7 +191,10 @@
     /* border-color: #0b5a08 !important; */
     /* color: #0b5a08 !important; */
 }
-
+.mtbalenew th .svg-inline--fa {
+    margin-left: 5px;
+    top: 17px !important;
+}
 .manage-button .ms-Button-label {
     font-weight: 400 !important;
     margin: 0 !important;

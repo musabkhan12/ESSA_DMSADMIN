@@ -590,7 +590,7 @@ try {
                         {/* Puja - Added wrapper div for consistent border styling */}
                         <div
                           style={{
-                            border: formErrors.location ? "2px solid #fe0100" : "1px solid #dee2e6",
+                            border: formErrors.location ? "1px solid #fe0100" : "0px solid #dee2e6",
                             borderRadius: "5px",
                             backgroundColor: formErrors.location ? "#fee6e6" : undefined,
                             padding: "2px"

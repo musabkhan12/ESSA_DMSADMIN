@@ -467,7 +467,10 @@ export const ManageSuperAdmin = (props:any) => {
                         <table className="mtbalenew">
                             <thead>
                             <tr>
-                                <th style={{minWidth:'20px',maxWidth:'20px'}}>S.No.</th>
+                                <th style={{minWidth:'20px',maxWidth:'20px'}}>S.No.
+  <div style={{height:'30px'}}></div>
+
+                                </th>
                                 {/* <th style={{minWidth:'80px',maxWidth:'80px'}}>User</th>
                                 <th>Email</th>  Ritik 22/04/2026*/}
                                 <th style={{minWidth:'80px',maxWidth:'80px'}}>
@@ -496,7 +499,7 @@ export const ManageSuperAdmin = (props:any) => {
     />
   </div>
 </th>
-                                <th style={{minWidth:'40px',maxWidth:'40px'}}>Action</th>
+                                <th style={{minWidth:'40px',maxWidth:'40px'}}>Action  <div style={{height:'30px'}}></div></th>
                             </tr>
                             </thead>
                             <tbody>

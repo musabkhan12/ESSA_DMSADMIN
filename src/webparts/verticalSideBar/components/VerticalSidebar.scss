@@ -13,7 +13,9 @@
     right: 10px;
     top: -56px;
 }
-.btn-primary:hover{border-color: #2c9942 !important;}
+.btn-primary:hover{    background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;}
 .mt-minus30{margin-top: -71px;}
 .tabcss {
   background: #fff !important;
@@ -1129,10 +1131,13 @@ background-color: rgb(167, 30, 132);
   width: 100%;
   height: 100%;
 }
-.btn-primary{height: auto !important;}
+.btn-primary{height: auto !important;text-align: center;
+   
+    width: 112px;}
 .btn-primary:hover{
-  background: #008751 !important;
-  border-color: #008751 !important; color: #fff !important;
+    background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
 }
 .heightcard {
   height: 160px !important;
@@ -2136,7 +2141,7 @@ label{color: #6c757d !important;font-size: .875rem !important;}
     color: #fff !important;
 }
 .mtable th .svg-inline--fa, .mtbalenew th .svg-inline--fa{
-      top: 16px;
+      top: 17px !important;
     /* left: -17px; */
     margin-left: 5px;
 }

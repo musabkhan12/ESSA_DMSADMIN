@@ -559,7 +559,7 @@ const removeUser = async (login: string, name: string) => {
       <table className="mtbalenew mt-2">
         <thead>
           <tr>
-            <th style={{minWidth:'70px',maxWidth:'70px'}}>S.No</th>
+            <th style={{minWidth:'70px',maxWidth:'70px'}}>S.No  <div style={{height:'36px'}}></div></th>
             <th style={{minWidth:'250px',maxWidth:'250px'}}>
               <span onClick={() => handleSort("Title")}>
                 User <FontAwesomeIcon icon={faSort} />
@@ -592,7 +592,7 @@ const removeUser = async (login: string, name: string) => {
     }}
               />
             </th>
-            <th style={{minWidth:'70px',maxWidth:'70px'}}>Action</th>
+            <th style={{minWidth:'70px',maxWidth:'70px'}}>Action  <div style={{height:'36px'}}></div></th>
           </tr>
         </thead>
         <tbody>

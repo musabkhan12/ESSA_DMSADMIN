@@ -69,7 +69,9 @@ body{
 }
 .btn.btn-primary{
   padding : 7px !important;
-  margin : 20px 20px 20px 0px !important;
+  margin : 20px 20px 20px 0px !important;text-align: center;
+   
+    width: 112px;
 }
 .DmsAdminForm {
   background-color: #fff;
@@ -841,7 +843,10 @@ margin: auto;
   padding-left: 4px;
 }
 .backbuttonform:hover{
-  text-decoration: none;
+      background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
+    text-decoration: none;
 }
 .backbuttonform{
  background-color:  #6c757d;
@@ -854,10 +859,14 @@ padding: 8px 15px;
 // height: 27px;
 height: 40px;
 text-decoration: none;
-cursor: pointer;
+cursor: pointer;border-image: initial;
+    width: 112px;  justify-content: center;
+    text-align: center
 }
 .backbuttonform1:hover{
-  text-decoration: none;
+  text-decoration: none;    background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
 }
 .backbuttonform1{
  background-color:  #7fc4de;
@@ -870,10 +879,14 @@ padding: 8px;
 // height: 27px;
 height: 40px;
 text-decoration: none;
-cursor: pointer;
+cursor: pointer; justify-content: center;
+    width: 112px;
+    text-align: center
 }
 .addbuttonargform:hover{
-  text-decoration: none;
+  text-decoration: none;    background-color: #0075a9 !important;
+    border-color: #0075a9 !important;
+    color: #fff !important;
 }
 .addbuttonargform{
   display: flex;
@@ -886,7 +899,9 @@ padding: 8px;
 // height: 27px;
 height: 40px;
 text-decoration: none;
-cursor: pointer;
+cursor: pointer;    width: 112px;
+    text-align: center;
+    justify-content: center;
 }
 .addbuttonargform1:hover{
   text-decoration: none;
@@ -902,7 +917,9 @@ padding: 8px;
 // height: 27px;
 height: 40px;
 text-decoration: none;
-cursor: pointer;
+cursor: pointer;    width: 112px;
+    text-align: center;
+    justify-content: center;
 }
 
 .backimg{
